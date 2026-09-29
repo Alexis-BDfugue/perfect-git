@@ -103,11 +103,16 @@
             </ListBox>
 
             <!-- Only Top100 Tip -->
-            <TextBlock Margin="18,0,18,16"
-                       Text="{DynamicResource Text.CommitDetail.Info.GotoChangesPage}"
-                       Foreground="{DynamicResource Brush.FG3}"
-                       TextWrapping="Wrap"
-                       IsVisible="{Binding Changes, Converter={x:Static c:ListConverters.IsOnlyTop100Shows}}"/>
+            <Panel Margin="18,0,18,16" IsVisible="{Binding Changes, Converter={x:Static c:ListConverters.IsOnlyTop100Shows}}">
+              <TextBlock Text="{DynamicResource Text.CommitDetail.Info.GotoChangesPage}"
+                         Foreground="{DynamicResource Brush.FG3}"
+                         TextWrapping="Wrap"
+                         IsVisible="{Binding #ThisControl.ShowChangesTab}"/>
+              <TextBlock Text="{DynamicResource Text.CommitDetail.Info.OnlyFirstFiles}"
+                         Foreground="{DynamicResource Brush.FG3}"
+                         TextWrapping="Wrap"
+                         IsVisible="{Binding !#ThisControl.ShowChangesTab}"/>
+            </Panel>
           </StackPanel>
         </ScrollViewer>
 
@@ -125,7 +130,7 @@
       </Grid>
     </TabItem>
 
-    <TabItem>
+    <TabItem IsVisible="{Binding #ThisControl.ShowChangesTab}">
       <TabItem.Header>
         <Border Background="Transparent" PointerPressed="OnTabHeaderPointerPressed">
           <TextBlock Classes="tab_header" Text="{DynamicResource Text.CommitDetail.Changes}"/>

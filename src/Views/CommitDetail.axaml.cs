@@ -24,9 +24,35 @@ namespace SourceGit.Views
             set => SetAndRaise(IsDetailsPanelExpandedProperty, ref _isDetailsPanelExpanded, value);
         }
 
+        public static readonly StyledProperty<bool> ShowChangesTabProperty =
+            AvaloniaProperty.Register<CommitDetail, bool>(nameof(ShowChangesTab), true);
+
+        /// <summary>
+        ///     The history page shows diffs in its center column, so it hides the CHANGES tab.
+        /// </summary>
+        public bool ShowChangesTab
+        {
+            get => GetValue(ShowChangesTabProperty);
+            set => SetValue(ShowChangesTabProperty, value);
+        }
+
         public CommitDetail()
         {
             InitializeComponent();
+        }
+
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        {
+            base.OnPropertyChanged(change);
+
+            if (change.Property == ShowChangesTabProperty || change.Property == DataContextProperty)
+                LeaveHiddenChangesTab();
+        }
+
+        private void LeaveHiddenChangesTab()
+        {
+            if (!ShowChangesTab && DataContext is ViewModels.CommitDetail { ActiveTabIndex: 1 } vm)
+                vm.ActiveTabIndex = 0;
         }
 
         public ContextMenu CreateChangeContextMenu(Models.Change change)

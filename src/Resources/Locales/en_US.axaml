@@ -223,6 +223,7 @@
   <x:String x:Key="Text.CommitDetail.Info.Key" xml:space="preserve">Key:</x:String>
   <x:String x:Key="Text.CommitDetail.Info.List" xml:space="preserve">List</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Message" xml:space="preserve">MESSAGE</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.OnlyFirstFiles" xml:space="preserve">Only the first 100 changed files are listed.</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Parent" xml:space="preserve">Parent</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Parents" xml:space="preserve">PARENTS</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Refs" xml:space="preserve">REFS</x:String>

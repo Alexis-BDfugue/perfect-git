@@ -490,12 +490,6 @@
 
                 <TabItem IsEnabled="False">
                   <TabItem.Header>
-                    <TextBlock Classes="tab_header" Text="{DynamicResource Text.CommitDetail.Changes}"/>
-                  </TabItem.Header>
-                </TabItem>
-
-                <TabItem IsEnabled="False">
-                  <TabItem.Header>
                     <TextBlock Classes="tab_header" Text="{DynamicResource Text.CommitDetail.Files}"/>
                   </TabItem.Header>
                 </TabItem>
@@ -503,7 +497,7 @@
           </DataTemplate>
 
           <DataTemplate DataType="vm:CommitDetail">
-            <v:CommitDetail IsDetailsPanelExpanded="{Binding #ThisControl.IsDetailsPanelExpanded, Mode=OneWay}"/>
+            <v:CommitDetail ShowChangesTab="False" IsDetailsPanelExpanded="{Binding #ThisControl.IsDetailsPanelExpanded, Mode=OneWay}"/>
           </DataTemplate>
 
           <DataTemplate DataType="vm:RevisionCompare">
@@ -556,12 +550,6 @@
                              Foreground="{DynamicResource Brush.FG2}"
                              Text="{Binding Value, Converter={x:Static c:StringConverters.FormatByResourceKey}, ConverterParameter='Histories.Selected'}"/>
                 </StackPanel>
-              </TabItem>
-
-              <TabItem IsEnabled="False">
-                <TabItem.Header>
-                  <TextBlock Classes="tab_header" Text="{DynamicResource Text.CommitDetail.Changes}"/>
-                </TabItem.Header>
               </TabItem>
 
               <TabItem IsEnabled="False">
