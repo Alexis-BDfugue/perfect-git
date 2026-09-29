@@ -266,6 +266,12 @@ namespace SourceGit.Native
         public static extern void objc_msgSend_Void_IntPtr(IntPtr receiver, IntPtr selector, IntPtr arg);
 
         [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
+        public static extern IntPtr objc_msgSend_IntPtr_IntPtr(IntPtr receiver, IntPtr selector, IntPtr arg);
+
+        [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
+        public static extern IntPtr objc_msgSend_IntPtr_IntPtr_ULong(IntPtr receiver, IntPtr selector, IntPtr arg1, ulong arg2);
+
+        [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend_Void_Point(IntPtr receiver, IntPtr selector, CGPoint arg);
 
         [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend_stret")]
@@ -316,6 +322,37 @@ namespace SourceGit.Native
             objc_msgSend_Void_Point(nsCloseBtn, s_selSetFrameOrigin, new(14, y));
             objc_msgSend_Void_Point(nsMinBtn, s_selSetFrameOrigin, new(14 + 20, y));
             objc_msgSend_Void_Point(nsZoomBtn, s_selSetFrameOrigin, new(14 + 40, y));
+        }
+
+        /// <summary>
+        ///     Sets the Dock icon. Needed when the app doesn't run from a `.app` bundle (e.g. `dotnet run`),
+        ///     since macOS then shows a generic executable icon.
+        /// </summary>
+        public static void SetDockIcon(byte[] png)
+        {
+            if (png is not { Length: > 0 })
+                return;
+
+            var handle = GCHandle.Alloc(png, GCHandleType.Pinned);
+            try
+            {
+                // `dataWithBytes:length:` copies the bytes, so the buffer can be released afterwards.
+                var data = objc_msgSend_IntPtr_IntPtr_ULong(objc_getClass("NSData"), sel_registerName("dataWithBytes:length:"), handle.AddrOfPinnedObject(), (ulong)png.Length);
+                if (data == IntPtr.Zero)
+                    return;
+
+                var image = objc_msgSend_IntPtr(objc_getClass("NSImage"), sel_registerName("alloc"));
+                image = objc_msgSend_IntPtr_IntPtr(image, sel_registerName("initWithData:"), data);
+                if (image == IntPtr.Zero)
+                    return;
+
+                var app = objc_msgSend_IntPtr(objc_getClass("NSApplication"), sel_registerName("sharedApplication"));
+                objc_msgSend_Void_IntPtr(app, sel_registerName("setApplicationIconImage:"), image);
+            }
+            finally
+            {
+                handle.Free();
+            }
         }
 
         public static void HideSelf()
