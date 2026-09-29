@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -42,6 +42,16 @@ namespace SourceGit.ViewModels
         public bool IsCurrent
         {
             get => Backend is Models.Branch { IsCurrent: true };
+        }
+
+        public string RemoteHost
+        {
+            get => Backend is Models.Remote remote ? remote.HostLabel : string.Empty;
+        }
+
+        public bool IsRemoteBranch
+        {
+            get => Backend is Models.Branch { IsLocal: false };
         }
 
         public bool ShowUpstreamGoneTip

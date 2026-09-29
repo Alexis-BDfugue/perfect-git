@@ -340,6 +340,38 @@ namespace SourceGit.ViewModels
             }
         }
 
+        public bool IsPullRequestGroupExpanded
+        {
+            get => _uiStates.IsPullRequestsExpandedInSideBar;
+            set
+            {
+                if (value != _uiStates.IsPullRequestsExpandedInSideBar)
+                {
+                    _uiStates.IsPullRequestsExpandedInSideBar = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsStashGroupExpanded
+        {
+            get => _uiStates.IsStashesExpandedInSideBar;
+            set
+            {
+                if (value != _uiStates.IsStashesExpandedInSideBar)
+                {
+                    _uiStates.IsStashesExpandedInSideBar = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public List<Models.PullRequest> PullRequests
+        {
+            get => _pullRequests;
+            private set => SetProperty(ref _pullRequests, value);
+        }
+
         public bool IsWorktreeGroupExpanded
         {
             get => _uiStates.IsWorktreeExpandedInSideBar;
@@ -1169,8 +1201,32 @@ namespace SourceGit.ViewModels
                     GetOwnerPage()?.ChangeDirtyState(Models.DirtyState.HasPendingPullOrPush, !hasPendingPullOrPush);
 
                     UpdateFetchStatus();
+                    RefreshPullRequests(false);
                 });
             }, token);
+        }
+
+        public void RefreshPullRequests(bool force)
+        {
+            if (!force && DateTime.Now - _lastPullRequestsQueryTime < TimeSpan.FromMinutes(2))
+                return;
+
+            _lastPullRequestsQueryTime = DateTime.Now;
+
+            var remotes = new List<Models.Remote>(_remotes);
+            Task.Run(async () =>
+            {
+                var prs = await Models.PullRequestProvider.FetchAsync(remotes).ConfigureAwait(false);
+                Dispatcher.UIThread.Post(() => PullRequests = prs);
+            });
+        }
+
+        public void OpenStash(Models.Stash stash)
+        {
+            SelectedViewIndex = 2;
+
+            if (_stashesPage != null)
+                _stashesPage.SelectedStash = stash;
         }
 
         public void PopLatestStash()
@@ -1980,6 +2036,8 @@ namespace SourceGit.ViewModels
         private int _stashesCount = 0;
         private string _fetchRemote = null;
         private ulong _lastFetchTimestamp = 0;
+        private List<Models.PullRequest> _pullRequests = [];
+        private DateTime _lastPullRequestsQueryTime = DateTime.MinValue;
 
         private string _filter = string.Empty;
         private List<Models.Remote> _remotes = [];

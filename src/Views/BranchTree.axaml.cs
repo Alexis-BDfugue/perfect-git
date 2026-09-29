@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -50,23 +50,22 @@ namespace SourceGit.Views
 
             if (node.Backend is Models.Remote)
             {
-                CreateContent(new Thickness(0, 0, 0, 0), "Icons.Remote");
+                Content = null;
             }
             else if (node.Backend is Models.Branch branch)
             {
-                if (branch.IsCurrent)
-                    CreateContent(new Thickness(0, 0, 0, 0), "Icons.CheckCircled", Brushes.Green);
-                else if (branch.IsLocal && !string.IsNullOrEmpty(branch.WorktreePath))
-                    CreateContent(new Thickness(2, 0, 0, 0), "Icons.Branch", Brushes.DarkCyan);
-                else
-                    CreateContent(new Thickness(2, 0, 0, 0), "Icons.Branch");
+                var brush = Models.BranchColor.BrushOf(branch.Name);
+                Content = branch.IsLocal
+                    ? new Ellipse() { Width = 9, Height = 9, Fill = brush, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(1, 0, 0, 0) }
+                    : new Ellipse() { Width = 8, Height = 8, Stroke = brush, StrokeThickness = 1.5, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(1, 0, 0, 0) };
             }
             else
             {
+                var fg3 = this.FindResource("Brush.FG3") as IBrush;
                 if (node.IsExpanded)
-                    CreateContent(new Thickness(0, 2, 0, 0), "Icons.Folder.Open");
+                    CreateContent(new Thickness(0, 2, 0, 0), "Icons.Folder.Open", fg3);
                 else
-                    CreateContent(new Thickness(0, 2, 0, 0), "Icons.Folder");
+                    CreateContent(new Thickness(0, 2, 0, 0), "Icons.Folder", fg3);
             }
         }
 
@@ -152,10 +151,7 @@ namespace SourceGit.Views
             base.Render(context);
 
             if (_label != null)
-            {
-                context.DrawRectangle(Background, null, new RoundedRect(new Rect(8, 0, _label.Width + 18, 18), new CornerRadius(9)));
-                context.DrawText(_label, new Point(17, 9 - _label.Height * 0.5));
-            }
+                context.DrawText(_label, new Point(8, (Bounds.Height - _label.Height) * 0.5));
         }
 
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -196,7 +192,7 @@ namespace SourceGit.Views
                 }
             }
 
-            return _label != null ? new Size(_label.Width + 18 /* Padding */ + 16 /* Margin */, 18) : new Size(0, 0);
+            return _label != null ? new Size(_label.Width + 8 /* Margin */, 18) : new Size(0, 0);
         }
 
         private FormattedText _label = null;

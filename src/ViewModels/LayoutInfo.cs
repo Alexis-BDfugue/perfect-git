@@ -39,13 +39,13 @@ namespace SourceGit.ViewModels
         {
             get;
             set;
-        } = 250;
+        } = 260;
 
         public double RepositorySearchCommitWidth
         {
             get;
             set;
-        } = 250;
+        } = 260;
 
         public bool IsSidebarCollapsedInLocalChanges
         {

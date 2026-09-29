@@ -1,7 +1,9 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
@@ -230,6 +232,24 @@ namespace SourceGit.Views
                 UpdateLeftSidebarLayout();
         }
 
+        private void OnPullRequestTapped(object sender, TappedEventArgs e)
+        {
+            if (sender is Control { DataContext: Models.PullRequest pr } && !string.IsNullOrEmpty(pr.Url))
+            {
+                Native.OS.OpenBrowser(pr.Url);
+                e.Handled = true;
+            }
+        }
+
+        private void OnStashTapped(object sender, TappedEventArgs e)
+        {
+            if (sender is Control { DataContext: Models.Stash stash } && DataContext is ViewModels.Repository repo)
+            {
+                repo.OpenStash(stash);
+                e.Handled = true;
+            }
+        }
+
         private void OnLeftSidebarRowsChanged(object _, RoutedEventArgs e)
         {
             UpdateLeftSidebarLayout();
@@ -250,67 +270,52 @@ namespace SourceGit.Views
             if (DataContext is not ViewModels.Repository { UIStates: { } } vm)
                 return;
 
-            var leftHeight = LeftSidebarGroups.Bounds.Height - 28.0 * 5 - 4;
+            var headers = 0.0;
+            foreach (var child in LeftSidebarGroups.Children)
+            {
+                if (child is ToggleButton { IsVisible: true } header)
+                    headers += header.Bounds.Height > 0 ? header.Bounds.Height : 28.0;
+            }
+
+            var leftHeight = LeftSidebarGroups.Bounds.Height - headers - 4;
             if (leftHeight <= 0)
                 return;
 
             var localBranchRows = vm.IsLocalBranchGroupExpanded ? LocalBranchTree.Rows.Count : 0;
             var remoteBranchRows = vm.IsRemoteGroupExpanded ? RemoteBranchTree.Rows.Count : 0;
             var desiredBranches = (localBranchRows + remoteBranchRows) * 24.0;
-            var desiredTag = vm.IsTagGroupExpanded ? 24.0 * TagsList.Rows : 0;
-            var desiredSubmodule = vm.IsSubmoduleGroupExpanded ? 24.0 * SubmoduleList.Rows : 0;
-            var desiredWorktree = vm.IsWorktreeGroupExpanded ? 24.0 * vm.Worktrees.Count : 0;
-            var desiredOthers = desiredTag + desiredSubmodule + desiredWorktree;
-            var hasOverflow = (desiredBranches + desiredOthers > leftHeight);
 
-            if (vm.IsWorktreeGroupExpanded)
+            // Groups under the branches, from bottom to top: they give up space first.
+            var others = new List<(Control List, double Desired)>
             {
-                var height = desiredWorktree;
+                (WorktreeList, WorktreeList.IsVisible ? 24.0 * vm.Worktrees.Count : 0),
+                (SubmoduleList, SubmoduleList.IsVisible ? 24.0 * SubmoduleList.Rows : 0),
+                (StashList, StashList.IsVisible ? 24.0 * (vm.StashesPage?.Stashes?.Count ?? 0) : 0),
+                (TagsList, TagsList.IsVisible ? 24.0 * TagsList.Rows : 0),
+                (PullRequestList, PullRequestList.IsVisible ? 44.0 * vm.PullRequests.Count : 0),
+            };
+
+            var desiredOthers = 0.0;
+            foreach (var other in others)
+                desiredOthers += other.Desired;
+
+            var hasOverflow = desiredBranches + desiredOthers > leftHeight;
+            foreach (var (list, desired) in others)
+            {
+                desiredOthers -= desired;
+                if (!list.IsVisible)
+                    continue;
+
+                var height = desired;
                 if (hasOverflow)
                 {
-                    var test = leftHeight - desiredBranches - desiredTag - desiredSubmodule;
-                    if (test < 0)
-                        height = Math.Min(120, height);
-                    else
-                        height = Math.Max(120, test);
+                    var test = leftHeight - desiredBranches - desiredOthers;
+                    height = Math.Min(desired, test < 0 ? 120 : Math.Max(120, test));
                 }
 
                 leftHeight -= height;
-                WorktreeList.Height = height;
-                hasOverflow = (desiredBranches + desiredTag + desiredSubmodule) > leftHeight;
-            }
-
-            if (vm.IsSubmoduleGroupExpanded)
-            {
-                var height = desiredSubmodule;
-                if (hasOverflow)
-                {
-                    var test = leftHeight - desiredBranches - desiredTag;
-                    if (test < 0)
-                        height = Math.Min(120, height);
-                    else
-                        height = Math.Max(120, test);
-                }
-
-                leftHeight -= height;
-                SubmoduleList.Height = height;
-                hasOverflow = (desiredBranches + desiredTag) > leftHeight;
-            }
-
-            if (vm.IsTagGroupExpanded)
-            {
-                var height = desiredTag;
-                if (hasOverflow)
-                {
-                    var test = leftHeight - desiredBranches;
-                    if (test < 0)
-                        height = Math.Min(120, height);
-                    else
-                        height = Math.Max(120, test);
-                }
-
-                leftHeight -= height;
-                TagsList.Height = height;
+                list.Height = height;
+                hasOverflow = desiredBranches + desiredOthers > leftHeight;
             }
 
             if (leftHeight > 0 && desiredBranches > leftHeight)

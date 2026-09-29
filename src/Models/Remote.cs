@@ -29,8 +29,35 @@ namespace SourceGit.Models
             REG_SSH2(),
         ];
 
+        [GeneratedRegex(@"^(?:[a-z+]+://)?(?:[^@/]+@)?([^/:]+)")]
+        private static partial Regex REG_HOST();
+
         public string Name { get; set; }
         public string URL { get; set; }
+
+        public string HostLabel
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(URL))
+                    return string.Empty;
+
+                var match = REG_HOST().Match(URL);
+                if (!match.Success)
+                    return string.Empty;
+
+                var host = match.Groups[1].Value;
+                return host switch
+                {
+                    "github.com" => "github",
+                    "gitlab.com" => "gitlab",
+                    "bitbucket.org" => "bitbucket",
+                    "codeberg.org" => "codeberg",
+                    "gitee.com" => "gitee",
+                    _ => host,
+                };
+            }
+        }
         public string PushURL { get; set; }
         public string PrivateSSHKey { get; set; }
         public bool DisableAutoFetch { get; set; }

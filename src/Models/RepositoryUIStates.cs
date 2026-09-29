@@ -213,6 +213,18 @@ namespace SourceGit.Models
             set;
         } = false;
 
+        public bool IsPullRequestsExpandedInSideBar
+        {
+            get;
+            set;
+        } = true;
+
+        public bool IsStashesExpandedInSideBar
+        {
+            get;
+            set;
+        } = false;
+
         public List<string> ExpandedBranchNodesInSideBar
         {
             get;

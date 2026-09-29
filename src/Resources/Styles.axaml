@@ -504,8 +504,18 @@
     <Setter Property="FontStyle" Value="Italic"/>
   </Style>
   <Style Selector="TextBlock.group_header_label">
-    <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
-    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
+    <Setter Property="FontSize" Value="11"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="LetterSpacing" Value="0.33"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+  <Style Selector="TextBlock.group_header_count">
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
+    <Setter Property="FontSize" Value="11"/>
+    <Setter Property="FontWeight" Value="Medium"/>
+    <Setter Property="Margin" Value="6,0,0,0"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
   </Style>
   <Style Selector="TextBlock.table_header">
     <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
@@ -1275,24 +1285,15 @@
 
   <Style Selector="ToggleButton.group_expander">
     <Setter Property="Height" Value="28"/>
-    <Setter Property="Margin" Value="6,0,0,0"/>
-    <Setter Property="Padding" Value="0"/>
+    <Setter Property="Margin" Value="0"/>
+    <Setter Property="Padding" Value="8,0,0,0"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="VerticalAlignment" Value="Stretch"/>
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid ColumnDefinitions="Auto,*" Background="Transparent">
-          <Path Grid.Column="0"
-                x:Name="PART_IndicatorIcon"
-                Width="10"
-                Margin="0,0,6,0"
-                Data="{StaticResource Icons.Down}"
-                Fill="{DynamicResource Brush.FG2}"
-                VerticalAlignment="Center"
-                RenderTransformOrigin="50%,50%"
-                RenderTransform="rotate(270deg)"/>
-          <ContentPresenter Grid.Column="1"
+        <Grid ColumnDefinitions="*,Auto" Background="Transparent">
+          <ContentPresenter Grid.Column="0"
                             x:Name="PART_ContentPresenter"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -1300,10 +1301,19 @@
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
-                            Padding="0"
+                            Padding="{TemplateBinding Padding}"
                             RecognizesAccessKey="True"
                             HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch" />
+                            VerticalContentAlignment="Center" />
+          <Path Grid.Column="1"
+                x:Name="PART_IndicatorIcon"
+                Width="8" Height="8"
+                Margin="4,0,8,0"
+                Data="{StaticResource Icons.Down}"
+                Fill="{DynamicResource Brush.FG3}"
+                VerticalAlignment="Center"
+                RenderTransformOrigin="50%,50%"
+                RenderTransform="rotate(270deg)"/>
         </Grid>
       </ControlTemplate>
     </Setter>
@@ -1319,6 +1329,37 @@
   </Style>
   <Style Selector="ToggleButton.group_expander:pointerover /template/ ContentPresenter#PART_ContentPresenter">
     <Setter Property="Background" Value="Transparent"/>
+  </Style>
+  <Style Selector="ToggleButton.group_expander:pointerover TextBlock.group_header_label">
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
+  </Style>
+  <Style Selector=":is(Button).group_action">
+    <Setter Property="Width" Value="20"/>
+    <Setter Property="Height" Value="20"/>
+    <Setter Property="Margin" Value="2,0,0,0"/>
+  </Style>
+  <Style Selector=":is(Button).group_action Path">
+    <Setter Property="Fill" Value="{DynamicResource Brush.FG3}"/>
+  </Style>
+  <Style Selector=":is(Button).group_action:pointerover Path">
+    <Setter Property="Fill" Value="{DynamicResource Brush.FG1}"/>
+  </Style>
+
+  <Style Selector="TextBox.sidebar_filter">
+    <Setter Property="Height" Value="28"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="CornerRadius" Value="7"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Background" Value="{DynamicResource Brush.Popup}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border2}"/>
+  </Style>
+  <Style Selector="TextBox.sidebar_filter:pointerover /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource Brush.Popup}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border1}"/>
+  </Style>
+  <Style Selector="TextBox.sidebar_filter:focus /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource Brush.Popup}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent}"/>
   </Style>
 
   <Style Selector="ToggleButton.filter_expander">

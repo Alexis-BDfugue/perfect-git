@@ -753,6 +753,12 @@
   <x:String x:Key="Text.Pull.Remote" xml:space="preserve">Remote:</x:String>
   <x:String x:Key="Text.Pull.Title" xml:space="preserve">Pull (Fetch &amp; Merge)</x:String>
   <x:String x:Key="Text.Pull.UseRebase" xml:space="preserve">Use rebase instead of merge</x:String>
+  <x:String x:Key="Text.PullRequest.Comment" xml:space="preserve">1 comment</x:String>
+  <x:String x:Key="Text.PullRequest.Comments" xml:space="preserve">{0} comments</x:String>
+  <x:String x:Key="Text.PullRequest.State.Closed" xml:space="preserve">closed</x:String>
+  <x:String x:Key="Text.PullRequest.State.Draft" xml:space="preserve">draft</x:String>
+  <x:String x:Key="Text.PullRequest.State.InReview" xml:space="preserve">in review</x:String>
+  <x:String x:Key="Text.PullRequest.State.Merged" xml:space="preserve">merged</x:String>
   <x:String x:Key="Text.Push" xml:space="preserve">Push</x:String>
   <x:String x:Key="Text.Push.CheckSubmodules" xml:space="preserve">Make sure submodules have been pushed</x:String>
   <x:String x:Key="Text.Push.Force" xml:space="preserve">Force push</x:String>
@@ -833,14 +839,15 @@
   <x:String x:Key="Text.Repository.HistoriesOrder" xml:space="preserve">COMMITS ORDER</x:String>
   <x:String x:Key="Text.Repository.HistoriesOrder.ByDate" xml:space="preserve">Commit Date</x:String>
   <x:String x:Key="Text.Repository.HistoriesOrder.Topo" xml:space="preserve">Topologically</x:String>
-  <x:String x:Key="Text.Repository.LocalBranches" xml:space="preserve">LOCAL BRANCHES</x:String>
+  <x:String x:Key="Text.Repository.LocalBranches" xml:space="preserve">LOCAL</x:String>
   <x:String x:Key="Text.Repository.NavigateToCurrentHead" xml:space="preserve">Navigate to HEAD</x:String>
   <x:String x:Key="Text.Repository.NewBranch" xml:space="preserve">Create Branch</x:String>
   <x:String x:Key="Text.Repository.Notifications.Clear" xml:space="preserve">CLEAR NOTIFICATIONS</x:String>
   <x:String x:Key="Text.Repository.OpenAsFolder" xml:space="preserve">Open as Folder</x:String>
   <x:String x:Key="Text.Repository.OpenIn" xml:space="preserve">Open in {0}</x:String>
   <x:String x:Key="Text.Repository.OpenWithExternalTools" xml:space="preserve">Open in External Tools</x:String>
-  <x:String x:Key="Text.Repository.Remotes" xml:space="preserve">REMOTES</x:String>
+  <x:String x:Key="Text.Repository.PullRequests" xml:space="preserve">PULL REQUESTS</x:String>
+  <x:String x:Key="Text.Repository.Remotes" xml:space="preserve">REMOTE</x:String>
   <x:String x:Key="Text.Repository.Remotes.Add" xml:space="preserve">Add Remote</x:String>
   <x:String x:Key="Text.Repository.Resolve" xml:space="preserve">RESOLVE</x:String>
   <x:String x:Key="Text.Repository.Search" xml:space="preserve">SEARCH COMMITS</x:String>
@@ -859,6 +866,7 @@
   <x:String x:Key="Text.Repository.ShowSubmodulesAsTree" xml:space="preserve">Show Submodules as Tree</x:String>
   <x:String x:Key="Text.Repository.ShowTagsAsTree" xml:space="preserve">Show Tags as Tree</x:String>
   <x:String x:Key="Text.Repository.Skip" xml:space="preserve">SKIP</x:String>
+  <x:String x:Key="Text.Repository.Stashes" xml:space="preserve">STASHES</x:String>
   <x:String x:Key="Text.Repository.Statistics" xml:space="preserve">Statistics</x:String>
   <x:String x:Key="Text.Repository.Submodules" xml:space="preserve">SUBMODULES</x:String>
   <x:String x:Key="Text.Repository.Submodules.Add" xml:space="preserve">Add Submodule</x:String>
@@ -917,6 +925,7 @@
   <x:String x:Key="Text.SetUpstream.Upstream" xml:space="preserve">Upstream:</x:String>
   <x:String x:Key="Text.SHALinkCM.CopySHA" xml:space="preserve">Copy SHA</x:String>
   <x:String x:Key="Text.SHALinkCM.NavigateTo" xml:space="preserve">Go to</x:String>
+  <x:String x:Key="Text.Sidebar.Filter" xml:space="preserve">Filter</x:String>
   <x:String x:Key="Text.SSHKey" xml:space="preserve">SSH Private Key:</x:String>
   <x:String x:Key="Text.SSHKey.Placeholder" xml:space="preserve">Private SSH key store path</x:String>
   <x:String x:Key="Text.SSHKeyHelper" xml:space="preserve">Open SSH Key Helper</x:String>
