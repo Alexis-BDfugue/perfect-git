@@ -1233,6 +1233,29 @@ namespace SourceGit.ViewModels
                 _stashesPage.SelectedStash = stash;
         }
 
+        /// <summary>
+        ///     Makes sure `branch` is checked out before running an operation that works on HEAD.
+        /// </summary>
+        public async Task<bool> SwitchToBranchIfNeededAsync(Models.Branch branch)
+        {
+            if (branch.IsLocal && _currentBranch != null && _currentBranch.Name.Equals(branch.Name, StringComparison.Ordinal))
+                return true;
+
+            if (!branch.IsLocal || IsBare || !CanCreatePopup())
+                return false;
+
+            if (_workingCopy is not { CanSwitchBranchDirectly: true })
+            {
+                SendNotification(App.Text("BranchDrop.NeedsCleanWorkingCopy", branch.Name), true);
+                return false;
+            }
+
+            await ShowAndStartPopupAsync(new Checkout(this, branch));
+
+            var head = await new Commands.QueryHeadBranchName(FullPath).GetResultAsync();
+            return head.Equals(branch.Name, StringComparison.Ordinal);
+        }
+
         public void PopLatestStash()
         {
             var stashes = _stashesPage?.Stashes;

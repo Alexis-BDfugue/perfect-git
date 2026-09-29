@@ -157,6 +157,46 @@ namespace SourceGit.Views
             set => SetValue(ShowTagsProperty, value);
         }
 
+        /// <summary>
+        ///     Pill being dragged (drawn faded).
+        /// </summary>
+        public Models.Decorator DimmedDecorator
+        {
+            get => _dimmedDecorator;
+            set
+            {
+                _dimmedDecorator = value;
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        ///     Pill under a dragged branch (drawn with a dashed accent border).
+        /// </summary>
+        public Models.Decorator DropTargetDecorator
+        {
+            get => _dropTargetDecorator;
+            set
+            {
+                _dropTargetDecorator = value;
+                InvalidateVisual();
+            }
+        }
+
+        public double GetDecoratorX(Models.Decorator decorator)
+        {
+            var x = 0.0;
+            foreach (var item in _items)
+            {
+                if (item.Decorator == decorator)
+                    return x;
+
+                x += item.Width + PILL_GAP;
+            }
+
+            return 0;
+        }
+
         public Models.Decorator DecoratorAt(Point point)
         {
             var x = 0.0;
@@ -192,6 +232,16 @@ namespace SourceGit.Views
                 }
 
                 var rect = new RoundedRect(new Rect(x, y, item.Width, PILL_HEIGHT), new CornerRadius(5));
+                var isDropTarget = item.Decorator == _dropTargetDecorator;
+                DrawingContext.PushedState? dimmed = item.Decorator == _dimmedDecorator ? context.PushOpacity(0.35) : null;
+
+                if (isDropTarget)
+                {
+                    var accent = this.FindResource("Brush.Accent") as ISolidColorBrush;
+                    var halo = new RoundedRect(new Rect(x - 4, y - 4, item.Width + 8, PILL_HEIGHT + 8), new CornerRadius(9));
+                    context.DrawRectangle(new SolidColorBrush(accent?.Color ?? Colors.MediumPurple, 0.18), null, halo);
+                }
+
                 switch (item.Decorator.Type)
                 {
                     case Models.DecoratorType.RemoteBranchHead:
@@ -203,10 +253,13 @@ namespace SourceGit.Views
                             context.DrawRectangle(item.Brush, null, rect);
                         break;
                     default:
-                        using (context.PushOpacity(.22))
+                        using (context.PushOpacity(isDropTarget ? .34 : .22))
                             context.DrawRectangle(item.Brush, null, rect);
                         break;
                 }
+
+                if (isDropTarget)
+                    context.DrawRectangle(null, new Pen(this.FindResource("Brush.Accent") as IBrush, 1.5, new DashStyle([2, 1.5], 0)), rect);
 
                 var tx = x + PILL_PADDING;
                 context.DrawText(item.Label, new Point(tx, y + (PILL_HEIGHT - item.Label.Height) * 0.5));
@@ -233,6 +286,7 @@ namespace SourceGit.Views
                     }
                 }
 
+                dimmed?.Dispose();
                 x += item.Width + PILL_GAP;
             }
         }
@@ -388,5 +442,7 @@ namespace SourceGit.Views
         private const double PILL_GAP = 6;
 
         private List<RenderItem> _items = new List<RenderItem>();
+        private Models.Decorator _dimmedDecorator = null;
+        private Models.Decorator _dropTargetDecorator = null;
     }
 }

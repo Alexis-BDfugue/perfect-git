@@ -169,6 +169,10 @@
                                             VerticalAlignment="Center"/>
 
                     <v:CommitRefsPresenter Grid.Column="2"
+                                           DragDrop.AllowDrop="True"
+                                           DragDrop.DragOver="OnRefsDragOver"
+                                           DragDrop.DragLeave="OnRefsDragLeave"
+                                           DragDrop.Drop="OnRefsDrop"
                                            Background="{DynamicResource Brush.Contents}"
                                            Foreground="{DynamicResource Brush.FG1}"
                                            ShowTags="{Binding Source={x:Static vm:Preferences.Instance}, Path=ShowTagsInGraph}"

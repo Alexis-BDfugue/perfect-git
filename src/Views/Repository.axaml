@@ -10,7 +10,7 @@
              x:Class="SourceGit.Views.Repository"
              x:DataType="vm:Repository"
              x:Name="ThisControl">  
-  <Grid>
+  <Grid DragDrop.AllowDrop="True" DragDrop.DragOver="OnRepositoryDragOver">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="49"/>
       <ColumnDefinition Width="*"/>

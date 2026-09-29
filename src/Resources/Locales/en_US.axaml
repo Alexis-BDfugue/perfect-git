@@ -88,6 +88,27 @@
   <x:String x:Key="Text.BranchCM.ResetToSelectedCommit" xml:space="preserve">Reset ${0}$ to ${1}$...</x:String>
   <x:String x:Key="Text.BranchCM.SwitchToWorktree" xml:space="preserve">Switch to ${0}$ (worktree)</x:String>
   <x:String x:Key="Text.BranchCM.Tracking" xml:space="preserve">Set Tracking Branch...</x:String>
+  <x:String x:Key="Text.BranchDrop.Cancel" xml:space="preserve">Esc to cancel</x:String>
+  <x:String x:Key="Text.BranchDrop.Conflict" xml:space="preserve">1 file may conflict</x:String>
+  <x:String x:Key="Text.BranchDrop.Conflicts" xml:space="preserve">{0} files may conflict</x:String>
+  <x:String x:Key="Text.BranchDrop.Drop" xml:space="preserve">Drop</x:String>
+  <x:String x:Key="Text.BranchDrop.Interactive" xml:space="preserve">Interactive rebase…</x:String>
+  <x:String x:Key="Text.BranchDrop.Interactive.Desc" xml:space="preserve">Pick, reorder or squash commits first.</x:String>
+  <x:String x:Key="Text.BranchDrop.Merge" xml:space="preserve">Merge into {0}</x:String>
+  <x:String x:Key="Text.BranchDrop.Merge.Desc" xml:space="preserve">Creates a commit joining both branches. History is kept as is.</x:String>
+  <x:String x:Key="Text.BranchDrop.Merge.Remote" xml:space="preserve">Drop onto a local branch to merge into it.</x:String>
+  <x:String x:Key="Text.BranchDrop.NeedsCleanWorkingCopy" xml:space="preserve">Commit or stash your changes before switching to '{0}'.</x:String>
+  <x:String x:Key="Text.BranchDrop.NoConflicts" xml:space="preserve">No conflicts expected</x:String>
+  <x:String x:Key="Text.BranchDrop.Onto" xml:space="preserve">onto</x:String>
+  <x:String x:Key="Text.BranchDrop.PullRequest" xml:space="preserve">Create a pull request into {0}</x:String>
+  <x:String x:Key="Text.BranchDrop.Rebase" xml:space="preserve">Rebase onto {0}</x:String>
+  <x:String x:Key="Text.BranchDrop.Rebase.Desc" xml:space="preserve">Replays your commits on top of {0}. Linear history.</x:String>
+  <x:String x:Key="Text.BranchDrop.Rebase.DescCount" xml:space="preserve">Replays your {0} commits on top of {1}. Linear history.</x:String>
+  <x:String x:Key="Text.BranchDrop.Rebase.DescOne" xml:space="preserve">Replays your commit on top of {0}. Linear history.</x:String>
+  <x:String x:Key="Text.BranchDrop.Rebase.Remote" xml:space="preserve">Only local branches can be rebased.</x:String>
+  <x:String x:Key="Text.BranchDrop.SwitchFirst" xml:space="preserve">Switches to {0} first.</x:String>
+  <x:String x:Key="Text.BranchDrop.Testing" xml:space="preserve">Checking for conflicts…</x:String>
+  <x:String x:Key="Text.BranchDrop.Unknown" xml:space="preserve">Conflicts can't be predicted</x:String>
   <x:String x:Key="Text.BranchTree.Ahead" xml:space="preserve">{0} commit(s) ahead</x:String>
   <x:String x:Key="Text.BranchTree.AheadBehind" xml:space="preserve">{0} commit(s) ahead, {1} commit(s) behind</x:String>
   <x:String x:Key="Text.BranchTree.Behind" xml:space="preserve">{0} commit(s) behind</x:String>

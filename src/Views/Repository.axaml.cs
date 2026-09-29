@@ -232,6 +232,16 @@ namespace SourceGit.Views
                 UpdateLeftSidebarLayout();
         }
 
+        private void OnRepositoryDragOver(object sender, DragEventArgs e)
+        {
+            if (BranchDragDrop.Dragging == null)
+                return;
+
+            BranchDragDrop.MoveGhost(e);
+            BranchDragDrop.ClearTarget();
+            e.DragEffects = DragDropEffects.None;
+        }
+
         private void OnPullRequestTapped(object sender, TappedEventArgs e)
         {
             if (sender is Control { DataContext: Models.PullRequest pr } && !string.IsNullOrEmpty(pr.Url))

@@ -890,6 +890,14 @@
     <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
   </Style>
 
+  <Style Selector="FlyoutPresenter.branch_drop">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="CornerRadius" Value="0"/>
+    <Setter Property="MaxWidth" Value="400"/>
+  </Style>
+
   <Style Selector="ListBox.repo_left_content_list">
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>

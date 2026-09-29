@@ -41,6 +41,12 @@
       <DataTemplate DataType="vm:BranchTreeNode">
         <Border Background="Transparent"
                 PointerPressed="OnNodePointerPressed"
+                PointerMoved="OnNodePointerMoved"
+                PointerReleased="OnNodePointerReleased"
+                DragDrop.AllowDrop="True"
+                DragDrop.DragOver="OnNodeDragOver"
+                DragDrop.DragLeave="OnNodeDragLeave"
+                DragDrop.Drop="OnNodeDrop"
                 ToolTip.Tip="{Binding Backend}"
                 ToolTip.Placement="Right">
           <Border.DataTemplates>
@@ -139,6 +145,16 @@
                     Background="{DynamicResource Brush.Selection}"
                     IsVisible="{Binding IsCurrent}"
                     IsHitTestVisible="False"/>
+
+            <!-- Drop target indicator -->
+            <Rectangle Classes="drop_indicator"
+                       RadiusX="6" RadiusY="6"
+                       Stroke="{DynamicResource Brush.Accent}"
+                       StrokeThickness="1.5"
+                       StrokeDashArray="2,1.5"
+                       Fill="#12A9A5FF"
+                       IsVisible="False"
+                       IsHitTestVisible="False"/>
 
             <Grid Height="24"
                   Margin="{Binding Depth, Converter={x:Static c:IntConverters.ToTreeMargin}}"

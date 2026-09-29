@@ -444,8 +444,89 @@ namespace SourceGit.Views
             if (node.Backend is not Models.Branch branch)
                 return;
 
+            _pressedNodeEvent = e;
+            _pressedNode = node;
             repo.NavigateToCommit(branch.Head);
         }
+
+        private async void OnNodePointerMoved(object sender, PointerEventArgs e)
+        {
+            if (_pressedNodeEvent == null || sender is not Border { DataContext: ViewModels.BranchTreeNode node } border)
+                return;
+
+            if (node != _pressedNode || node.Backend is not Models.Branch branch || !e.GetCurrentPoint(border).Properties.IsLeftButtonPressed)
+            {
+                _pressedNodeEvent = null;
+                return;
+            }
+
+            var delta = e.GetPosition(border) - _pressedNodeEvent.GetPosition(border);
+            if (delta.X * delta.X + delta.Y * delta.Y < 36)
+                return;
+
+            var trigger = _pressedNodeEvent;
+            _pressedNodeEvent = null;
+            await BranchDragDrop.StartAsync(trigger, border, branch, dimmed => border.Opacity = dimmed ? 0.35 : 1);
+        }
+
+        private void OnNodePointerReleased(object sender, PointerReleasedEventArgs e)
+        {
+            _pressedNodeEvent = null;
+        }
+
+        private void OnNodeDragOver(object sender, DragEventArgs e)
+        {
+            if (sender is Border { DataContext: ViewModels.BranchTreeNode { Backend: Models.Branch target } } border &&
+                BranchDragDrop.CanDropOn(target))
+            {
+                var indicator = FindDropIndicator(border);
+                if (indicator != null)
+                {
+                    indicator.IsVisible = true;
+                    BranchDragDrop.SetTarget(border, () => indicator.IsVisible = false);
+                }
+
+                BranchDragDrop.MoveGhost(e);
+                e.DragEffects = DragDropEffects.Move;
+                e.Handled = true;
+                return;
+            }
+
+            e.DragEffects = DragDropEffects.None;
+        }
+
+        private void OnNodeDragLeave(object sender, DragEventArgs e)
+        {
+            BranchDragDrop.ClearTarget();
+        }
+
+        private void OnNodeDrop(object sender, DragEventArgs e)
+        {
+            BranchDragDrop.ClearTarget();
+
+            if (sender is Border { DataContext: ViewModels.BranchTreeNode { Backend: Models.Branch target } } border &&
+                BranchDragDrop.Dragging is { } source &&
+                BranchDragDrop.CanDropOn(target) &&
+                DataContext is ViewModels.Repository repo)
+            {
+                BranchDragDrop.ShowPopover(border, repo, source, target, 0);
+                e.Handled = true;
+            }
+        }
+
+        private static Rectangle FindDropIndicator(Border row)
+        {
+            foreach (var child in row.GetVisualDescendants())
+            {
+                if (child is Rectangle { Classes: var classes } rect && classes.Contains("drop_indicator"))
+                    return rect;
+            }
+
+            return null;
+        }
+
+        private PointerPressedEventArgs _pressedNodeEvent = null;
+        private ViewModels.BranchTreeNode _pressedNode = null;
 
         private void OnNodesSelectionChanged(object _, SelectionChangedEventArgs e)
         {
