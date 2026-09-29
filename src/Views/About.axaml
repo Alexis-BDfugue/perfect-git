@@ -44,7 +44,7 @@
 
       <StackPanel Orientation="Vertical" Margin="4,18,24,18">
         <StackPanel Height="40" Orientation="Horizontal">
-          <TextBlock Classes="bold" Text="SourceGit" FontSize="32" />
+          <TextBlock Classes="bold" Text="Perfect Git" FontSize="32" />
           <Border Margin="12,0,0,0" Height="20"
                   CornerRadius="10"
                   Background="{DynamicResource Brush.Accent}"
@@ -61,16 +61,17 @@
         </Border>
 
         <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-          <Button Width="18" Height="18" Classes="icon_button" Click="OnVisitWebsite" ToolTip.Tip="https://sourcegit-scm.github.io/">
-            <Path Width="16" Height="16" Data="{StaticResource Icons.Remotes}"/>
+          <Button Width="18" Height="18" Classes="icon_button" Click="OnVisitSourceCode" ToolTip.Tip="https://github.com/Alexis-BDfugue/perfect-git">
+            <Path Width="16" Height="16" Data="{StaticResource Icons.GitHub}"/>
           </Button>
 
-          <Button Width="18" Height="18" Margin="8,0,0,0" Classes="icon_button" Click="OnVisitSourceCode" ToolTip.Tip="https://github.com/sourcegit-scm/sourcegit">
-            <Path Width="16" Height="16" Data="{StaticResource Icons.GitHub}"/>
+          <Button Width="18" Height="18" Margin="8,0,0,0" Classes="icon_button" Click="OnVisitWebsite" ToolTip.Tip="https://sourcegit-scm.github.io/">
+            <Path Width="16" Height="16" Data="{StaticResource Icons.Remotes}"/>
           </Button>
         </StackPanel>
 
         <TextBlock x:Name="TxtReleaseDate" Margin="0,28,0,0" Foreground="{DynamicResource Brush.FG2}"/>
+        <TextBlock Margin="0,2,0,0" Foreground="{DynamicResource Brush.FG2}" Text="{DynamicResource Text.About.BasedOn}"/>
         <TextBlock x:Name="TxtCopyright" Margin="0,2,0,0" Foreground="{DynamicResource Brush.FG2}"/>
       </StackPanel>
     </StackPanel>

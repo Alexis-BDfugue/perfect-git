@@ -59,7 +59,7 @@ namespace SourceGit.Views
 
         private void OnVisitSourceCode(object _, RoutedEventArgs e)
         {
-            Native.OS.OpenBrowser("https://github.com/sourcegit-scm/sourcegit");
+            Native.OS.OpenBrowser("https://github.com/Alexis-BDfugue/perfect-git");
             e.Handled = true;
         }
 
