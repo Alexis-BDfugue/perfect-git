@@ -650,6 +650,14 @@
   <x:String x:Key="Text.PageTabBar.Tab.Refresh" xml:space="preserve">Refresh</x:String>
   <x:String x:Key="Text.PageTabBar.Welcome.Title" xml:space="preserve">Repositories</x:String>
   <x:String x:Key="Text.Paste" xml:space="preserve">Paste</x:String>
+  <x:String x:Key="Text.Period.Compact.Days" xml:space="preserve">{0} d ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Hours" xml:space="preserve">{0} h ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Minutes" xml:space="preserve">{0} min ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Months" xml:space="preserve">{0} mo ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Now" xml:space="preserve">now</x:String>
+  <x:String x:Key="Text.Period.Compact.Weeks" xml:space="preserve">{0} wk ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Years" xml:space="preserve">{0} yr ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Yesterday" xml:space="preserve">yesterday</x:String>
   <x:String x:Key="Text.Period.DaysAgo" xml:space="preserve">{0} days ago</x:String>
   <x:String x:Key="Text.Period.HourAgo" xml:space="preserve">1 hour ago</x:String>
   <x:String x:Key="Text.Period.HoursAgo" xml:space="preserve">{0} hours ago</x:String>
@@ -995,6 +1003,16 @@
   <x:String x:Key="Text.TagCM.Merge" xml:space="preserve">Merge ${0}$ into ${1}$...</x:String>
   <x:String x:Key="Text.TagCM.Push" xml:space="preserve">Push ${0}$...</x:String>
   <x:String x:Key="Text.Terminate" xml:space="preserve">TERMINATE</x:String>
+  <x:String x:Key="Text.Toolbar.Branch" xml:space="preserve">Branch</x:String>
+  <x:String x:Key="Text.Toolbar.Fetch" xml:space="preserve">Fetch</x:String>
+  <x:String x:Key="Text.Toolbar.More" xml:space="preserve">More actions</x:String>
+  <x:String x:Key="Text.Toolbar.NeverFetched" xml:space="preserve">never fetched</x:String>
+  <x:String x:Key="Text.Toolbar.Pop" xml:space="preserve">Pop</x:String>
+  <x:String x:Key="Text.Toolbar.Pull" xml:space="preserve">Pull</x:String>
+  <x:String x:Key="Text.Toolbar.Push" xml:space="preserve">Push</x:String>
+  <x:String x:Key="Text.Toolbar.Stash" xml:space="preserve">Stash</x:String>
+  <x:String x:Key="Text.Toolbar.SwitchBranch" xml:space="preserve">Switch branch</x:String>
+  <x:String x:Key="Text.Toolbar.Terminal" xml:space="preserve">Terminal</x:String>
   <x:String x:Key="Text.UpdateSubmodules" xml:space="preserve">Update Submodules</x:String>
   <x:String x:Key="Text.UpdateSubmodules.All" xml:space="preserve">All submodules</x:String>
   <x:String x:Key="Text.UpdateSubmodules.Init" xml:space="preserve">Initialize as needed</x:String>

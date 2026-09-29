@@ -247,6 +247,27 @@ namespace SourceGit.ViewModels
             private set => SetProperty(ref _stashesCount, value);
         }
 
+        public string FetchRemote
+        {
+            get => _fetchRemote;
+            private set => SetProperty(ref _fetchRemote, value);
+        }
+
+        public ulong LastFetchTime
+        {
+            get => _lastFetchTimestamp;
+            private set
+            {
+                if (SetProperty(ref _lastFetchTimestamp, value))
+                    OnPropertyChanged(nameof(HasFetched));
+            }
+        }
+
+        public bool HasFetched
+        {
+            get => _lastFetchTimestamp > 0;
+        }
+
         public int LocalBranchesCount
         {
             get => _localBranchesCount;
@@ -1146,8 +1167,35 @@ namespace SourceGit.ViewModels
 
                     var hasPendingPullOrPush = CurrentBranch?.IsTrackStatusVisible ?? false;
                     GetOwnerPage()?.ChangeDirtyState(Models.DirtyState.HasPendingPullOrPush, !hasPendingPullOrPush);
+
+                    UpdateFetchStatus();
                 });
             }, token);
+        }
+
+        public void PopLatestStash()
+        {
+            var stashes = _stashesPage?.Stashes;
+            if (stashes is not { Count: > 0 } || !CanCreatePopup())
+                return;
+
+            ShowPopup(new ApplyStash(this, stashes[0]) { DropAfterApply = true });
+        }
+
+        private void UpdateFetchStatus()
+        {
+            string remote = null;
+            var upstream = CurrentBranch?.Upstream;
+            if (!string.IsNullOrEmpty(upstream))
+                remote = _remotes.Find(x => upstream.StartsWith($"refs/remotes/{x.Name}/", StringComparison.Ordinal))?.Name;
+
+            FetchRemote = remote ?? (_remotes.Count > 0 ? _remotes[0].Name : null);
+
+            var fetchHead = new FileInfo(Path.Combine(GitDir, "FETCH_HEAD"));
+            if (!fetchHead.Exists)
+                fetchHead = new FileInfo(Path.Combine(_gitCommonDir, "FETCH_HEAD"));
+
+            LastFetchTime = fetchHead.Exists ? (ulong)new DateTimeOffset(fetchHead.LastWriteTimeUtc).ToUnixTimeSeconds() : 0;
         }
 
         public void RefreshWorktrees()
@@ -1930,6 +1978,8 @@ namespace SourceGit.ViewModels
         private int _localBranchesCount = 0;
         private int _localChangesCount = 0;
         private int _stashesCount = 0;
+        private string _fetchRemote = null;
+        private ulong _lastFetchTimestamp = 0;
 
         private string _filter = string.Empty;
         private List<Models.Remote> _remotes = [];

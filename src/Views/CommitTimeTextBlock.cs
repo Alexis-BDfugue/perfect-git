@@ -46,6 +46,18 @@ namespace SourceGit.Views
             set => SetAndRaise(DateTimeFormatProperty, ref _dateTimeFormat, value);
         }
 
+        public static readonly DirectProperty<CommitTimeTextBlock, bool> UseCompactPeriodProperty =
+            AvaloniaProperty.RegisterDirect<CommitTimeTextBlock, bool>(
+                nameof(UseCompactPeriod),
+                static o => o.UseCompactPeriod,
+                static (o, v) => o.UseCompactPeriod = v);
+
+        public bool UseCompactPeriod
+        {
+            get => _useCompactPeriod;
+            set => SetAndRaise(UseCompactPeriodProperty, ref _useCompactPeriod, value);
+        }
+
         public static readonly DirectProperty<CommitTimeTextBlock, ulong> TimestampProperty =
             AvaloniaProperty.RegisterDirect<CommitTimeTextBlock, ulong>(
                 nameof(Timestamp),
@@ -64,7 +76,7 @@ namespace SourceGit.Views
         {
             base.OnPropertyChanged(change);
 
-            if (change.Property == TimestampProperty)
+            if (change.Property == TimestampProperty || change.Property == UseCompactPeriodProperty)
             {
                 SetCurrentValue(TextProperty, GetDisplayText());
             }
@@ -129,49 +141,11 @@ namespace SourceGit.Views
             if (ShowAsDateTime)
                 return Models.DateTimeFormat.Format(timestamp);
 
-            var now = DateTime.Now;
-            var localTime = DateTime.UnixEpoch.AddSeconds(timestamp).ToLocalTime();
-            var span = now - localTime;
-            if (span.TotalMinutes < 1)
-                return App.Text("Period.JustNow");
-
-            if (span.TotalHours < 1)
-                return App.Text("Period.MinutesAgo", (int)span.TotalMinutes);
-
-            if (span.TotalDays < 1)
-            {
-                var hours = (int)span.TotalHours;
-                return hours == 1 ? App.Text("Period.HourAgo") : App.Text("Period.HoursAgo", hours);
-            }
-
-            var lastDay = now.AddDays(-1).Date;
-            if (localTime >= lastDay)
-                return App.Text("Period.Yesterday");
-
-            if ((localTime.Year == now.Year && localTime.Month == now.Month) || span.TotalDays < 28)
-            {
-                var diffDay = now.Date - localTime.Date;
-                return App.Text("Period.DaysAgo", (int)diffDay.TotalDays);
-            }
-
-            var lastMonth = now.AddMonths(-1).Date;
-            if (localTime.Year == lastMonth.Year && localTime.Month == lastMonth.Month)
-                return App.Text("Period.LastMonth");
-
-            if (localTime.Year == now.Year || localTime > now.AddMonths(-11))
-            {
-                var diffMonth = (12 + now.Month - localTime.Month) % 12;
-                return App.Text("Period.MonthsAgo", diffMonth);
-            }
-
-            var diffYear = now.Year - localTime.Year;
-            if (diffYear == 1)
-                return App.Text("Period.LastYear");
-
-            return App.Text("Period.YearsAgo", diffYear);
+            return Models.RelativeTime.Format(timestamp, _useCompactPeriod);
         }
 
         private bool _showAsDateTime = true;
+        private bool _useCompactPeriod = false;
         private bool _use24Hours = true;
         private int _dateTimeFormat = 0;
         private ulong _timestamp = 0;
