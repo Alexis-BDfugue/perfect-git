@@ -192,7 +192,7 @@ namespace SourceGit.Views
                     && e.Key == Key.P
                     && e.KeyModifiers == (cmdKey | KeyModifiers.Shift))
                 {
-                    vm.CommandPalette = new ViewModels.RepositoryCommandPalette(repo);
+                    vm.CommandPalette = new ViewModels.QuickPalette(vm, repo, ">");
                     e.Handled = true;
                 }
 
@@ -268,7 +268,7 @@ namespace SourceGit.Views
                             e.Handled = true;
                             return;
                         case Key.P when e.KeyModifiers.HasFlag(KeyModifiers.Shift):
-                            vm.CommandPalette = new ViewModels.RepositoryCommandPalette(repo);
+                            vm.CommandPalette = new ViewModels.QuickPalette(vm, repo, ">");
                             e.Handled = true;
                             return;
                         case Key.F when e.KeyModifiers.HasFlag(KeyModifiers.Shift):
@@ -419,10 +419,16 @@ namespace SourceGit.Views
             e.Handled = true;
         }
 
-        private void OnOpenPagesCommandPalette(object sender, RoutedEventArgs e)
+        private void OnOpenQuickPalette(object sender, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.Launcher vm)
-                vm.CommandPalette = new ViewModels.LauncherPagesCommandPalette(vm);
+            {
+                if (vm.ActivePage.Data is ViewModels.Repository repo)
+                    vm.CommandPalette = new ViewModels.QuickPalette(vm, repo);
+                else
+                    vm.CommandPalette = new ViewModels.LauncherPagesCommandPalette(vm);
+            }
+
             e.Handled = true;
         }
 

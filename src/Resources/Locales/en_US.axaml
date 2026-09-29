@@ -688,6 +688,67 @@
   <x:String x:Key="Text.PageTabBar.Tab.MoveToWorkspace" xml:space="preserve">Move to Workspace</x:String>
   <x:String x:Key="Text.PageTabBar.Tab.Refresh" xml:space="preserve">Refresh</x:String>
   <x:String x:Key="Text.PageTabBar.Welcome.Title" xml:space="preserve">Repositories</x:String>
+  <x:String x:Key="Text.Palette.ApplyPatch" xml:space="preserve">Apply patch…</x:String>
+  <x:String x:Key="Text.Palette.ApplyPatch.Desc" xml:space="preserve">Apply changes from a .patch file</x:String>
+  <x:String x:Key="Text.Palette.Blame" xml:space="preserve">Blame file…</x:String>
+  <x:String x:Key="Text.Palette.Blame.Desc" xml:space="preserve">See who changed each line of a file</x:String>
+  <x:String x:Key="Text.Palette.Branch.Checkout" xml:space="preserve">Switch to this branch</x:String>
+  <x:String x:Key="Text.Palette.Branch.Merge" xml:space="preserve">Merge into current branch</x:String>
+  <x:String x:Key="Text.Palette.Branch.Rebase" xml:space="preserve">Rebase current branch onto it</x:String>
+  <x:String x:Key="Text.Palette.Branch.Squash" xml:space="preserve">Squash into current branch</x:String>
+  <x:String x:Key="Text.Palette.Checkout" xml:space="preserve">Switch branch…</x:String>
+  <x:String x:Key="Text.Palette.Checkout.Desc" xml:space="preserve">Check out another branch</x:String>
+  <x:String x:Key="Text.Palette.CherryPick" xml:space="preserve">Cherry-pick {0}</x:String>
+  <x:String x:Key="Text.Palette.CherryPick.Desc" xml:space="preserve">Copy the selected commit onto the current branch</x:String>
+  <x:String x:Key="Text.Palette.Compare" xml:space="preserve">Compare with…</x:String>
+  <x:String x:Key="Text.Palette.Compare.Desc" xml:space="preserve">Show the differences between two refs</x:String>
+  <x:String x:Key="Text.Palette.Copied" xml:space="preserve">Copied: {0}</x:String>
+  <x:String x:Key="Text.Palette.CreateBranch" xml:space="preserve">Create branch…</x:String>
+  <x:String x:Key="Text.Palette.CreateBranch.Desc" xml:space="preserve">Start a new line of work from here</x:String>
+  <x:String x:Key="Text.Palette.CreateTag" xml:space="preserve">Create tag…</x:String>
+  <x:String x:Key="Text.Palette.CreateTag.Desc" xml:space="preserve">Name this point in history, e.g. a release</x:String>
+  <x:String x:Key="Text.Palette.CustomActions" xml:space="preserve">Run custom action…</x:String>
+  <x:String x:Key="Text.Palette.CustomActions.Desc" xml:space="preserve">Your own scripts for this repository</x:String>
+  <x:String x:Key="Text.Palette.Discard" xml:space="preserve">Discard all changes</x:String>
+  <x:String x:Key="Text.Palette.Discard.Desc" xml:space="preserve">Throw away every uncommitted change</x:String>
+  <x:String x:Key="Text.Palette.Fetch" xml:space="preserve">Fetch</x:String>
+  <x:String x:Key="Text.Palette.Fetch.Desc" xml:space="preserve">Download new commits from your remotes</x:String>
+  <x:String x:Key="Text.Palette.FileHistory" xml:space="preserve">File history…</x:String>
+  <x:String x:Key="Text.Palette.FileHistory.Desc" xml:space="preserve">Every commit that touched a file</x:String>
+  <x:String x:Key="Text.Palette.Footer.CommandsOnly" xml:space="preserve">&gt; commands only</x:String>
+  <x:String x:Key="Text.Palette.Footer.Navigate" xml:space="preserve">↑↓ navigate</x:String>
+  <x:String x:Key="Text.Palette.Footer.Run" xml:space="preserve">↵ run</x:String>
+  <x:String x:Key="Text.Palette.Footer.ShowGit" xml:space="preserve">show Git command</x:String>
+  <x:String x:Key="Text.Palette.GotoRepository" xml:space="preserve">Go to repository…</x:String>
+  <x:String x:Key="Text.Palette.GotoRepository.Desc" xml:space="preserve">Switch to another open tab or repository</x:String>
+  <x:String x:Key="Text.Palette.Group.Actions" xml:space="preserve">ACTIONS</x:String>
+  <x:String x:Key="Text.Palette.Group.Branches" xml:space="preserve">BRANCHES</x:String>
+  <x:String x:Key="Text.Palette.Group.Commits" xml:space="preserve">COMMITS</x:String>
+  <x:String x:Key="Text.Palette.Merge" xml:space="preserve">Merge a branch into {0}…</x:String>
+  <x:String x:Key="Text.Palette.Merge.Desc" xml:space="preserve">Bring in work from another branch</x:String>
+  <x:String x:Key="Text.Palette.OpenFile" xml:space="preserve">Open file…</x:String>
+  <x:String x:Key="Text.Palette.OpenFile.Desc" xml:space="preserve">Open a file of this repository</x:String>
+  <x:String x:Key="Text.Palette.Placeholder" xml:space="preserve">Search actions, branches, commits…</x:String>
+  <x:String x:Key="Text.Palette.Pop" xml:space="preserve">Pop latest stash</x:String>
+  <x:String x:Key="Text.Palette.Pop.Desc" xml:space="preserve">Bring back the changes you stashed last</x:String>
+  <x:String x:Key="Text.Palette.Pull" xml:space="preserve">Pull into {0}</x:String>
+  <x:String x:Key="Text.Palette.Pull.Desc" xml:space="preserve">Fetch and merge the upstream of {0}</x:String>
+  <x:String x:Key="Text.Palette.Push" xml:space="preserve">Push to {0}</x:String>
+  <x:String x:Key="Text.Palette.Push.Desc" xml:space="preserve">Send your local commits to {0}</x:String>
+  <x:String x:Key="Text.Palette.Rebase" xml:space="preserve">Rebase {0} onto…</x:String>
+  <x:String x:Key="Text.Palette.Rebase.Desc" xml:space="preserve">Replays your commits on top of another branch</x:String>
+  <x:String x:Key="Text.Palette.Reveal" xml:space="preserve">Show in Finder</x:String>
+  <x:String x:Key="Text.Palette.Reveal.Desc" xml:space="preserve">Open the repository folder</x:String>
+  <x:String x:Key="Text.Palette.RevealOther" xml:space="preserve">Show in file manager</x:String>
+  <x:String x:Key="Text.Palette.RevealOther.Desc" xml:space="preserve">Open the repository folder</x:String>
+  <x:String x:Key="Text.Palette.Revert" xml:space="preserve">Revert {0}</x:String>
+  <x:String x:Key="Text.Palette.Revert.Desc" xml:space="preserve">Create a commit that undoes the selected commit</x:String>
+  <x:String x:Key="Text.Palette.Squash" xml:space="preserve">Squash merge…</x:String>
+  <x:String x:Key="Text.Palette.Squash.Desc" xml:space="preserve">Combines all commits into one</x:String>
+  <x:String x:Key="Text.Palette.Stash" xml:space="preserve">Stash changes</x:String>
+  <x:String x:Key="Text.Palette.Stash.Desc" xml:space="preserve">Put your uncommitted changes aside</x:String>
+  <x:String x:Key="Text.Palette.Terminal" xml:space="preserve">Open in Terminal</x:String>
+  <x:String x:Key="Text.Palette.Terminal.Desc" xml:space="preserve">Open a shell in this repository</x:String>
   <x:String x:Key="Text.Paste" xml:space="preserve">Paste</x:String>
   <x:String x:Key="Text.Period.Compact.Days" xml:space="preserve">{0} d ago</x:String>
   <x:String x:Key="Text.Period.Compact.Hours" xml:space="preserve">{0} h ago</x:String>

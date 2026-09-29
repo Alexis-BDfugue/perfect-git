@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Globalization;
 
+using Avalonia.Controls;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace SourceGit.Converters
@@ -67,6 +69,9 @@ namespace SourceGit.Converters
 
         public static readonly FuncValueConverter<string, string> ToShortSHA =
             new FuncValueConverter<string, string>(v => v == null ? string.Empty : (v.Length > 10 ? v.Substring(0, 10) : v));
+
+        public static readonly FuncValueConverter<string, Geometry> ToIcon =
+            new FuncValueConverter<string, Geometry>(v => string.IsNullOrEmpty(v) ? null : App.Current?.FindResource(v) as Geometry);
 
         public static readonly FuncValueConverter<string, string> ToGraphSHA =
             new FuncValueConverter<string, string>(v => v == null ? string.Empty : (v.Length > 7 ? v.Substring(0, 7) : v));
