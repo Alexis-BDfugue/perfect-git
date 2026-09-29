@@ -162,7 +162,7 @@ namespace SourceGit.Views
             var x = 0.0;
             foreach (var item in _items)
             {
-                x += item.Width;
+                x += item.Width + PILL_GAP;
                 if (point.X < x)
                     return item.Decorator;
             }
@@ -175,80 +175,65 @@ namespace SourceGit.Views
             if (_items.Count == 0)
                 return;
 
-            var useGraphColor = UseGraphColor;
-            var fg = Foreground;
-            var bg = Background;
             var allowWrap = AllowWrap;
-            var x = 1.5;
+            var x = 0.5;
             var y = 0.5;
             var remoteIcon = CommitRefsIconCache.Instance.GetIcon(Models.DecoratorType.RemoteBranchHead);
-            var hasSingleRemote = HasSingleRemote;
+            var remoteBrush = this.FindResource("Brush.FG2") as IBrush ?? Brushes.Gray;
 
             context.FillRectangle(Brushes.Transparent, Bounds);
 
             foreach (var item in _items)
             {
-                if (allowWrap && x > 1.5 && x + item.Width > Bounds.Width)
+                if (allowWrap && x > 0.5 && x + item.Width > Bounds.Width)
                 {
-                    x = 1.5;
-                    y += 20.0;
+                    x = 0.5;
+                    y += PILL_HEIGHT + 4;
                 }
 
-                var entireRect = new RoundedRect(new Rect(x, y, item.Width, 16), new CornerRadius(4));
-                if (item.IsHead)
+                var rect = new RoundedRect(new Rect(x, y, item.Width, PILL_HEIGHT), new CornerRadius(5));
+                switch (item.Decorator.Type)
                 {
-                    if (useGraphColor)
-                    {
-                        if (bg != null)
-                            context.DrawRectangle(bg, null, entireRect);
-
-                        using (context.PushOpacity(.6))
-                            context.DrawRectangle(item.Brush, null, entireRect);
-                    }
-                }
-                else
-                {
-                    if (bg != null)
-                        context.DrawRectangle(bg, null, entireRect);
-
-                    var labelRect = new RoundedRect(new Rect(x + 16, y, item.Width - 16, 16), new CornerRadius(4, 0, 0, 4));
-                    using (context.PushOpacity(.2))
-                        context.DrawRectangle(item.Brush, null, labelRect);
+                    case Models.DecoratorType.RemoteBranchHead:
+                        using (context.PushOpacity(.5))
+                            context.DrawRectangle(null, new Pen(item.Brush), rect);
+                        break;
+                    case Models.DecoratorType.Tag:
+                        using (context.PushOpacity(.14))
+                            context.DrawRectangle(item.Brush, null, rect);
+                        break;
+                    default:
+                        using (context.PushOpacity(.22))
+                            context.DrawRectangle(item.Brush, null, rect);
+                        break;
                 }
 
-                context.DrawLine(new Pen(item.Brush), new Point(x + 16, y), new Point(x + 16, y + 16));
-                context.DrawText(item.Label, new Point(x + 20, y + 8.0 - item.Label.Height * 0.5));
+                var tx = x + PILL_PADDING;
+                context.DrawText(item.Label, new Point(tx, y + (PILL_HEIGHT - item.Label.Height) * 0.5));
 
                 if (item.Remotes.Count > 0)
                 {
-                    var rx = x + 20 + item.Label.WidthIncludingTrailingWhitespace + 4;
+                    var rx = tx + item.Label.WidthIncludingTrailingWhitespace + 6;
+                    var iconY = y + (PILL_HEIGHT - 10) * 0.5;
 
-                    if (hasSingleRemote)
+                    if (HasSingleRemote)
                     {
-                        context.DrawLine(new Pen(item.Brush), new Point(rx, y), new Point(rx, y + 16));
-                        using (context.PushTransform(Matrix.CreateTranslation(rx + 4, y + 4)))
-                            context.DrawGeometry(fg, null, remoteIcon);
+                        using (context.PushTransform(Matrix.CreateTranslation(rx, iconY)))
+                            context.DrawGeometry(remoteBrush, null, remoteIcon);
                     }
                     else
                     {
                         foreach (var remote in item.Remotes)
                         {
-                            context.DrawLine(new Pen(item.Brush), new Point(rx, y), new Point(rx, y + 16));
-                            using (context.PushTransform(Matrix.CreateTranslation(rx + 4, y + 4)))
-                                context.DrawGeometry(fg, null, remoteIcon);
-                            context.DrawText(remote, new Point(rx + 16, y + 8.0 - remote.Height * 0.5));
-                            rx += remote.WidthIncludingTrailingWhitespace + 22;
+                            using (context.PushTransform(Matrix.CreateTranslation(rx, iconY)))
+                                context.DrawGeometry(remoteBrush, null, remoteIcon);
+                            context.DrawText(remote, new Point(rx + 13, y + (PILL_HEIGHT - remote.Height) * 0.5));
+                            rx += remote.WidthIncludingTrailingWhitespace + 19;
                         }
                     }
                 }
 
-                context.DrawRectangle(null, new Pen(item.Brush), entireRect);
-
-                var icon = CommitRefsIconCache.Instance.GetIcon(item.Decorator.Type);
-                using (context.PushTransform(Matrix.CreateTranslation(x + 3, y + 3)))
-                    context.DrawGeometry(fg, null, icon);
-
-                x += item.Width + 4;
+                x += item.Width + PILL_GAP;
             }
         }
 
@@ -264,6 +249,8 @@ namespace SourceGit.Views
                 change.Property == HasSingleRemoteProperty ||
                 change.Property == BackgroundProperty ||
                 change.Property == ShowTagsProperty)
+                InvalidateMeasure();
+            else if (change.Property.Name == nameof(ActualThemeVariant) && change.NewValue != null)
                 InvalidateMeasure();
         }
 
@@ -290,13 +277,13 @@ namespace SourceGit.Views
 
             var useCompactBranchNames = UseCompactBranchNames;
             var hasSingleRemote = HasSingleRemote;
-            var typeface = new Typeface(FontFamily);
-            var typefaceHead = new Typeface(FontFamily, FontStyle.Normal, FontWeight.Bold);
-            var typefaceRemote = new Typeface(FontFamily, FontStyle.Italic, FontWeight.Bold);
+            var typeface = new Typeface(FontFamily, FontStyle.Normal, FontWeight.SemiBold);
             var fg = Foreground;
-            var normalBG = UseGraphColor ? Models.CommitGraph.Pens[commit.Color].Brush : Brushes.Gray;
+            var remoteFG = this.FindResource("Brush.FG2") as IBrush ?? fg;
+            var tagBrush = this.FindResource("Brush.Warning") as IBrush ?? Brushes.Goldenrod;
+            var laneBrush = UseGraphColor ? Models.CommitGraph.Pens[commit.Color].Brush : Brushes.Gray;
             var labelSize = FontSize;
-            var requiredHeight = 16.0;
+            var requiredHeight = PILL_HEIGHT;
             var x = 0.0;
             var allowWrap = AllowWrap;
             var showTags = ShowTags;
@@ -314,33 +301,27 @@ namespace SourceGit.Views
                 var item = new RenderItem()
                 {
                     Decorator = decorator,
-                    Brush = decorator.Type == Models.DecoratorType.Tag ? Brushes.Gray : normalBG,
+                    Brush = decorator.Type == Models.DecoratorType.Tag ? tagBrush : laneBrush,
                     IsHead = decorator.Type is Models.DecoratorType.CurrentBranchHead or Models.DecoratorType.CurrentCommitHead,
                 };
                 _items.Add(item);
 
-                if (item.IsHead)
+                var labelFG = decorator.Type switch
                 {
-                    item.Label = new FormattedText(
-                        decorator.Name,
-                        CultureInfo.CurrentCulture,
-                        FlowDirection.LeftToRight,
-                        typefaceHead,
-                        labelSize + 1,
-                        fg);
-                }
-                else
-                {
-                    item.Label = new FormattedText(
-                        decorator.Name,
-                        CultureInfo.CurrentCulture,
-                        FlowDirection.LeftToRight,
-                        typeface,
-                        labelSize,
-                        fg);
-                }
+                    Models.DecoratorType.RemoteBranchHead => remoteFG,
+                    Models.DecoratorType.Tag => tagBrush,
+                    _ => fg,
+                };
 
-                item.Width = item.Label.Width + 24;
+                item.Label = new FormattedText(
+                    item.IsHead ? $"✓ {decorator.Name}" : decorator.Name,
+                    CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    typeface,
+                    labelSize,
+                    labelFG);
+
+                item.Width = item.Label.Width + PILL_PADDING * 2;
 
                 var findRemotes = useCompactBranchNames && (decorator.Type == Models.DecoratorType.CurrentBranchHead || decorator.Type == Models.DecoratorType.LocalBranchHead);
                 if (findRemotes)
@@ -362,28 +343,28 @@ namespace SourceGit.Views
                                 test.Name.Substring(0, idxOfSlash),
                                 CultureInfo.CurrentCulture,
                                 FlowDirection.LeftToRight,
-                                typefaceRemote,
+                                typeface,
                                 labelSize,
-                                fg);
+                                remoteFG);
 
                             item.Remotes.Add(remote);
 
                             if (hasSingleRemote)
-                                item.Width += 18;
+                                item.Width += 16;
                             else
-                                item.Width += remote.WidthIncludingTrailingWhitespace + 22;
+                                item.Width += remote.WidthIncludingTrailingWhitespace + 19;
 
                             skippedIdx.Add(j);
                         }
                     }
                 }
 
-                x += item.Width + 4;
+                x += item.Width + PILL_GAP;
                 if (allowWrap)
                 {
                     if (x > availableSize.Width)
                     {
-                        requiredHeight += 20.0;
+                        requiredHeight += PILL_HEIGHT + 4;
                         x = item.Width;
                     }
                 }
@@ -392,7 +373,7 @@ namespace SourceGit.Views
             double requiredWidth = 0;
             if (_items.Count > 0)
             {
-                if (allowWrap && requiredHeight > 16.0)
+                if (allowWrap && requiredHeight > PILL_HEIGHT)
                     requiredWidth = double.IsInfinity(availableSize.Width) ? x + 2 : availableSize.Width;
                 else
                     requiredWidth = x + 2;
@@ -401,6 +382,10 @@ namespace SourceGit.Views
             InvalidateVisual();
             return new Size(requiredWidth, requiredHeight);
         }
+
+        private const double PILL_HEIGHT = 18;
+        private const double PILL_PADDING = 8;
+        private const double PILL_GAP = 6;
 
         private List<RenderItem> _items = new List<RenderItem>();
     }

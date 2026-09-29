@@ -86,6 +86,15 @@
             </Style>
           </Style>
 
+          <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource Brush.Hover}"/>
+            <Setter Property="Opacity" Value="1"/>
+          </Style>
+          <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource Brush.Selection}"/>
+            <Setter Property="Opacity" Value="1"/>
+          </Style>
+
           <Style Selector="DataGridCell">
             <Setter Property="Template">
               <ControlTemplate>
@@ -130,7 +139,7 @@
                                            Background="{DynamicResource Brush.Contents}"
                                            Foreground="{DynamicResource Brush.FG1}"
                                            ShowTags="{Binding Source={x:Static vm:Preferences.Instance}, Path=ShowTagsInGraph}"
-                                           FontSize="12"
+                                           FontSize="11"
                                            VerticalAlignment="Center"
                                            UseGraphColor="{Binding IsHighlightedInGraph, Mode=OneWay}"
                                            UseCompactBranchNames="{Binding Source={x:Static vm:Preferences.Instance}, Path=UseCompactBranchNamesInGraph}"

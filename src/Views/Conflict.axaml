@@ -108,7 +108,7 @@
                               KeyboardNavigation.IsTabStop="False">
                         <Path Height="12" Width="12"
                               Margin="0,4,0,0"
-                              Fill="{DynamicResource AccentButtonForeground}"
+                              Fill="{DynamicResource Brush.AccentFG}"
                               Data="{DynamicResource Icons.Down}"/>
                       </Button>
                     </Grid>

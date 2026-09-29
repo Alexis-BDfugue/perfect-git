@@ -689,7 +689,7 @@
     <Setter Property="Background" Value="Transparent"/>
   </Style>
   <Style Selector="Button.flat.primary">
-    <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.AccentFG}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrush}"/>
     <Setter Property="Background" Value="{DynamicResource AccentButtonBackground}"/>
   </Style>
@@ -697,14 +697,14 @@
     <Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundPointerOver}"/>
   </Style>
   <Style Selector="Button.flat.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.AccentFG}"/>
     <Setter Property="Background" Value="Transparent"/>
   </Style>
   <Style Selector="Button.flat.primary:disabled">
     <Setter Property="Opacity" Value=".65"/>
   </Style>
   <Style Selector="Button.flat.primary:disabled /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.AccentFG}"/>
   </Style>
   <Style Selector="Button.flat.primary ToolTip TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
@@ -752,12 +752,8 @@
       <Setter Property="Opacity" Value="1"/>
     </Style>
     <Style Selector="^:focus-within ListBoxItem:selected /template/ Border#PART_Background">
-      <Setter Property="Background" Value="{DynamicResource Brush.Accent}" />
-      <Setter Property="Opacity" Value=".65"/>
-    </Style>
-    <Style Selector="^:focus-within ListBoxItem:selected:pointerover /template/ Border#PART_Background">
-      <Setter Property="Background" Value="{DynamicResource Brush.Accent}" />
-      <Setter Property="Opacity" Value=".8"/>
+      <Setter Property="Background" Value="{DynamicResource Brush.Selection}" />
+      <Setter Property="Opacity" Value="1"/>
     </Style>
   </Style>
 
@@ -1050,7 +1046,7 @@
       <Setter Property="Background" Value="{DynamicResource Brush.Accent}"/>
     </Style>
     <Style Selector="^:focus-visible:checked /template/ Path#Icon">
-      <Setter Property="Fill" Value="White"/>
+      <Setter Property="Fill" Value="{DynamicResource Brush.AccentFG}"/>
     </Style>
   </Style>
 
@@ -1109,8 +1105,8 @@
       <Setter Property="Fill" Value="{DynamicResource Brush.Accent}"/>
     </Style>
     <Style Selector="^:focus-visible /template/ Ellipse#Dot">
-      <Setter Property="Stroke" Value="White"/>
-      <Setter Property="Fill" Value="White"/>
+      <Setter Property="Stroke" Value="{DynamicResource Brush.AccentFG}"/>
+      <Setter Property="Fill" Value="{DynamicResource Brush.AccentFG}"/>
     </Style>
     <Style Selector="^:focus-visible:checked /template/ Ellipse#Dot">
       <Setter Property="Fill" Value="{DynamicResource Brush.Accent}"/>
@@ -1154,7 +1150,7 @@
       <Setter Property="Opacity" Value="1"/>
     </Style>
     <Style Selector="^:checked Path">
-      <Setter Property="Fill" Value="White"/>
+      <Setter Property="Fill" Value="{DynamicResource Brush.AccentFG}"/>
     </Style>
     <Style Selector="^ TextBlock">
       <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
@@ -1163,7 +1159,7 @@
       <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
     </Style>
     <Style Selector="^:checked TextBlock">
-      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.AccentFG}"/>
     </Style>
   </Style>
 

@@ -92,7 +92,7 @@
         </Style>
 
         <Style Selector="ListBoxItem:selected TextBlock.view_mode_switcher">
-          <Setter Property="Foreground" Value="White"/>
+          <Setter Property="Foreground" Value="{DynamicResource Brush.AccentFG}"/>
         </Style>
       </ListBox.Styles>
 

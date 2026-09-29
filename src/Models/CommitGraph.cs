@@ -421,16 +421,11 @@ namespace SourceGit.Models
 
         private static int s_penCount = 0;
         private static readonly List<Color> s_defaultPenColors = [
-            Colors.Orange,
-            Colors.ForestGreen,
-            Colors.Turquoise,
-            Colors.Olive,
-            Colors.Magenta,
-            Colors.Red,
-            Colors.Khaki,
-            Colors.Lime,
-            Colors.RoyalBlue,
-            Colors.Teal,
+            Color.Parse("#6AA2EC"),
+            Color.Parse("#F59A56"),
+            Color.Parse("#6FCF73"),
+            Color.Parse("#DCC55A"),
+            Color.Parse("#EC76A6"),
         ];
     }
 }

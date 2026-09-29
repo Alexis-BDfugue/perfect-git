@@ -4,24 +4,23 @@ using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
-using Avalonia.Styling;
 
 namespace SourceGit.Views
 {
     public class ChangeStatusIcon : Control
     {
-        private static readonly string[] INDICATOR = ["?", "M", "T", "+", "−", "➜", "❏", "?", "!"];
-        private static readonly Color[] COLOR =
+        private static readonly string[] INDICATOR = ["?", "M", "T", "A", "D", "R", "C", "?", "!"];
+        private static readonly string[] BRUSH =
         [
-            Colors.Transparent,
-            Colors.Goldenrod,
-            Colors.Goldenrod,
-            Colors.LimeGreen,
-            Colors.Tomato,
-            Colors.Orchid,
-            Colors.Goldenrod,
-            Colors.SkyBlue,
-            Colors.OrangeRed,
+            "Brush.FG3",
+            "Brush.Warning",
+            "Brush.Warning",
+            "Brush.Added",
+            "Brush.Deleted",
+            "Brush.Accent",
+            "Brush.Warning",
+            "Brush.Added",
+            "Brush.Deleted",
         ];
 
         public static readonly DirectProperty<ChangeStatusIcon, bool> IsUnstagedChangeProperty =
@@ -53,33 +52,19 @@ namespace SourceGit.Views
             if (_change == null || Bounds.Width <= 0)
                 return;
 
-            var typeface = new Typeface("fonts:SourceGit#JetBrains Mono NL");
+            var typeface = new Typeface(FontFamily.Default, FontStyle.Normal, FontWeight.Bold);
             var idx = (int)(_isUnstagedChange ? _change.WorkTree : _change.Index);
-            var indicator = INDICATOR[idx];
-            var color = COLOR[idx];
-            var hsl = color.ToHsl();
-            var color2 = ActualThemeVariant == ThemeVariant.Dark
-                ? new HslColor(hsl.A, hsl.H, hsl.S, hsl.L - 0.1).ToRgb()
-                : new HslColor(hsl.A, hsl.H, hsl.S, hsl.L + 0.1).ToRgb();
-
-            var background = new LinearGradientBrush
-            {
-                GradientStops = [new GradientStop(color, 0), new GradientStop(color2, 1)],
-                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
-            };
+            var brush = this.FindResource(BRUSH[idx]) as IBrush ?? Brushes.Gray;
 
             var txt = new FormattedText(
-                indicator,
+                INDICATOR[idx],
                 CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 typeface,
-                Bounds.Width * 0.8,
-                Brushes.White);
+                Math.Min(Bounds.Width, Bounds.Height) * 0.72,
+                brush);
 
-            var corner = (float)Math.Max(2, Bounds.Width / 16);
             var textOrigin = new Point((Bounds.Width - txt.Width) * 0.5, (Bounds.Height - txt.Height) * 0.5);
-            context.DrawRectangle(background, null, new Rect(0, 0, Bounds.Width, Bounds.Height), corner, corner);
             context.DrawText(txt, textOrigin);
         }
 
