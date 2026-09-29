@@ -12,10 +12,10 @@
              x:Name="ThisControl">
   <UserControl.Styles>
     <Style Selector="v|CommitGraph#CommitGraph">
-      <Setter Property="Margin" Value="0,30,0,0"/>
+      <Setter Property="Margin" Value="0,30,0,28"/>
     </Style>
     <Style Selector="v|CommitGraph#CommitGraph.has_wip">
-      <Setter Property="Margin" Value="0,68,0,0"/>
+      <Setter Property="Margin" Value="0,68,0,28"/>
     </Style>
     <Style Selector="Border.wip_hover">
       <Setter Property="Background" Value="Transparent"/>
@@ -40,6 +40,7 @@
 
     <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
       <v:HistoriesCommitList x:Name="CommitListContainer"
+                             Margin="0,0,0,28"
                              Classes="static_scrollbar"
                              ScrollViewer.AllowAutoHide="False"
                              Background="Transparent"
@@ -365,7 +366,7 @@
                      Loaded="OnCommitGraphLoaded"/>
 
       <Border Width="28" Height="28"
-              Margin="0,0,16,8"
+              Margin="0,0,16,36"
               CornerRadius="14"
               Background="{DynamicResource Brush.Popup}"
               HorizontalAlignment="Right" VerticalAlignment="Bottom"
@@ -379,6 +380,36 @@
       </Border>
 
       <v:LoadingIcon Width="48" Height="48" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding IsLoading}"/>
+
+      <!-- Status bar -->
+      <Border Height="28"
+              VerticalAlignment="Bottom"
+              Background="{DynamicResource Brush.Window}"
+              BorderThickness="0,1,0,0"
+              BorderBrush="{DynamicResource Brush.Border0}">
+        <Grid ColumnDefinitions="Auto,*,Auto" Margin="16,0">
+          <Border Grid.Column="0"
+                  Padding="5,0"
+                  CornerRadius="4"
+                  BorderThickness="1"
+                  BorderBrush="{DynamicResource Brush.Border2}"
+                  VerticalAlignment="Center">
+            <TextBlock FontSize="10.5" Foreground="{DynamicResource Brush.FG3}" Text="?"/>
+          </Border>
+          <TextBlock Grid.Column="1"
+                     Margin="6,0,16,0"
+                     FontSize="11.5"
+                     Foreground="{DynamicResource Brush.FG3}"
+                     VerticalAlignment="Center"
+                     TextTrimming="CharacterEllipsis"
+                     Text="{Binding StatusHint}"/>
+          <TextBlock Grid.Column="2"
+                     FontSize="11.5"
+                     Foreground="{DynamicResource Brush.FG3}"
+                     VerticalAlignment="Center"
+                     Text="{Binding StatusStats}"/>
+        </Grid>
+      </Border>
     </Grid>
 
     <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"

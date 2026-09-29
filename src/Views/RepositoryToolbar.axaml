@@ -48,9 +48,11 @@
     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="2">
       <Button Classes="tb_action" Tapped="Fetch">
         <ToolTip.Tip>
-          <StackPanel Orientation="Vertical">
-            <TextBlock Text="{DynamicResource Text.Fetch}"/>
-            <TextBlock Classes="small italic" Margin="0,4,0,0" Text="{DynamicResource Text.CtrlClickTip}" Foreground="{DynamicResource Brush.FG2}"/>
+          <StackPanel Classes="action_tip">
+            <TextBlock Classes="tip_title" Text="{DynamicResource Text.Tip.Fetch.Title}"/>
+            <TextBlock Classes="tip_body" Text="{Binding FetchTip}"/>
+            <TextBlock Classes="tip_key" Text="{OnPlatform Ctrl+↓, macOS=⌘↓}"/>
+            <TextBlock Classes="tip_key" Text="{DynamicResource Text.CtrlClickTip}"/>
           </StackPanel>
         </ToolTip.Tip>
         <StackPanel Orientation="Horizontal" Spacing="6">
@@ -61,9 +63,11 @@
 
       <Button Classes="tb_action" Tapped="Pull" IsVisible="{Binding !IsBare}" IsEnabled="{Binding !IsBare}">
         <ToolTip.Tip>
-          <StackPanel Orientation="Vertical">
-            <TextBlock Text="{DynamicResource Text.Pull}"/>
-            <TextBlock Classes="small italic" Margin="0,4,0,0" Text="{DynamicResource Text.CtrlClickTip}" Foreground="{DynamicResource Brush.FG2}"/>
+          <StackPanel Classes="action_tip">
+            <TextBlock Classes="tip_title" Text="{DynamicResource Text.Tip.Pull.Title}"/>
+            <TextBlock Classes="tip_body" Text="{Binding PullTip}"/>
+            <TextBlock Classes="tip_key" Text="{OnPlatform Ctrl+Shift+↓, macOS=⇧⌘↓}"/>
+            <TextBlock Classes="tip_key" Text="{DynamicResource Text.CtrlClickTip}"/>
           </StackPanel>
         </ToolTip.Tip>
         <StackPanel Orientation="Horizontal" Spacing="6">
@@ -77,9 +81,11 @@
 
       <Button Classes="tb_action" Tapped="Push">
         <ToolTip.Tip>
-          <StackPanel Orientation="Vertical">
-            <TextBlock Text="{DynamicResource Text.Push}"/>
-            <TextBlock Classes="small italic" Margin="0,4,0,0" Text="{DynamicResource Text.CtrlClickTip}" Foreground="{DynamicResource Brush.FG2}"/>
+          <StackPanel Classes="action_tip">
+            <TextBlock Classes="tip_title" Text="{DynamicResource Text.Tip.Push.Title}"/>
+            <TextBlock Classes="tip_body" Text="{Binding PushTip}"/>
+            <TextBlock Classes="tip_key" Text="{OnPlatform Ctrl+Shift+↑, macOS=⇧⌘↑}"/>
+            <TextBlock Classes="tip_key" Text="{DynamicResource Text.CtrlClickTip}"/>
           </StackPanel>
         </ToolTip.Tip>
         <StackPanel Orientation="Horizontal" Spacing="6">
@@ -95,11 +101,11 @@
 
       <Button Classes="tb_action" Command="{Binding CreateNewBranch}" HotKey="{OnPlatform Ctrl+B, macOS=⌘+B}">
         <ToolTip.Tip>
-          <TextBlock>
-            <Run Text="{DynamicResource Text.Repository.NewBranch}"/>
-            <Run Text=" "/>
-            <Run Text="{OnPlatform Ctrl+B, macOS=⌘+B}" FontSize="11" Foreground="{DynamicResource MenuFlyoutItemKeyboardAcceleratorTextForeground}"/>
-          </TextBlock>
+          <StackPanel Classes="action_tip">
+            <TextBlock Classes="tip_title" Text="{DynamicResource Text.Tip.Branch.Title}"/>
+            <TextBlock Classes="tip_body" Text="{Binding BranchTip}"/>
+            <TextBlock Classes="tip_key" Text="{OnPlatform Ctrl+B, macOS=⌘B}"/>
+          </StackPanel>
         </ToolTip.Tip>
         <StackPanel Orientation="Horizontal" Spacing="6">
           <Path Width="13" Height="13" Data="{StaticResource Icons.Branch.Add}"/>
@@ -109,9 +115,10 @@
 
       <Button Classes="tb_action" Tapped="StashAll" IsVisible="{Binding !IsBare}">
         <ToolTip.Tip>
-          <StackPanel Orientation="Vertical">
-            <TextBlock Text="{DynamicResource Text.Stash}"/>
-            <TextBlock Classes="small italic" Margin="0,4,0,0" Text="{DynamicResource Text.CtrlClickTip}" Foreground="{DynamicResource Brush.FG2}"/>
+          <StackPanel Classes="action_tip">
+            <TextBlock Classes="tip_title" Text="{DynamicResource Text.Tip.Stash.Title}"/>
+            <TextBlock Classes="tip_body" Text="{Binding StashTip}"/>
+            <TextBlock Classes="tip_key" Text="{DynamicResource Text.CtrlClickTip}"/>
           </StackPanel>
         </ToolTip.Tip>
         <StackPanel Orientation="Horizontal" Spacing="6">
@@ -123,7 +130,14 @@
       <Button Classes="tb_action"
               Click="PopStash"
               IsVisible="{Binding !IsBare}"
-              IsEnabled="{Binding StashesCount, Converter={x:Static c:IntConverters.IsGreaterThanZero}}">
+              IsEnabled="{Binding StashesCount, Converter={x:Static c:IntConverters.IsGreaterThanZero}}"
+              ToolTip.ShowOnDisabled="True">
+        <ToolTip.Tip>
+          <StackPanel Classes="action_tip">
+            <TextBlock Classes="tip_title" Text="{DynamicResource Text.Tip.Pop.Title}"/>
+            <TextBlock Classes="tip_body" Text="{Binding PopTip}"/>
+          </StackPanel>
+        </ToolTip.Tip>
         <StackPanel Orientation="Horizontal" Spacing="6">
           <Path Width="13" Height="13" Data="{StaticResource Icons.Stashes}"/>
           <TextBlock Text="{DynamicResource Text.Toolbar.Pop}"/>
@@ -132,7 +146,13 @@
 
       <Rectangle Classes="tb_separator"/>
 
-      <Button Classes="tb_action" Click="OpenTerminal" ToolTip.Tip="{DynamicResource Text.Repository.Terminal}">
+      <Button Classes="tb_action" Click="OpenTerminal">
+        <ToolTip.Tip>
+          <StackPanel Classes="action_tip">
+            <TextBlock Classes="tip_title" Text="{DynamicResource Text.Tip.Terminal.Title}"/>
+            <TextBlock Classes="tip_body" Text="{Binding TerminalTip}"/>
+          </StackPanel>
+        </ToolTip.Tip>
         <StackPanel Orientation="Horizontal" Spacing="6">
           <Path Width="13" Height="13" Data="{StaticResource Icons.Terminal}"/>
           <TextBlock Text="{DynamicResource Text.Toolbar.Terminal}"/>

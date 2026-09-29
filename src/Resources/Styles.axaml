@@ -191,17 +191,18 @@
     <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
     <Setter Property="Background" Value="{DynamicResource Brush.Popup}"/>
     <Setter Property="MaxWidth" Value="800"/>
-    <Setter Property="HorizontalOffset" Value="-8"/>
-    <Setter Property="VerticalOffset" Value="-8"/>
+    <Setter Property="HorizontalOffset" Value="-14"/>
+    <Setter Property="VerticalOffset" Value="-6"/>
     <Setter Property="TextBlock.TextDecorations" Value=""/>
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid Margin="8" Effect="drop-shadow(0 0 8 #60000000)">
-          <Border Padding="8,6"
-                  CornerRadius="4"
+        <Grid Margin="14,6,14,22">
+          <Border Padding="10,7"
+                  CornerRadius="9"
                   Background="{DynamicResource Brush.Popup}"
                   BorderBrush="{DynamicResource Brush.PopupBorder}"
                   BorderThickness="1"
+                  BoxShadow="0 12 30 0 #99000000"
                   MaxWidth="{TemplateBinding MaxWidth}"
                   MinHeight="{TemplateBinding MinHeight}"
                   HorizontalAlignment="{TemplateBinding HorizontalAlignment}">
@@ -750,6 +751,11 @@
   </Style>
 
   <Style Selector="Button.tb_action">
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+      </Transitions>
+    </Setter>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
     <Setter Property="Padding" Value="11,7"/>
@@ -833,6 +839,11 @@
   </Style>
 
   <Style Selector="Button.segment">
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+      </Transitions>
+    </Setter>
     <Setter Property="Padding" Value="8,2"/>
     <Setter Property="CornerRadius" Value="4"/>
     <Setter Property="FontSize" Value="11"/>
@@ -856,6 +867,11 @@
   </Style>
 
   <Style Selector="Button.inspector_action">
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+      </Transitions>
+    </Setter>
     <Setter Property="Padding" Value="11,6"/>
     <Setter Property="MinHeight" Value="28"/>
     <Setter Property="CornerRadius" Value="7"/>
@@ -945,18 +961,41 @@
     </Style>
   </Style>
 
+  <Style Selector="StackPanel.action_tip">
+    <Setter Property="Width" Value="270"/>
+    <Setter Property="Spacing" Value="4"/>
+    <Setter Property="Margin" Value="2,3"/>
+  </Style>
+  <Style Selector="TextBlock.tip_title">
+    <Setter Property="FontSize" Value="12.5"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+  </Style>
+  <Style Selector="TextBlock.tip_body">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="LineHeight" Value="17.4"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
+  </Style>
+  <Style Selector="TextBlock.tip_key">
+    <Setter Property="FontSize" Value="11"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
+  </Style>
+
   <Style Selector="ContextMenu">
     <Setter Property="MaxWidth" Value="1024"/>
-    <Setter Property="HorizontalOffset" Value="-6"/>
+    <Setter Property="HorizontalOffset" Value="-12"/>
     <Setter Property="VerticalOffset" Value="-6"/>
+    <Setter Property="CornerRadius" Value="8"/>
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid Margin="6" Effect="drop-shadow(0 0 6 #80000000)">
+        <Grid Margin="12,6,12,20">
           <Border BorderThickness="1"
                   BorderBrush="{DynamicResource Brush.PopupBorder}"
                   Background="{DynamicResource Brush.Popup}"
                   CornerRadius="{TemplateBinding CornerRadius}"
-                  Padding="8,4"
+                  BoxShadow="0 12 30 0 #99000000"
+                  Padding="4"
                   MaxWidth="{TemplateBinding MaxWidth}"
                   MinHeight="{TemplateBinding MinHeight}"
                   HorizontalAlignment="{TemplateBinding HorizontalAlignment}">
@@ -974,14 +1013,16 @@
   </Style>
 
   <Style Selector="MenuFlyoutPresenter">
+    <Setter Property="CornerRadius" Value="8"/>
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid Margin="4" Effect="drop-shadow(0 0 4 #80000000)">
+        <Grid Margin="12,6,12,20">
           <Border Name="LayoutRoot"
                   Background="{DynamicResource Brush.Popup}"
                   BorderBrush="{DynamicResource Brush.PopupBorder}"
                   BorderThickness="1"
-                  Padding="4,2"
+                  BoxShadow="0 12 30 0 #99000000"
+                  Padding="4"
                   CornerRadius="{TemplateBinding CornerRadius}">
             <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                           VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
@@ -1011,7 +1052,7 @@
                   Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}"
-                  CornerRadius="3">
+                  CornerRadius="6">
             <Grid>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="28" SharedSizeGroup="MenuItemIcon" />

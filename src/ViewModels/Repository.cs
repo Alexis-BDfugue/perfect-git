@@ -159,6 +159,8 @@ namespace SourceGit.ViewModels
                     if (_histories != null)
                         _histories.CurrentBranch = value;
 
+                    NotifyToolbarTips();
+
                     if (value != null && !value.Head.Equals(oldHead, StringComparison.Ordinal) && _workingCopy is { UseAmend: true })
                         _workingCopy.UseAmend = false;
                 }
@@ -241,14 +243,21 @@ namespace SourceGit.ViewModels
             private set
             {
                 if (SetProperty(ref _localChangesCount, value))
+                {
                     _histories?.NotifyLocalChangesChanged();
+                    NotifyToolbarTips();
+                }
             }
         }
 
         public int StashesCount
         {
             get => _stashesCount;
-            private set => SetProperty(ref _stashesCount, value);
+            private set
+            {
+                if (SetProperty(ref _stashesCount, value))
+                    NotifyToolbarTips();
+            }
         }
 
         public string FetchRemote
@@ -1197,6 +1206,7 @@ namespace SourceGit.ViewModels
                             localBranchesCount++;
                     }
                     LocalBranchesCount = localBranchesCount;
+                    _histories?.NotifyStatusChanged();
 
                     if (_workingCopy != null)
                         _workingCopy.HasRemotes = remotes.Count > 0;
@@ -1279,6 +1289,108 @@ namespace SourceGit.ViewModels
                 fetchHead = new FileInfo(Path.Combine(_gitCommonDir, "FETCH_HEAD"));
 
             LastFetchTime = fetchHead.Exists ? (ulong)new DateTimeOffset(fetchHead.LastWriteTimeUtc).ToUnixTimeSeconds() : 0;
+            NotifyToolbarTips();
+        }
+
+        public string FetchTip
+        {
+            get
+            {
+                var tip = App.Text("Tip.Fetch.Body", FetchRemote ?? "origin");
+                return _lastFetchTimestamp > 0 ? $"{tip} {App.Text("Tip.Fetch.Last", Models.RelativeTime.Format(_lastFetchTimestamp, true))}" : tip;
+            }
+        }
+
+        public string PullTip
+        {
+            get
+            {
+                if (_currentBranch == null)
+                    return App.Text("Tip.NoBranch");
+
+                var upstream = FriendlyUpstream(_currentBranch);
+                if (upstream == null)
+                    return App.Text("Tip.Pull.NoUpstream", _currentBranch.Name);
+
+                return _currentBranch.Behind.Count switch
+                {
+                    0 => App.Text("Tip.Pull.UpToDate", _currentBranch.Name, upstream),
+                    1 => App.Text("Tip.Pull.BehindOne", upstream, _currentBranch.Name),
+                    var n => App.Text("Tip.Pull.Behind", n, upstream, _currentBranch.Name),
+                };
+            }
+        }
+
+        public string PushTip
+        {
+            get
+            {
+                if (_currentBranch == null)
+                    return App.Text("Tip.NoBranch");
+
+                var machine = App.Text(OperatingSystem.IsMacOS() ? "Tip.ThisMachine.Mac" : "Tip.ThisMachine.Other");
+                var upstream = FriendlyUpstream(_currentBranch);
+                if (upstream == null)
+                    return App.Text("Tip.Push.NoUpstream", _currentBranch.Name, FetchRemote ?? "origin");
+
+                var remote = upstream.Contains('/') ? upstream.Substring(0, upstream.IndexOf('/')) : upstream;
+                return _currentBranch.Ahead.Count switch
+                {
+                    0 => App.Text("Tip.Push.UpToDate", _currentBranch.Name, upstream),
+                    1 => App.Text("Tip.Push.AheadOne", _currentBranch.Name, machine, remote),
+                    var n => App.Text("Tip.Push.Ahead", n, _currentBranch.Name, machine, remote),
+                };
+            }
+        }
+
+        public string BranchTip
+        {
+            get => App.Text("Tip.Branch.Body", _currentBranch?.Name ?? "HEAD");
+        }
+
+        public string StashTip
+        {
+            get => _localChangesCount switch
+            {
+                0 => App.Text("Tip.Stash.None"),
+                1 => App.Text("Tip.Stash.One"),
+                var n => App.Text("Tip.Stash.Body", n),
+            };
+        }
+
+        public string PopTip
+        {
+            get
+            {
+                var stashes = _stashesPage?.Stashes;
+                return stashes is { Count: > 0 } ? App.Text("Tip.Pop.Body", stashes[0].Subject) : App.Text("Tip.Pop.None");
+            }
+        }
+
+        public string TerminalTip
+        {
+            get => App.Text("Tip.Terminal.Body", Path.GetFileName(FullPath));
+        }
+
+        private void NotifyToolbarTips()
+        {
+            OnPropertyChanged(nameof(FetchTip));
+            OnPropertyChanged(nameof(PullTip));
+            OnPropertyChanged(nameof(PushTip));
+            OnPropertyChanged(nameof(BranchTip));
+            OnPropertyChanged(nameof(StashTip));
+            OnPropertyChanged(nameof(PopTip));
+            _histories?.NotifyStatusChanged();
+        }
+
+        private static string FriendlyUpstream(Models.Branch branch)
+        {
+            if (string.IsNullOrEmpty(branch.Upstream) || branch.IsUpstreamGone)
+                return null;
+
+            return branch.Upstream.StartsWith("refs/remotes/", StringComparison.Ordinal)
+                ? branch.Upstream.Substring("refs/remotes/".Length)
+                : branch.Upstream;
         }
 
         public void RefreshWorktrees()

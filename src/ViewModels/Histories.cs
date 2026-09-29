@@ -109,7 +109,10 @@ namespace SourceGit.ViewModels
             {
                 GenerateGraph(value);
                 if (SetProperty(ref _commits, value))
+                {
                     PostCommitsChanged();
+                    NotifyStatusChanged();
+                }
             }
         }
 
@@ -244,6 +247,44 @@ namespace SourceGit.ViewModels
         {
             OnPropertyChanged(nameof(HasLocalChanges));
             OnPropertyChanged(nameof(LocalChangesDescription));
+            NotifyStatusChanged();
+        }
+
+        /// <summary>
+        ///     Contextual hint shown in the status bar under the graph.
+        /// </summary>
+        public string StatusHint
+        {
+            get
+            {
+                var mod = OperatingSystem.IsMacOS() ? "⌘" : "Ctrl+";
+                var shift = OperatingSystem.IsMacOS() ? "⇧" : "Shift+";
+
+                if (!_repo.IsBare && _repo.LocalChangesCount > 0)
+                    return App.Text("Histories.Hint.LocalChanges");
+
+                var current = _repo.CurrentBranch;
+                if (current is { Ahead.Count: > 0 })
+                    return App.Text("Histories.Hint.Ahead", current.Ahead.Count, _repo.FetchRemote ?? "origin", $"{shift}{mod}↑");
+
+                if (current is { Behind.Count: > 0 })
+                    return App.Text("Histories.Hint.Behind", current.Behind.Count, $"{shift}{mod}↓");
+
+                return _repo.LocalBranchesCount > 1
+                    ? App.Text("Histories.Hint.Drag")
+                    : App.Text("Histories.Hint.Palette", $"{mod}P");
+            }
+        }
+
+        public string StatusStats
+        {
+            get => App.Text("Histories.Stats", _commits.Count, _repo.LocalBranchesCount);
+        }
+
+        public void NotifyStatusChanged()
+        {
+            OnPropertyChanged(nameof(StatusHint));
+            OnPropertyChanged(nameof(StatusStats));
         }
 
         public void OpenLocalChanges()

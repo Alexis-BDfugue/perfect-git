@@ -559,8 +559,14 @@
   <x:String x:Key="Text.Histories.HighlightsInGraph.CurrentBranchAndSelectedCommits" xml:space="preserve">Current Branch &amp; Selected Commits</x:String>
   <x:String x:Key="Text.Histories.HighlightsInGraph.SelectedCommitsOnly" xml:space="preserve">Selected Commits Only</x:String>
   <x:String x:Key="Text.Histories.HighlightsInGraph.SelectedCommitsOnlyFirstParent" xml:space="preserve">Selected Commits (First-parent Only)</x:String>
+  <x:String x:Key="Text.Histories.Hint.Ahead" xml:space="preserve">{0} new commits aren't on {1} yet. Push ({2}) sends them.</x:String>
+  <x:String x:Key="Text.Histories.Hint.Behind" xml:space="preserve">{0} new commits are waiting upstream. Pull ({1}) brings them in.</x:String>
+  <x:String x:Key="Text.Histories.Hint.Drag" xml:space="preserve">Drag a branch onto another to merge or rebase it.</x:String>
+  <x:String x:Key="Text.Histories.Hint.LocalChanges" xml:space="preserve">Your uncommitted changes are on the first row. Click it to review and commit them.</x:String>
+  <x:String x:Key="Text.Histories.Hint.Palette" xml:space="preserve">Press {0} to search actions, branches and commits.</x:String>
   <x:String x:Key="Text.Histories.Selected" xml:space="preserve">SELECTED {0} COMMITS</x:String>
   <x:String x:Key="Text.Histories.ShowColumns" xml:space="preserve">SHOW COLUMNS</x:String>
+  <x:String x:Key="Text.Histories.Stats" xml:space="preserve">{0} commits · {1} branches</x:String>
   <x:String x:Key="Text.Histories.Tips" xml:space="preserve">Hold 'Ctrl' or 'Shift' to select multiple commits.</x:String>
   <x:String x:Key="Text.Histories.Tips.MacOS" xml:space="preserve">Hold ⌘ or ⇧ to select multiple commits.</x:String>
   <x:String x:Key="Text.Histories.Tips.Prefix" xml:space="preserve">TIPS:</x:String>
@@ -1112,6 +1118,33 @@
   <x:String x:Key="Text.TagCM.Merge" xml:space="preserve">Merge ${0}$ into ${1}$...</x:String>
   <x:String x:Key="Text.TagCM.Push" xml:space="preserve">Push ${0}$...</x:String>
   <x:String x:Key="Text.Terminate" xml:space="preserve">TERMINATE</x:String>
+  <x:String x:Key="Text.Tip.Branch.Body" xml:space="preserve">Creates a new branch from {0}, so your work stays separate.</x:String>
+  <x:String x:Key="Text.Tip.Branch.Title" xml:space="preserve">Branch · start something new</x:String>
+  <x:String x:Key="Text.Tip.Fetch.Body" xml:space="preserve">Downloads new commits from {0} without touching your files.</x:String>
+  <x:String x:Key="Text.Tip.Fetch.Last" xml:space="preserve">Last fetched {0}.</x:String>
+  <x:String x:Key="Text.Tip.Fetch.Title" xml:space="preserve">Fetch · check for new work</x:String>
+  <x:String x:Key="Text.Tip.NoBranch" xml:space="preserve">You are not on a branch (detached HEAD).</x:String>
+  <x:String x:Key="Text.Tip.Pop.Body" xml:space="preserve">Re-applies your latest stash: “{0}”.</x:String>
+  <x:String x:Key="Text.Tip.Pop.None" xml:space="preserve">You have no stashed changes.</x:String>
+  <x:String x:Key="Text.Tip.Pop.Title" xml:space="preserve">Pop · bring changes back</x:String>
+  <x:String x:Key="Text.Tip.Pull.Behind" xml:space="preserve">{0} new commits on {1} will be brought into {2}.</x:String>
+  <x:String x:Key="Text.Tip.Pull.BehindOne" xml:space="preserve">1 new commit on {0} will be brought into {1}.</x:String>
+  <x:String x:Key="Text.Tip.Pull.NoUpstream" xml:space="preserve">{0} doesn't track a remote branch yet.</x:String>
+  <x:String x:Key="Text.Tip.Pull.Title" xml:space="preserve">Pull · get the latest</x:String>
+  <x:String x:Key="Text.Tip.Pull.UpToDate" xml:space="preserve">{0} already has everything from {1}.</x:String>
+  <x:String x:Key="Text.Tip.Push.Ahead" xml:space="preserve">{0} commits on {1} only exist on {2}. Push copies them to {3}.</x:String>
+  <x:String x:Key="Text.Tip.Push.AheadOne" xml:space="preserve">1 commit on {0} only exists on {1}. Push copies it to {2}.</x:String>
+  <x:String x:Key="Text.Tip.Push.NoUpstream" xml:space="preserve">{0} isn't on {1} yet. Push publishes it.</x:String>
+  <x:String x:Key="Text.Tip.Push.Title" xml:space="preserve">Push · send your commits</x:String>
+  <x:String x:Key="Text.Tip.Push.UpToDate" xml:space="preserve">Nothing to push: {0} matches {1}.</x:String>
+  <x:String x:Key="Text.Tip.Stash.Body" xml:space="preserve">Saves your {0} changed files and gives you a clean working copy.</x:String>
+  <x:String x:Key="Text.Tip.Stash.None" xml:space="preserve">There are no local changes to stash.</x:String>
+  <x:String x:Key="Text.Tip.Stash.One" xml:space="preserve">Saves your changed file and gives you a clean working copy.</x:String>
+  <x:String x:Key="Text.Tip.Stash.Title" xml:space="preserve">Stash · put changes aside</x:String>
+  <x:String x:Key="Text.Tip.Terminal.Body" xml:space="preserve">Opens your terminal in {0}.</x:String>
+  <x:String x:Key="Text.Tip.Terminal.Title" xml:space="preserve">Terminal · open a shell</x:String>
+  <x:String x:Key="Text.Tip.ThisMachine.Mac" xml:space="preserve">your Mac</x:String>
+  <x:String x:Key="Text.Tip.ThisMachine.Other" xml:space="preserve">this computer</x:String>
   <x:String x:Key="Text.Toolbar.Branch" xml:space="preserve">Branch</x:String>
   <x:String x:Key="Text.Toolbar.Fetch" xml:space="preserve">Fetch</x:String>
   <x:String x:Key="Text.Toolbar.More" xml:space="preserve">More actions</x:String>
