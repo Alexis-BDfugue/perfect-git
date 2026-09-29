@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -18,6 +18,12 @@ namespace SourceGit.ViewModels
             get;
             set;
         }
+
+        public bool IsInspectorTreeMode
+        {
+            get;
+            set;
+        } = true;
 
         public CommitDetailSharedData()
         {
@@ -89,6 +95,38 @@ namespace SourceGit.ViewModels
         {
             get => _visibleChanges;
             set => SetProperty(ref _visibleChanges, value);
+        }
+
+        public List<CommitInspectorRow> InspectorRows
+        {
+            get => _inspectorRows;
+            private set => SetProperty(ref _inspectorRows, value);
+        }
+
+        public bool IsInspectorTreeMode
+        {
+            get => _sharedData.IsInspectorTreeMode;
+            set
+            {
+                if (value != _sharedData.IsInspectorTreeMode)
+                {
+                    _sharedData.IsInspectorTreeMode = value;
+                    OnPropertyChanged();
+                    BuildInspectorRows();
+                }
+            }
+        }
+
+        public string TotalAdded
+        {
+            get => _totalAdded;
+            private set => SetProperty(ref _totalAdded, value);
+        }
+
+        public string TotalDeleted
+        {
+            get => _totalDeleted;
+            private set => SetProperty(ref _totalDeleted, value);
         }
 
         public ChangeSelection ChangeSelection
@@ -175,6 +213,24 @@ namespace SourceGit.ViewModels
         public void NavigateTo(string commitSHA)
         {
             _repo?.NavigateToCommit(commitSHA);
+        }
+
+        public void CheckoutCommit()
+        {
+            if (_commit != null)
+                _repo?.Histories?.CheckoutCommitDetached(_commit);
+        }
+
+        public async Task CherryPickAsync()
+        {
+            if (_commit != null && _repo?.Histories != null)
+                await _repo.Histories.CherryPickAsync(_commit);
+        }
+
+        public void Revert()
+        {
+            if (_commit != null && _repo != null && _repo.CanCreatePopup())
+                _repo.ShowPopup(new Revert(_repo, _commit));
         }
 
         public async Task<List<Models.Decorator>> GetRefsContainsThisCommitAsync()
@@ -464,6 +520,11 @@ namespace SourceGit.ViewModels
             RevisionFileSearchSuggestion = null;
             ScrollOffset = Vector.Zero;
 
+            _numStats = [];
+            InspectorRows = [];
+            TotalAdded = string.Empty;
+            TotalDeleted = string.Empty;
+
             if (_commit == null)
             {
                 Changes = [];
@@ -529,6 +590,7 @@ namespace SourceGit.ViewModels
                     {
                         Changes = changes;
                         VisibleChanges = visible;
+                        BuildInspectorRows();
 
                         if (visible.Count == 0)
                             ChangeSelection = new(null);
@@ -537,6 +599,85 @@ namespace SourceGit.ViewModels
                     });
                 }
             }, token);
+
+            Task.Run(async () =>
+            {
+                var stats = await new Commands.QueryCommitNumstat(_repo.FullPath, _commit.FirstParentToCompare, _commit.SHA)
+                    .GetResultAsync()
+                    .ConfigureAwait(false);
+
+                if (!token.IsCancellationRequested)
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        _numStats = stats;
+                        BuildInspectorRows();
+                    });
+                }
+            }, token);
+        }
+
+        private void BuildInspectorRows()
+        {
+            var added = 0;
+            var deleted = 0;
+            foreach (var stat in _numStats.Values)
+            {
+                added += stat.Added;
+                deleted += stat.Deleted;
+            }
+
+            TotalAdded = _numStats.Count > 0 ? $"+{added}" : string.Empty;
+            TotalDeleted = _numStats.Count > 0 ? $"−{deleted}" : string.Empty;
+
+            var changes = _changes.Count > 100 ? _changes.GetRange(0, 100) : new List<Models.Change>(_changes);
+            var rows = new List<CommitInspectorRow>();
+
+            if (_sharedData.IsInspectorTreeMode)
+            {
+                changes.Sort((l, r) =>
+                {
+                    var ld = l.Path.LastIndexOf('/');
+                    var rd = r.Path.LastIndexOf('/');
+                    var cmp = string.Compare(ld > 0 ? l.Path.Substring(0, ld) : string.Empty, rd > 0 ? r.Path.Substring(0, rd) : string.Empty, StringComparison.Ordinal);
+                    return cmp != 0 ? cmp : string.Compare(l.Path, r.Path, StringComparison.Ordinal);
+                });
+
+                string lastDir = null;
+                foreach (var c in changes)
+                {
+                    var idx = c.Path.LastIndexOf('/');
+                    var dir = idx > 0 ? c.Path.Substring(0, idx + 1) : string.Empty;
+                    if (dir != lastDir)
+                    {
+                        if (dir.Length > 0)
+                            rows.Add(new CommitInspectorRow() { IsFolder = true, Label = dir });
+                        lastDir = dir;
+                    }
+
+                    rows.Add(CreateInspectorRow(c, idx > 0 ? c.Path.Substring(idx + 1) : c.Path, dir.Length > 0 ? 18 : 0));
+                }
+            }
+            else
+            {
+                foreach (var c in changes)
+                    rows.Add(CreateInspectorRow(c, c.Path, 0));
+            }
+
+            InspectorRows = rows;
+        }
+
+        private CommitInspectorRow CreateInspectorRow(Models.Change change, string label, double indent)
+        {
+            _numStats.TryGetValue(change.Path, out var stat);
+            return new CommitInspectorRow()
+            {
+                Label = label,
+                Change = change,
+                Indent = new Thickness(indent, 0, 0, 0),
+                Added = stat is { Added: > 0 } ? $"+{stat.Added}" : string.Empty,
+                Deleted = stat is { Deleted: > 0 } ? $"−{stat.Deleted}" : string.Empty,
+            };
         }
 
         private void UpdateDetails()
@@ -747,5 +888,9 @@ namespace SourceGit.ViewModels
         private List<string> _revisionFileSearchSuggestion = null;
         private bool _canOpenRevisionFileWithDefaultEditor = false;
         private Vector _scrollOffset = Vector.Zero;
+        private Dictionary<string, Models.NumStat> _numStats = [];
+        private List<CommitInspectorRow> _inspectorRows = [];
+        private string _totalAdded = string.Empty;
+        private string _totalDeleted = string.Empty;
     }
 }

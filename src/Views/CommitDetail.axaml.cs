@@ -315,7 +315,7 @@ namespace SourceGit.Views
             if (DataContext is not ViewModels.CommitDetail vm)
                 return;
 
-            if (sender is not ListBox { SelectedItem: Models.Change change })
+            if (sender is not ListBox { SelectedItem: ViewModels.CommitInspectorRow { Change: { } change } })
                 return;
 
             if (e.Key == Key.C &&
@@ -339,21 +339,62 @@ namespace SourceGit.Views
             }
         }
 
-        private void OnChangeDoubleTapped(object sender, TappedEventArgs e)
+        private void OnInspectorTreeMode(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (DataContext is ViewModels.CommitDetail detail && sender is Grid { DataContext: Models.Change change })
-            {
-                detail.ChangeSelection = new(new List<Models.Change> { change });
-                detail.ActiveTabIndex = 1;
-            }
-
+            if (DataContext is ViewModels.CommitDetail vm)
+                vm.IsInspectorTreeMode = true;
             e.Handled = true;
         }
 
-        private void OnChangeContextRequested(object sender, ContextRequestedEventArgs e)
+        private void OnInspectorListMode(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (sender is Grid { DataContext: Models.Change change } grid)
-                CreateChangeContextMenu(change)?.Open(grid);
+            if (DataContext is ViewModels.CommitDetail vm)
+                vm.IsInspectorTreeMode = false;
+            e.Handled = true;
+        }
+
+        private void OnInspectorRowTapped(object sender, TappedEventArgs e)
+        {
+            if (DataContext is ViewModels.CommitDetail detail && sender is Control { DataContext: ViewModels.CommitInspectorRow { Change: { } change } })
+            {
+                detail.ChangeSelection = new(new List<Models.Change> { change });
+                detail.ActiveTabIndex = 1;
+                e.Handled = true;
+            }
+        }
+
+        private void OnInspectorRowContextRequested(object sender, ContextRequestedEventArgs e)
+        {
+            if (sender is Control { DataContext: ViewModels.CommitInspectorRow { Change: { } change } } control)
+                CreateChangeContextMenu(change)?.Open(control);
+            e.Handled = true;
+        }
+
+        private void OnCheckoutCommit(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.CommitDetail vm)
+                vm.CheckoutCommit();
+            e.Handled = true;
+        }
+
+        private async void OnCherryPickCommit(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            e.Handled = true;
+            if (DataContext is ViewModels.CommitDetail vm)
+                await vm.CherryPickAsync();
+        }
+
+        private void OnRevertCommit(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.CommitDetail vm)
+                vm.Revert();
+            e.Handled = true;
+        }
+
+        private void OnMoreCommitActions(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Control control && DataContext is ViewModels.CommitDetail { Commit: { } commit })
+                this.FindAncestorOfType<Histories>()?.OpenCommitContextMenu(control, commit);
             e.Handled = true;
         }
 

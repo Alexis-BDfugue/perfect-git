@@ -25,35 +25,58 @@ namespace SourceGit.Views
             set => SetAndRaise(FullMessageProperty, ref _fullMessage, value);
         }
 
+        public static readonly StyledProperty<bool> SkipSubjectProperty =
+            AvaloniaProperty.Register<CommitMessagePresenter, bool>(nameof(SkipSubject));
+
+        /// <summary>
+        ///     Only show the body of the message (the subject is displayed elsewhere).
+        /// </summary>
+        public bool SkipSubject
+        {
+            get => GetValue(SkipSubjectProperty);
+            set => SetValue(SkipSubjectProperty, value);
+        }
+
         protected override Type StyleKeyOverride => typeof(SelectableTextBlock);
 
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
         {
             base.OnPropertyChanged(change);
 
-            if (change.Property == FullMessageProperty)
+            if (change.Property == FullMessageProperty || change.Property == SkipSubjectProperty)
             {
                 Inlines!.Clear();
                 _inlineCommits.Clear();
                 _lastHover = null;
+                _offset = 0;
                 ClearHoveredIssueLink();
 
                 var message = _fullMessage?.Message;
                 if (string.IsNullOrEmpty(message))
                     return;
 
+                if (SkipSubject)
+                {
+                    _offset = GetBodyOffset(message);
+                    if (_offset >= message.Length)
+                        return;
+                }
+
                 var links = _fullMessage?.Inlines;
                 if (links == null || links.Count == 0)
                 {
-                    Inlines.Add(new Run(message));
+                    Inlines.Add(new Run(message.Substring(_offset)));
                     return;
                 }
 
                 var inlines = new List<Inline>();
-                var pos = 0;
+                var pos = _offset;
                 for (var i = 0; i < links.Count; i++)
                 {
                     var link = links[i];
+                    if (link.Start < _offset)
+                        continue;
+
                     if (link.Start > pos)
                         inlines.Add(new Run(message.Substring(pos, link.Start - pos)));
 
@@ -106,7 +129,7 @@ namespace SourceGit.Views
                 var y = Math.Min(Math.Max(point.Y, 0), Math.Max(TextLayout.Height, 0));
                 point = new Point(x, y);
 
-                var pos = TextLayout.HitTestPoint(point).TextPosition;
+                var pos = TextLayout.HitTestPoint(point).TextPosition + _offset;
                 if (links.Intersect(pos, 1) is { } link)
                     SetHoveredIssueLink(link);
                 else
@@ -306,7 +329,20 @@ namespace SourceGit.Views
             }
         }
 
+        private static int GetBodyOffset(string message)
+        {
+            var idx = message.IndexOf('\n');
+            if (idx < 0)
+                return message.Length;
+
+            while (idx < message.Length && char.IsWhiteSpace(message[idx]))
+                idx++;
+
+            return idx;
+        }
+
         private Models.CommitFullMessage _fullMessage = null;
+        private int _offset = 0;
         private Models.InlineElement _lastHover = null;
         private Dictionary<string, Models.Commit> _inlineCommits = new();
     }

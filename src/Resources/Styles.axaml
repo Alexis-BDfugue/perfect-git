@@ -530,10 +530,10 @@
     <Setter Property="HorizontalAlignment" Value="Right"/>
   </Style>
   <Style Selector="TextBlock.tab_header">
-    <Setter Property="FontSize" Value="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static c:DoubleConverters.Increase}}"/>
-    <Setter Property="FontWeight" Value="Bold"/>
-    <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
-    <Setter Property="Opacity" Value=".56"/>
+    <Setter Property="FontSize" Value="11"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="LetterSpacing" Value="0.33"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
   </Style>
   <Style Selector="TextBlock.dropped">
     <Setter Property="TextDecorations" Value="Strikethrough"/>
@@ -830,6 +830,64 @@
     <Style Selector="^:pointerover">
       <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border1}"/>
     </Style>
+  </Style>
+
+  <Style Selector="Button.segment">
+    <Setter Property="Padding" Value="8,2"/>
+    <Setter Property="CornerRadius" Value="4"/>
+    <Setter Property="FontSize" Value="11"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}">
+          <ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:pointerover">
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+    </Style>
+    <Style Selector="^.active">
+      <Setter Property="Background" Value="{DynamicResource Brush.Popup}"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+    </Style>
+  </Style>
+
+  <Style Selector="Button.inspector_action">
+    <Setter Property="Padding" Value="11,6"/>
+    <Setter Property="MinHeight" Value="28"/>
+    <Setter Property="CornerRadius" Value="7"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Background" Value="{DynamicResource Brush.Popup}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border2}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                Padding="{TemplateBinding Padding}">
+          <ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"/>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:pointerover">
+      <Setter Property="Background" Value="{DynamicResource Brush.FlatButton.BackgroundHovered}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border1}"/>
+    </Style>
+  </Style>
+
+  <Style Selector="TextBlock.inspector_file">
+    <Setter Property="FontSize" Value="12.5"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+  </Style>
+  <Style Selector="TextBlock.inspector_file.folder">
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
   </Style>
 
   <Style Selector="ListBox.repo_left_content_list">
@@ -1576,8 +1634,8 @@
     <Setter Property="Opacity" Value="1"/>
   </Style>
   <Style Selector="TabItem:disabled TextBlock.tab_header">
-    <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
-    <Setter Property="Opacity" Value="0.35"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
+    <Setter Property="Opacity" Value="0.5"/>
   </Style>
 
   <Style Selector="NumericUpDown">

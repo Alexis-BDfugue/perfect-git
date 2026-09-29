@@ -175,6 +175,9 @@
   <x:String x:Key="Text.CommitCM.Reset" xml:space="preserve">Reset ${0}$ to ${1}$...</x:String>
   <x:String x:Key="Text.CommitCM.Revert" xml:space="preserve">Revert Commit...</x:String>
   <x:String x:Key="Text.CommitCM.SaveAsPatch" xml:space="preserve">Save as Patch...</x:String>
+  <x:String x:Key="Text.CommitDetail.Action.Checkout" xml:space="preserve">Checkout</x:String>
+  <x:String x:Key="Text.CommitDetail.Action.CherryPick" xml:space="preserve">Cherry-pick</x:String>
+  <x:String x:Key="Text.CommitDetail.Action.Revert" xml:space="preserve">Revert</x:String>
   <x:String x:Key="Text.CommitDetail.Changes" xml:space="preserve">CHANGES</x:String>
   <x:String x:Key="Text.CommitDetail.Changes.Count" xml:space="preserve">changed file(s)</x:String>
   <x:String x:Key="Text.CommitDetail.Changes.Search" xml:space="preserve">Search Changes...</x:String>
@@ -186,19 +189,26 @@
   <x:String x:Key="Text.CommitDetail.Files.Tips" xml:space="preserve">SELECT FILE TO VIEW CONTENT</x:String>
   <x:String x:Key="Text.CommitDetail.Info" xml:space="preserve">INFORMATION</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Author" xml:space="preserve">AUTHOR</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.Branches" xml:space="preserve">Branches</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.CommittedBy" xml:space="preserve">Committed by {0}</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Committer" xml:space="preserve">COMMITTER</x:String>
   <x:String x:Key="Text.CommitDetail.Info.ContainsIn" xml:space="preserve">Check refs that contains this commit</x:String>
   <x:String x:Key="Text.CommitDetail.Info.ContainsIn.Title" xml:space="preserve">COMMIT IS CONTAINED BY</x:String>
   <x:String x:Key="Text.CommitDetail.Info.CopyEmail" xml:space="preserve">Copy Email</x:String>
   <x:String x:Key="Text.CommitDetail.Info.CopyName" xml:space="preserve">Copy Name</x:String>
   <x:String x:Key="Text.CommitDetail.Info.CopyNameAndEmail" xml:space="preserve">Copy Name &amp; Email</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.Files" xml:space="preserve">{0} FILES</x:String>
   <x:String x:Key="Text.CommitDetail.Info.GotoChangesPage" xml:space="preserve">Shows only the first 100 changes. See all changes on the CHANGES tab.</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Key" xml:space="preserve">Key:</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.List" xml:space="preserve">List</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Message" xml:space="preserve">MESSAGE</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.Parent" xml:space="preserve">Parent</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Parents" xml:space="preserve">PARENTS</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Refs" xml:space="preserve">REFS</x:String>
   <x:String x:Key="Text.CommitDetail.Info.SHA" xml:space="preserve">SHA</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.Signed" xml:space="preserve">✓ signed</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Signer" xml:space="preserve">Signer:</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.Tree" xml:space="preserve">Tree</x:String>
   <x:String x:Key="Text.CommitDetail.Info.WebLinks" xml:space="preserve">Open in Browser</x:String>
   <x:String x:Key="Text.CommitMessageTextBox.Column" xml:space="preserve">COL</x:String>
   <x:String x:Key="Text.CommitMessageTextBox.Placeholder" xml:space="preserve">Enter commit message. Please use an empty-line to separate subject and description!</x:String>
@@ -337,6 +347,8 @@
   <x:String x:Key="Text.CtrlClickTip" xml:space="preserve">Hold Ctrl to start directly</x:String>
   <x:String x:Key="Text.Cut" xml:space="preserve">Cut</x:String>
   <x:String x:Key="Text.Dashboard" xml:space="preserve">Dashboard</x:String>
+  <x:String x:Key="Text.Date.Today" xml:space="preserve">Today</x:String>
+  <x:String x:Key="Text.Date.Yesterday" xml:space="preserve">Yesterday</x:String>
   <x:String x:Key="Text.DealWithLocalChanges.Discard" xml:space="preserve">Discard</x:String>
   <x:String x:Key="Text.DealWithLocalChanges.DoNothing" xml:space="preserve">Do Nothing</x:String>
   <x:String x:Key="Text.DealWithLocalChanges.StashAndReapply" xml:space="preserve">Stash &amp; Reapply</x:String>

@@ -616,7 +616,7 @@ namespace SourceGit.ViewModels
         private SearchCommitContext _searchCommitContext = null;
 
         private GridLength _leftArea = new(1, GridUnitType.Star);
-        private GridLength _rightArea = new(1, GridUnitType.Star);
+        private GridLength _rightArea = new(380, GridUnitType.Pixel);
         private GridLength _topArea = new(1, GridUnitType.Star);
         private GridLength _bottomArea = new(1, GridUnitType.Star);
         private bool _isCollapseDetails = false;

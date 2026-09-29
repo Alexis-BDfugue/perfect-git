@@ -10,7 +10,7 @@
              x:Class="SourceGit.Views.CommitDetail"
              x:DataType="vm:CommitDetail"
              x:Name="ThisControl">
-  <TabControl SelectedIndex="{Binding ActiveTabIndex, Mode=TwoWay}" Padding="0,4">
+  <TabControl SelectedIndex="{Binding ActiveTabIndex, Mode=TwoWay}" Padding="0,4,0,0">
     <!-- Information Page -->
     <TabItem>
       <TabItem.Header>
@@ -19,70 +19,109 @@
         </Border>
       </TabItem.Header>
 
-      <ScrollViewer Margin="4,0,0,0"
-                    Offset="{Binding ScrollOffset, Mode=TwoWay}"
-                    HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
-                    IsVisible="{Binding #ThisControl.IsDetailsPanelExpanded, Mode=OneWay}">
-        <StackPanel Orientation="Vertical">
-          <!-- Base Information -->
-          <v:CommitBaseInfo Content="{Binding Commit}"
-                            FullMessage="{Binding FullMessage}"
-                            SignInfo="{Binding SignInfo}"
-                            WebLinks="{Binding WebLinks}"
-                            Margin="0,0,12,0"/>
+      <Grid RowDefinitions="*,Auto" IsVisible="{Binding #ThisControl.IsDetailsPanelExpanded, Mode=OneWay}">
+        <ScrollViewer Grid.Row="0"
+                      Offset="{Binding ScrollOffset, Mode=TwoWay}"
+                      HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+          <StackPanel Orientation="Vertical">
+            <!-- Header -->
+            <Border Padding="18,16" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border0}">
+              <v:CommitBaseInfo UseInspectorLayout="True"
+                                Content="{Binding Commit}"
+                                FullMessage="{Binding FullMessage}"
+                                SignInfo="{Binding SignInfo}"
+                                WebLinks="{Binding WebLinks}"/>
+            </Border>
 
-          <!-- Line -->
-          <Rectangle Height=".65" Margin="8,8,12,8" Fill="{DynamicResource Brush.Border2}"/>
+            <!-- Files header -->
+            <Grid Margin="18,12,18,8" ColumnDefinitions="Auto,Auto,Auto,*,Auto">
+              <TextBlock Grid.Column="0"
+                         Classes="group_header_label"
+                         Text="{Binding Changes.Count, Converter={x:Static c:StringConverters.FormatByResourceKey}, ConverterParameter='CommitDetail.Info.Files'}"/>
+              <TextBlock Grid.Column="1" Margin="8,0,0,0" FontSize="11" VerticalAlignment="Center" Foreground="{DynamicResource Brush.Added}" Text="{Binding TotalAdded}"/>
+              <TextBlock Grid.Column="2" Margin="6,0,0,0" FontSize="11" VerticalAlignment="Center" Foreground="{DynamicResource Brush.Deleted}" Text="{Binding TotalDeleted}"/>
+              <Border Grid.Column="4" Padding="2" CornerRadius="6" Background="{DynamicResource Brush.Hover}">
+                <StackPanel Orientation="Horizontal">
+                  <Button Classes="segment" Classes.active="{Binding IsInspectorTreeMode}" Content="{DynamicResource Text.CommitDetail.Info.Tree}" Click="OnInspectorTreeMode"/>
+                  <Button Classes="segment" Classes.active="{Binding !IsInspectorTreeMode}" Content="{DynamicResource Text.CommitDetail.Info.List}" Click="OnInspectorListMode"/>
+                </StackPanel>
+              </Border>
+            </Grid>
 
-          <!-- Change List -->
-          <ListBox Background="Transparent"
-                   Margin="64,0,12,4"
-                   SelectionMode="Single"
-                   ItemsSource="{Binding Changes, Converter={x:Static c:ListConverters.Top100Changes}}"
-                   KeyDown="OnCommitListKeyDown">
-            <ListBox.Styles>
-              <Style Selector="ListBoxItem">
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="MinHeight" Value="24"/>
-                <Setter Property="CornerRadius" Value="4"/>
-              </Style>
-            </ListBox.Styles>
+            <!-- Files -->
+            <ListBox Background="Transparent"
+                     Margin="10,0,10,8"
+                     SelectionMode="Single"
+                     ItemsSource="{Binding InspectorRows}"
+                     KeyDown="OnCommitListKeyDown">
+              <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                  <Setter Property="Padding" Value="0"/>
+                  <Setter Property="MinHeight" Value="26"/>
+                  <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+              </ListBox.Styles>
 
-            <ListBox.ItemsPanel>
-              <ItemsPanelTemplate>
-                <StackPanel Orientation="Vertical"/>
-              </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
 
-            <ListBox.ItemTemplate>
-              <DataTemplate DataType="m:Change">
-                <Grid Background="Transparent" Height="24" ColumnDefinitions="36,*" ContextRequested="OnChangeContextRequested" DoubleTapped="OnChangeDoubleTapped">
-                  <ToolTip.Tip>
-                    <TextBlock TextWrapping="Wrap">
-                      <Run Text="{Binding Path, Mode=OneWay}"/>
-                      <Run Text=" • " Foreground="Gray"/>
-                      <Run Text="{Binding IndexDesc, Mode=OneWay}" Foreground="Gray"/>
-                    </TextBlock>
-                  </ToolTip.Tip>
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="vm:CommitInspectorRow">
+                  <Grid Height="26"
+                        Margin="{Binding Indent}"
+                        Background="Transparent"
+                        ColumnDefinitions="Auto,*,Auto,Auto"
+                        Tapped="OnInspectorRowTapped"
+                        ContextRequested="OnInspectorRowContextRequested"
+                        ToolTip.Tip="{Binding Change.Path, FallbackValue={x:Null}}">
+                    <Path Grid.Column="0"
+                          Width="8" Height="8"
+                          Margin="11,0,11,0"
+                          Data="{StaticResource Icons.Down}"
+                          Fill="{DynamicResource Brush.FG3}"
+                          IsVisible="{Binding IsFolder}"/>
+                    <v:ChangeStatusIcon Grid.Column="0"
+                                        Width="14" Height="14"
+                                        Margin="8,0"
+                                        Change="{Binding Change}"
+                                        IsVisible="{Binding !IsFolder}"/>
+                    <TextBlock Grid.Column="1"
+                               Classes="inspector_file"
+                               Classes.folder="{Binding IsFolder}"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               Text="{Binding Label}"/>
+                    <TextBlock Grid.Column="2" Margin="8,0,0,0" FontSize="11" VerticalAlignment="Center" Foreground="{DynamicResource Brush.Added}" Text="{Binding Added}"/>
+                    <TextBlock Grid.Column="3" Margin="6,0,8,0" FontSize="11" VerticalAlignment="Center" Foreground="{DynamicResource Brush.Deleted}" Text="{Binding Deleted}"/>
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
 
-                  <v:ChangeStatusIcon Grid.Column="0"
-                                      Width="14" Height="14"
-                                      HorizontalAlignment="Left"
-                                      Margin="16,0,0,0"
-                                      Change="{Binding}"/>
-                  <TextBlock Grid.Column="1" Text="{Binding Path}" Margin="8,0" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis"/>
-                </Grid>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
+            <!-- Only Top100 Tip -->
+            <TextBlock Margin="18,0,18,16"
+                       Text="{DynamicResource Text.CommitDetail.Info.GotoChangesPage}"
+                       Foreground="{DynamicResource Brush.FG3}"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding Changes, Converter={x:Static c:ListConverters.IsOnlyTop100Shows}}"/>
+          </StackPanel>
+        </ScrollViewer>
 
-          <!-- Only Top100 Tip -->
-          <TextBlock Margin="108,0,12,16"
-                     Text="{DynamicResource Text.CommitDetail.Info.GotoChangesPage}"
-                     Foreground="{DynamicResource Brush.FG2}"
-                     IsVisible="{Binding Changes, Converter={x:Static c:ListConverters.IsOnlyTop100Shows}}"/>
-        </StackPanel>
-      </ScrollViewer>
+        <!-- Actions -->
+        <Border Grid.Row="1" Padding="18,14" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Brush.Border0}">
+          <WrapPanel Orientation="Horizontal" ItemSpacing="6" LineSpacing="6">
+            <Button Classes="inspector_action" Content="{DynamicResource Text.CommitDetail.Action.Checkout}" Click="OnCheckoutCommit"/>
+            <Button Classes="inspector_action" Content="{DynamicResource Text.CommitDetail.Action.CherryPick}" Click="OnCherryPickCommit"/>
+            <Button Classes="inspector_action" Content="{DynamicResource Text.CommitDetail.Action.Revert}" Click="OnRevertCommit"/>
+            <Button Classes="inspector_action" Click="OnMoreCommitActions" ToolTip.Tip="{DynamicResource Text.Toolbar.More}">
+              <Path Width="12" Height="12" Data="{StaticResource Icons.More}" Fill="{DynamicResource Brush.FG2}"/>
+            </Button>
+          </WrapPanel>
+        </Border>
+      </Grid>
     </TabItem>
 
     <TabItem>

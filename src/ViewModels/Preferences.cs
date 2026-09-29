@@ -830,7 +830,7 @@ namespace SourceGit.ViewModels
         private string _ignoreUpdateTag = string.Empty;
 
         private bool _showTagsInGraph = true;
-        private bool _useTwoColumnsLayoutInHistories = false;
+        private bool _useTwoColumnsLayoutInHistories = true;
         private bool _displayTimeAsPeriodInHistories = true;
         private bool _useSideBySideDiff = false;
         private bool _ignoreWhitespaceChangesInDiff = false;

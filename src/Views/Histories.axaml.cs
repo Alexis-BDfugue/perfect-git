@@ -1085,6 +1085,12 @@ namespace SourceGit.Views
             return menu;
         }
 
+        public void OpenCommitContextMenu(Control anchor, Models.Commit commit)
+        {
+            if (this.FindAncestorOfType<Repository>() is { DataContext: ViewModels.Repository repo })
+                CreateContextMenuForSingleCommit(repo, commit)?.Open(anchor);
+        }
+
         private ContextMenu CreateContextMenuForSingleCommit(ViewModels.Repository repo, Models.Commit commit)
         {
             var current = repo.CurrentBranch;
