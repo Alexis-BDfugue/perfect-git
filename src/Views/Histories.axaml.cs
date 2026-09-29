@@ -777,6 +777,7 @@ namespace SourceGit.Views
             }
 
             IsScrollToTopVisible = startY >= rowHeight;
+            UpdateWipDatePosition(dataGrid);
 
             var clipWidth = dataGrid.Columns[0].ActualWidth - 4;
             var lastLayout = CommitGraph.Layout;
@@ -847,6 +848,40 @@ namespace SourceGit.Views
                 }
 
                 await histories.CheckoutBranchByCommitAsync(c);
+            }
+        }
+
+        private void UpdateWipDatePosition(DataGrid dataGrid)
+        {
+            if (!WipRow.IsVisible)
+                return;
+
+            // Align the "now" label of the uncommitted changes row with the DATE column (declared 4th in XAML).
+            var dateColumn = dataGrid.Columns.Count > 3 ? dataGrid.Columns[3] : null;
+            if (dateColumn is not { IsVisible: true })
+            {
+                WipDate.IsVisible = false;
+                return;
+            }
+
+            var x = 0.0;
+            foreach (var column in dataGrid.Columns)
+            {
+                if (column.IsVisible && column.DisplayIndex < dateColumn.DisplayIndex)
+                    x += column.ActualWidth;
+            }
+
+            WipDate.Margin = new Thickness(x, 0, 0, 0);
+            WipDate.Width = Math.Max(0, dateColumn.ActualWidth - 8);
+            WipDate.IsVisible = true;
+        }
+
+        private void OnWipRowTapped(object sender, TappedEventArgs e)
+        {
+            if (DataContext is ViewModels.Histories vm)
+            {
+                vm.OpenLocalChanges();
+                e.Handled = true;
             }
         }
 

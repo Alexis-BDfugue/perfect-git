@@ -68,6 +68,9 @@ namespace SourceGit.Converters
         public static readonly FuncValueConverter<string, string> ToShortSHA =
             new FuncValueConverter<string, string>(v => v == null ? string.Empty : (v.Length > 10 ? v.Substring(0, 10) : v));
 
+        public static readonly FuncValueConverter<string, string> ToGraphSHA =
+            new FuncValueConverter<string, string>(v => v == null ? string.Empty : (v.Length > 7 ? v.Substring(0, 7) : v));
+
         public static readonly FuncValueConverter<string, string> TrimRefsPrefix =
             new FuncValueConverter<string, string>(v =>
             {

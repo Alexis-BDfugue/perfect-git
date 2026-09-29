@@ -228,6 +228,29 @@ namespace SourceGit.ViewModels
             }
         }
 
+        public bool HasLocalChanges
+        {
+            get => !_repo.IsBare && _repo.LocalChangesCount > 0;
+        }
+
+        public string LocalChangesDescription
+        {
+            get => _repo.LocalChangesCount == 1
+                ? App.Text("Histories.WIP.One")
+                : App.Text("Histories.WIP", _repo.LocalChangesCount);
+        }
+
+        public void NotifyLocalChangesChanged()
+        {
+            OnPropertyChanged(nameof(HasLocalChanges));
+            OnPropertyChanged(nameof(LocalChangesDescription));
+        }
+
+        public void OpenLocalChanges()
+        {
+            _repo.SelectedViewIndex = 1;
+        }
+
         public Histories(Repository repo)
         {
             _repo = repo;

@@ -19,7 +19,7 @@ namespace SourceGit.Models
         {
             get;
             set;
-        } = true;
+        } = false;
 
         public bool IsSHAColumnVisibleInHistory
         {

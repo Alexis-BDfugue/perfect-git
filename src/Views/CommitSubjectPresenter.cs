@@ -345,13 +345,15 @@ namespace SourceGit.Views
 
                 if (elem.Type == Models.InlineElementType.Keyword)
                 {
+                    var text = subject.Substring(elem.Start, elem.Length);
+                    var typeBrush = elem.Start == 0 ? GetConventionalTypeBrush(text) : null;
                     var keyword = new FormattedText(
-                        subject.Substring(elem.Start, elem.Length),
+                        text,
                         CultureInfo.CurrentCulture,
                         FlowDirection.LeftToRight,
-                        new Typeface(fontFamily, FontStyle.Normal, FontWeight.Bold),
+                        new Typeface(fontFamily, FontStyle.Normal, typeBrush != null ? FontWeight.SemiBold : FontWeight.Bold),
                         fontSize,
-                        foreground);
+                        typeBrush ?? foreground);
                     _inlines.Add(new Inline(x, keyword, elem));
                     x += keyword.WidthIncludingTrailingWhitespace;
                 }
@@ -407,8 +409,35 @@ namespace SourceGit.Views
             }
         }
 
+        private IBrush GetConventionalTypeBrush(string keyword)
+        {
+            var match = REG_CONVENTIONAL_TYPE().Match(keyword);
+            if (!match.Success)
+                return null;
+
+            return match.Groups[1].Value.ToLowerInvariant() switch
+            {
+                "feat" or "feature" => TYPE_FEAT,
+                "fix" or "hotfix" => TYPE_FIX,
+                "refactor" => TYPE_REFACTOR,
+                "style" or "ux" or "ui" => TYPE_STYLE,
+                "enhance" or "perf" => TYPE_ENHANCE,
+                "chore" or "doc" or "docs" or "ci" or "build" or "test" or "tests" or "version" or "release" or "localization" or "revert" => this.FindResource("Brush.FG3") as IBrush,
+                _ => null,
+            };
+        }
+
         [GeneratedRegex(@"`.*?`")]
         private static partial Regex REG_INLINECODE_FORMAT();
+
+        [GeneratedRegex(@"^([A-Za-z]+)(?:\([^)]*\))?!?:$")]
+        private static partial Regex REG_CONVENTIONAL_TYPE();
+
+        private static readonly IBrush TYPE_FEAT = new SolidColorBrush(Color.Parse("#A9A6FA"));
+        private static readonly IBrush TYPE_FIX = new SolidColorBrush(Color.Parse("#F4928A"));
+        private static readonly IBrush TYPE_REFACTOR = new SolidColorBrush(Color.Parse("#30C8CF"));
+        private static readonly IBrush TYPE_STYLE = new SolidColorBrush(Color.Parse("#EA91BC"));
+        private static readonly IBrush TYPE_ENHANCE = new SolidColorBrush(Color.Parse("#76C788"));
 
         private class Inline
         {

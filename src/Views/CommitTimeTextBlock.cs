@@ -76,9 +76,16 @@ namespace SourceGit.Views
         {
             base.OnPropertyChanged(change);
 
-            if (change.Property == TimestampProperty || change.Property == UseCompactPeriodProperty)
+            if (change.Property == TimestampProperty)
             {
                 SetCurrentValue(TextProperty, GetDisplayText());
+            }
+            else if (change.Property == UseCompactPeriodProperty)
+            {
+                SetCurrentValue(TextProperty, GetDisplayText());
+
+                if (!ShowAsDateTime)
+                    HorizontalAlignment = _useCompactPeriod ? HorizontalAlignment.Right : HorizontalAlignment.Center;
             }
             else if (change.Property == ShowAsDateTimeProperty)
             {
@@ -92,7 +99,7 @@ namespace SourceGit.Views
                 else
                 {
                     _refreshTimer?.Start();
-                    HorizontalAlignment = HorizontalAlignment.Center;
+                    HorizontalAlignment = _useCompactPeriod ? HorizontalAlignment.Right : HorizontalAlignment.Center;
                 }
             }
             else if (change.Property == DateTimeFormatProperty || change.Property == Use24HoursProperty)

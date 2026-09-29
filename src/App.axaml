@@ -34,7 +34,7 @@
   <Application.Styles>
     <FluentTheme>
       <FluentTheme.Palettes>
-        <ColorPaletteResources x:Key="Dark" Accent="#FFA8A0F0"/>
+        <ColorPaletteResources x:Key="Dark" Accent="#FFA9A5FF"/>
       </FluentTheme.Palettes>
     </FluentTheme>
     <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>

@@ -515,7 +515,10 @@
   <x:String x:Key="Text.Histories.Header.Author" xml:space="preserve">AUTHOR</x:String>
   <x:String x:Key="Text.Histories.Header.AuthorTime" xml:space="preserve">AUTHOR TIME</x:String>
   <x:String x:Key="Text.Histories.Header.CommitTime" xml:space="preserve">COMMIT TIME</x:String>
+  <x:String x:Key="Text.Histories.Header.Date" xml:space="preserve">DATE</x:String>
+  <x:String x:Key="Text.Histories.Header.Graph" xml:space="preserve">GRAPH</x:String>
   <x:String x:Key="Text.Histories.Header.GraphAndSubject" xml:space="preserve">GRAPH &amp; SUBJECT</x:String>
+  <x:String x:Key="Text.Histories.Header.Message" xml:space="preserve">MESSAGE</x:String>
   <x:String x:Key="Text.Histories.Header.SHA" xml:space="preserve">SHA</x:String>
   <x:String x:Key="Text.Histories.HighlightsInGraph" xml:space="preserve">HIGHLIGHTS IN GRAPH</x:String>
   <x:String x:Key="Text.Histories.HighlightsInGraph.All" xml:space="preserve">All</x:String>
@@ -528,6 +531,9 @@
   <x:String x:Key="Text.Histories.Tips" xml:space="preserve">Hold 'Ctrl' or 'Shift' to select multiple commits.</x:String>
   <x:String x:Key="Text.Histories.Tips.MacOS" xml:space="preserve">Hold ⌘ or ⇧ to select multiple commits.</x:String>
   <x:String x:Key="Text.Histories.Tips.Prefix" xml:space="preserve">TIPS:</x:String>
+  <x:String x:Key="Text.Histories.WIP" xml:space="preserve">// {0} changed files, not committed yet</x:String>
+  <x:String x:Key="Text.Histories.WIP.One" xml:space="preserve">// 1 changed file, not committed yet</x:String>
+  <x:String x:Key="Text.Histories.WIP.Tip" xml:space="preserve">Open local changes to stage and commit them</x:String>
   <x:String x:Key="Text.HistoriesDetailsStandalone" xml:space="preserve">Open in separate window</x:String>
   <x:String x:Key="Text.HistoriesDetailsStandalone.CommitDetail" xml:space="preserve">Commit Detail</x:String>
   <x:String x:Key="Text.HistoriesDetailsStandalone.RevisionCompare" xml:space="preserve">Revision Compare</x:String>

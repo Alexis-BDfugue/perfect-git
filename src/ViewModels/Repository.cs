@@ -238,7 +238,11 @@ namespace SourceGit.ViewModels
         public int LocalChangesCount
         {
             get => _localChangesCount;
-            private set => SetProperty(ref _localChangesCount, value);
+            private set
+            {
+                if (SetProperty(ref _localChangesCount, value))
+                    _histories?.NotifyLocalChangesChanged();
+            }
         }
 
         public int StashesCount
