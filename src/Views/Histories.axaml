@@ -436,9 +436,9 @@
                        Foreground="{DynamicResource Brush.FG3}"
                        VerticalAlignment="Center"
                        TextTrimming="CharacterEllipsis">
-              <Run Text="{Binding ((vm:CommitDetail)DetailContext).Commit.SHA, Converter={x:Static c:StringConverters.ToGraphSHA}, FallbackValue=''}" FontFamily="{DynamicResource Fonts.Monospace}"/>
+              <Run Text="{Binding ((vm:CommitDetail)DetailContext).Commit.SHA, Converter={x:Static c:StringConverters.ToGraphSHA}, FallbackValue='', Mode=OneWay}" FontFamily="{DynamicResource Fonts.Monospace}"/>
               <Run Text="·"/>
-              <Run Text="{Binding ((vm:CommitDetail)DetailContext).Commit.Subject, FallbackValue=''}"/>
+              <Run Text="{Binding ((vm:CommitDetail)DetailContext).Commit.Subject, FallbackValue='', Mode=OneWay}"/>
             </TextBlock>
           </Grid>
         </Border>

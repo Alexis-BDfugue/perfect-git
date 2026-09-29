@@ -18,9 +18,9 @@
       <Border Padding="14,10" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border0}">
         <TextBlock FontSize="12" Foreground="{DynamicResource Brush.FG2}" TextWrapping="Wrap">
           <Run Text="{DynamicResource Text.BranchDrop.Drop}"/>
-          <Run Text="{Binding SourceName}" FontWeight="Bold" Foreground="{Binding SourceBrush}"/>
+          <Run Text="{Binding SourceName, Mode=OneWay}" FontWeight="Bold" Foreground="{Binding SourceBrush}"/>
           <Run Text="{DynamicResource Text.BranchDrop.Onto}"/>
-          <Run Text="{Binding TargetName}" FontWeight="Bold" Foreground="{Binding TargetBrush}"/>
+          <Run Text="{Binding TargetName, Mode=OneWay}" FontWeight="Bold" Foreground="{Binding TargetBrush}"/>
         </TextBlock>
       </Border>
 

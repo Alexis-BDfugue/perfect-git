@@ -111,9 +111,9 @@
                   <StackPanel Grid.Column="1" Margin="12,0,0,0" Orientation="Vertical" VerticalAlignment="Center" Spacing="1">
                     <TextBlock FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Text="{Binding Title}"/>
                     <TextBlock FontSize="11.5" Foreground="{DynamicResource Brush.FG2}" TextTrimming="CharacterEllipsis">
-                      <Run Text="{Binding Subtitle}"/>
+                      <Run Text="{Binding Subtitle, Mode=OneWay}"/>
                       <Run Text=" · " Foreground="{DynamicResource Brush.FG3}"/>
-                      <Run Text="{Binding GitCommand}" FontFamily="{DynamicResource Fonts.Monospace}"/>
+                      <Run Text="{Binding GitCommand, Mode=OneWay}" FontFamily="{DynamicResource Fonts.Monospace}"/>
                     </TextBlock>
                   </StackPanel>
                   <TextBlock Grid.Column="2" Classes="enter_hint" Margin="8,0,0,0" FontSize="11" Foreground="{DynamicResource Brush.FG3}" VerticalAlignment="Center" Text="↵"/>

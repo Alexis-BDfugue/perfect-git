@@ -188,8 +188,8 @@
                            VerticalAlignment="Center"
                            FontWeight="{Binding IsCurrent, Converter={x:Static c:BoolConverters.IsBoldToFontWeight}}"
                            TextTrimming="CharacterEllipsis">
-                  <Run Text="{Binding Name}"/>
-                  <Run Text="{Binding BranchesCount}" Foreground="{DynamicResource Brush.FG3}"/>
+                  <Run Text="{Binding Name, Mode=OneWay}"/>
+                  <Run Text="{Binding BranchesCount, Mode=OneWay}" Foreground="{DynamicResource Brush.FG3}"/>
                 </TextBlock>
 
                 <!-- Remote host -->
