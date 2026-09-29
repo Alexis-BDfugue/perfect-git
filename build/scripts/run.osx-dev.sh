@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds Perfect Git (Debug) and runs it as a macOS app bundle, so that the Dock and the
+# Builds PerfectGit (Debug) and runs it as a macOS app bundle, so that the Dock and the
 # menu bar show its name and icon (a bare `dotnet run` shows the executable name instead).
 # Usage: build/scripts/run.osx-dev.sh [repository path]
 
@@ -15,7 +15,7 @@ fi
 
 "$DOTNET" build src/SourceGit.csproj -c Debug
 
-APP="build/dev/Perfect Git.app"
+APP="build/dev/PerfectGit.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 rsync -a --delete --exclude setsid src/bin/Debug/net10.0/ "$APP/Contents/MacOS/"
 cp build/resources/app/App.icns "$APP/Contents/Resources/App.icns"

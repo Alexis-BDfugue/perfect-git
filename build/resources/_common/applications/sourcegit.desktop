@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Perfect Git
+Name=PerfectGit
 Comment=Open-source & Free Git GUI Client
 Exec=/opt/sourcegit/sourcegit %u
 Icon=/usr/share/icons/sourcegit.png

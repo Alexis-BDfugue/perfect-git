@@ -9,9 +9,9 @@
     <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
     <InvariantGlobalization>false</InvariantGlobalization>
 
-    <Product>Perfect Git</Product>
-    <AssemblyTitle>Perfect Git</AssemblyTitle>
-    <Description>Perfect Git, a Git GUI client based on SourceGit</Description>
+    <Product>PerfectGit</Product>
+    <AssemblyTitle>PerfectGit</AssemblyTitle>
+    <Description>PerfectGit, a Git GUI client based on SourceGit</Description>
     <Company>sourcegit-scm</Company>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) sourcegit-scm.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

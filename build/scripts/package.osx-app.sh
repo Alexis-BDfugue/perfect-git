@@ -7,7 +7,7 @@ set pipefail
 
 cd build
 
-APP="Perfect Git.app"
+APP="PerfectGit.app"
 
 mkdir -p "$APP/Contents/Resources"
 mv SourceGit "$APP/Contents/MacOS"
