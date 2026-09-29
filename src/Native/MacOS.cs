@@ -276,9 +276,10 @@ namespace SourceGit.Native
 
         private static readonly IntPtr s_selStandardWindowButton = sel_registerName("standardWindowButton:");
         private static readonly IntPtr s_selFrame = sel_registerName("frame");
+        private static readonly IntPtr s_selSuperview = sel_registerName("superview");
         private static readonly IntPtr s_selSetFrameOrigin = sel_registerName("setFrameOrigin:");
 
-        public static void AdjustTrafficLightsForThickTitleBar(Window window)
+        public static void AdjustTrafficLightsForThickTitleBar(Window window, double captionHeight)
         {
             IntPtr nsWindow = window.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
             if (nsWindow == IntPtr.Zero)
@@ -290,24 +291,31 @@ namespace SourceGit.Native
             if (nsCloseBtn == IntPtr.Zero || nsMinBtn == IntPtr.Zero || nsZoomBtn == IntPtr.Zero)
                 return;
 
+            IntPtr nsContainer = objc_msgSend_IntPtr(nsCloseBtn, s_selSuperview);
+            if (nsContainer == IntPtr.Zero)
+                return;
+
             // For Intel CPU, we need to use `objc_msgSend_stret` to get the `CGRect` struct, while for Apple Silicon, we can directly use `objc_msgSend`.
+            CGRect frame, container;
             if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
             {
-                objc_msgSendStrect_Rect(out var frame, nsCloseBtn, s_selFrame);
-                if (Math.Abs(frame.Origin.X - 14) <= 0.5 || Math.Abs(frame.Origin.Y - 2) <= 0.5)
-                    return;
+                objc_msgSendStrect_Rect(out frame, nsCloseBtn, s_selFrame);
+                objc_msgSendStrect_Rect(out container, nsContainer, s_selFrame);
             }
             else
             {
-                CGRect frame = objc_msgSend_Rect(nsCloseBtn, s_selFrame);
-                if (Math.Abs(frame.Origin.X - 14) <= 0.5 || Math.Abs(frame.Origin.Y - 2) <= 0.5)
-                    return;
+                frame = objc_msgSend_Rect(nsCloseBtn, s_selFrame);
+                container = objc_msgSend_Rect(nsContainer, s_selFrame);
             }
 
-            var yOffset = OperatingSystem.IsMacOSVersionAtLeast(26) ? 6 : 2;
-            objc_msgSend_Void_Point(nsCloseBtn, s_selSetFrameOrigin, new(14, yOffset));
-            objc_msgSend_Void_Point(nsMinBtn, s_selSetFrameOrigin, new(14 + 20, yOffset));
-            objc_msgSend_Void_Point(nsZoomBtn, s_selSetFrameOrigin, new(14 + 40, yOffset));
+            // AppKit uses a bottom-left origin: center the buttons vertically in our custom caption.
+            var y = Math.Max(0, container.Size.Height - (captionHeight + frame.Size.Height) * 0.5);
+            if (Math.Abs(frame.Origin.X - 14) <= 0.5 && Math.Abs(frame.Origin.Y - y) <= 0.5)
+                return;
+
+            objc_msgSend_Void_Point(nsCloseBtn, s_selSetFrameOrigin, new(14, y));
+            objc_msgSend_Void_Point(nsMinBtn, s_selSetFrameOrigin, new(14 + 20, y));
+            objc_msgSend_Void_Point(nsZoomBtn, s_selSetFrameOrigin, new(14 + 40, y));
         }
 
         public static void HideSelf()

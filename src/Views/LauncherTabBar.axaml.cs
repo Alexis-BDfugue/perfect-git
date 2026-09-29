@@ -6,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Styling;
 
 namespace SourceGit.Views
 {
@@ -26,7 +25,8 @@ namespace SourceGit.Views
 
         public LauncherTabSizeBox()
         {
-            Width = 200;
+            MinWidth = 140;
+            Width = 240;
         }
 
         protected override Type StyleKeyOverride => typeof(Border);
@@ -38,7 +38,7 @@ namespace SourceGit.Views
             if (change.Property == UseFixedWidthProperty)
             {
                 if (_useFixedWidth)
-                    Width = 200;
+                    Width = 240;
                 else
                     Width = double.NaN;
             }
@@ -72,93 +72,21 @@ namespace SourceGit.Views
             if (LauncherTabsList == null || LauncherTabsList.SelectedIndex == -1)
                 return;
 
-            var startX = LauncherTabsScroller.Offset.X;
-            var endX = startX + LauncherTabsScroller.Viewport.Width;
-            var height = LauncherTabsScroller.Viewport.Height;
-
-            var selectedIdx = LauncherTabsList.SelectedIndex;
-            var count = LauncherTabsList.ItemCount;
-            var separatorPen = new Pen(new SolidColorBrush(ActualThemeVariant == ThemeVariant.Dark ? Colors.White : Colors.Black, 0.2));
-            var separatorY = (height - 18) * 0.5 + 1;
-
-            if (!_isScrollButtonVisible && selectedIdx > 0)
-            {
-                var container = LauncherTabsList.ContainerFromIndex(0);
-                if (container != null)
-                {
-                    var x = container.Bounds.Left - startX + LauncherTabsScroller.Bounds.X - 0.5;
-                    context.DrawLine(separatorPen, new Point(x, separatorY), new Point(x, separatorY + 18));
-                }
-            }
-
-            for (var i = 0; i < count; i++)
-            {
-                if (i == selectedIdx || i == selectedIdx - 1)
-                    continue;
-
-                var container = LauncherTabsList.ContainerFromIndex(i);
-                if (container == null)
-                    continue;
-
-                var containerEndX = container.Bounds.Right;
-                if (containerEndX < startX || containerEndX > endX)
-                    continue;
-
-                if (_isScrollButtonVisible && i == count - 1)
-                    break;
-
-                var separatorX = containerEndX - startX + LauncherTabsScroller.Bounds.X - 0.5;
-                context.DrawLine(separatorPen, new Point(separatorX, separatorY), new Point(separatorX, separatorY + 18));
-            }
-
-            var selected = LauncherTabsList.ContainerFromIndex(selectedIdx);
+            var selected = LauncherTabsList.ContainerFromIndex(LauncherTabsList.SelectedIndex);
             if (selected == null)
                 return;
 
-            var activeStartX = selected.Bounds.X;
-            var activeEndX = activeStartX + selected.Bounds.Width;
-            if (activeStartX > endX + 5 || activeEndX < startX - 5)
+            var offsetX = LauncherTabsScroller.Bounds.X - LauncherTabsScroller.Offset.X;
+            var left = Math.Max(selected.Bounds.Left + offsetX, LauncherTabsScroller.Bounds.Left);
+            var right = Math.Min(selected.Bounds.Right + offsetX, LauncherTabsScroller.Bounds.Right);
+            if (right - left < 1)
                 return;
 
-            var geo = new StreamGeometry();
-            const double angle = Math.PI / 2;
-            var bottom = height + 0.5;
-            var cornerSize = new Size(5, 5);
+            var shape = new RoundedRect(new Rect(left, 0, right - left, Bounds.Height), new CornerRadius(8, 8, 0, 0));
+            context.DrawRectangle(this.FindResource("Brush.ToolBar") as IBrush, null, shape);
 
-            using (var ctx = geo.Open())
-            {
-                var drawLeftX = activeStartX - startX + LauncherTabsScroller.Bounds.X;
-                if (drawLeftX < LauncherTabsScroller.Bounds.X)
-                {
-                    ctx.BeginFigure(new Point(LauncherTabsScroller.Bounds.X - 0.5, bottom), true);
-                    ctx.LineTo(new Point(LauncherTabsScroller.Bounds.X - 0.5, 0.5));
-                }
-                else
-                {
-                    ctx.BeginFigure(new Point(drawLeftX - 5.5, bottom), true);
-                    ctx.ArcTo(new Point(drawLeftX - 0.5, bottom - 5), cornerSize, angle, false, SweepDirection.CounterClockwise);
-                    ctx.LineTo(new Point(drawLeftX - 0.5, 5.5));
-                    ctx.ArcTo(new Point(drawLeftX + 4.5, 0.5), cornerSize, angle, false, SweepDirection.Clockwise);
-                }
-
-                var drawRightX = activeEndX - startX + LauncherTabsScroller.Bounds.X;
-                if (drawRightX <= LauncherTabsScroller.Bounds.Right)
-                {
-                    ctx.LineTo(new Point(drawRightX - 5.5, 0.5));
-                    ctx.ArcTo(new Point(drawRightX - 0.5, 5.5), cornerSize, angle, false, SweepDirection.Clockwise);
-                    ctx.LineTo(new Point(drawRightX - 0.5, bottom - 5));
-                    ctx.ArcTo(new Point(drawRightX + 4.5, bottom), cornerSize, angle, false, SweepDirection.CounterClockwise);
-                }
-                else
-                {
-                    ctx.LineTo(new Point(LauncherTabsScroller.Bounds.Right - 0.5, 0.5));
-                    ctx.LineTo(new Point(LauncherTabsScroller.Bounds.Right - 0.5, bottom));
-                }
-            }
-
-            var fill = this.FindResource("Brush.ToolBar") as IBrush;
-            var stroke = new Pen(this.FindResource("Brush.Border0") as IBrush);
-            context.DrawGeometry(fill, stroke, geo);
+            using (context.PushClip(shape))
+                context.FillRectangle(this.FindResource("Brush.Accent") as IBrush, new Rect(left, 0, right - left, 2));
         }
 
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
