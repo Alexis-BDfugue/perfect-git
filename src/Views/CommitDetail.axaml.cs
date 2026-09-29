@@ -357,10 +357,27 @@ namespace SourceGit.Views
         {
             if (DataContext is ViewModels.CommitDetail detail && sender is Control { DataContext: ViewModels.CommitInspectorRow { Change: { } change } })
             {
-                detail.ChangeSelection = new(new List<Models.Change> { change });
-                detail.ActiveTabIndex = 1;
+                if (this.FindAncestorOfType<Histories>() != null)
+                {
+                    detail.OpenDiffInCenter(change);
+                }
+                else
+                {
+                    // Standalone commit window: no graph to replace, use the changes page.
+                    detail.ChangeSelection = new(new List<Models.Change> { change });
+                    detail.ActiveTabIndex = 1;
+                }
+
                 e.Handled = true;
             }
+        }
+
+        private void OnInspectorSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Keyboard navigation in the files list follows along while a diff is open.
+            if (DataContext is ViewModels.CommitDetail { CenterDiff: not null } detail &&
+                sender is ListBox { SelectedItem: ViewModels.CommitInspectorRow { Change: { } change } })
+                detail.OpenDiffInCenter(change);
         }
 
         private void OnInspectorRowContextRequested(object sender, ContextRequestedEventArgs e)

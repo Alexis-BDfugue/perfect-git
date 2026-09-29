@@ -410,6 +410,47 @@
                      Text="{Binding StatusStats}"/>
         </Grid>
       </Border>
+
+      <!-- Diff of a file of the selected commit, shown instead of the graph -->
+      <Grid RowDefinitions="30,*"
+            Background="{DynamicResource Brush.Contents}"
+            IsVisible="{Binding ((vm:CommitDetail)DetailContext).CenterDiff, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False}">
+        <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border0}">
+          <Grid ColumnDefinitions="Auto,*" Margin="6,0,16,0">
+            <Button Grid.Column="0"
+                    Classes="tb_action"
+                    Padding="8,3"
+                    Click="OnCloseCenterDiff"
+                    ToolTip.Tip="{DynamicResource Text.Histories.BackToGraph.Tip}">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <Path Width="10" Height="10" Data="{StaticResource Icons.TriangleLeft}"/>
+                <TextBlock FontSize="12" Text="{DynamicResource Text.Histories.BackToGraph}"/>
+                <Border Padding="4,0" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource Brush.Border2}" VerticalAlignment="Center">
+                  <TextBlock FontSize="10.5" Foreground="{DynamicResource Brush.FG3}" Text="Esc"/>
+                </Border>
+              </StackPanel>
+            </Button>
+            <TextBlock Grid.Column="1"
+                       Margin="12,0,0,0"
+                       FontSize="11.5"
+                       Foreground="{DynamicResource Brush.FG3}"
+                       VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis">
+              <Run Text="{Binding ((vm:CommitDetail)DetailContext).Commit.SHA, Converter={x:Static c:StringConverters.ToGraphSHA}, FallbackValue=''}" FontFamily="{DynamicResource Fonts.Monospace}"/>
+              <Run Text="·"/>
+              <Run Text="{Binding ((vm:CommitDetail)DetailContext).Commit.Subject, FallbackValue=''}"/>
+            </TextBlock>
+          </Grid>
+        </Border>
+
+        <ContentControl Grid.Row="1" Content="{Binding ((vm:CommitDetail)DetailContext).CenterDiff, FallbackValue={x:Null}}">
+          <ContentControl.DataTemplates>
+            <DataTemplate DataType="vm:DiffContext">
+              <v:DiffView/>
+            </DataTemplate>
+          </ContentControl.DataTemplates>
+        </ContentControl>
+      </Grid>
     </Grid>
 
     <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"

@@ -545,6 +545,8 @@
   <x:String x:Key="Text.GitLFS.TrackByExtension" xml:space="preserve">Track all *{0} files</x:String>
   <x:String x:Key="Text.GotoRevisionSelector" xml:space="preserve">Select Commit</x:String>
   <x:String x:Key="Text.Histories.AdvancedOptions" xml:space="preserve">Advanced Options</x:String>
+  <x:String x:Key="Text.Histories.BackToGraph" xml:space="preserve">History</x:String>
+  <x:String x:Key="Text.Histories.BackToGraph.Tip" xml:space="preserve">Back to the commit graph</x:String>
   <x:String x:Key="Text.Histories.Header.Author" xml:space="preserve">AUTHOR</x:String>
   <x:String x:Key="Text.Histories.Header.AuthorTime" xml:space="preserve">AUTHOR TIME</x:String>
   <x:String x:Key="Text.Histories.Header.CommitTime" xml:space="preserve">COMMIT TIME</x:String>

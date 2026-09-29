@@ -53,6 +53,7 @@
                      Margin="10,0,10,8"
                      SelectionMode="Single"
                      ItemsSource="{Binding InspectorRows}"
+                     SelectionChanged="OnInspectorSelectionChanged"
                      KeyDown="OnCommitListKeyDown">
               <ListBox.Styles>
                 <Style Selector="ListBoxItem">

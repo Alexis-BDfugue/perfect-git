@@ -117,6 +117,15 @@ namespace SourceGit.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Diff of one file of this commit, displayed in the center of the history page instead of the graph.
+        /// </summary>
+        public DiffContext CenterDiff
+        {
+            get => _centerDiff;
+            private set => SetProperty(ref _centerDiff, value);
+        }
+
         public string TotalAdded
         {
             get => _totalAdded;
@@ -213,6 +222,21 @@ namespace SourceGit.ViewModels
         public void NavigateTo(string commitSHA)
         {
             _repo?.NavigateToCommit(commitSHA);
+        }
+
+        public void OpenDiffInCenter(Models.Change change)
+        {
+            if (_commit == null || change == null || change == _centerDiffChange)
+                return;
+
+            _centerDiffChange = change;
+            CenterDiff = new DiffContext(_repo.FullPath, new Models.DiffOption(_commit, change), _centerDiff);
+        }
+
+        public void CloseCenterDiff()
+        {
+            _centerDiffChange = null;
+            CenterDiff = null;
         }
 
         public void CheckoutCommit()
@@ -522,6 +546,7 @@ namespace SourceGit.ViewModels
 
             _numStats = [];
             InspectorRows = [];
+            CloseCenterDiff();
             TotalAdded = string.Empty;
             TotalDeleted = string.Empty;
 
@@ -889,6 +914,8 @@ namespace SourceGit.ViewModels
         private bool _canOpenRevisionFileWithDefaultEditor = false;
         private Vector _scrollOffset = Vector.Zero;
         private Dictionary<string, Models.NumStat> _numStats = [];
+        private DiffContext _centerDiff = null;
+        private Models.Change _centerDiffChange = null;
         private List<CommitInspectorRow> _inspectorRows = [];
         private string _totalAdded = string.Empty;
         private string _totalDeleted = string.Empty;

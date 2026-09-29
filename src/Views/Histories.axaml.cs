@@ -978,6 +978,27 @@ namespace SourceGit.Views
             WipDate.IsVisible = true;
         }
 
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape && e.KeyModifiers == KeyModifiers.None &&
+                DataContext is ViewModels.Histories { DetailContext: ViewModels.CommitDetail { CenterDiff: not null } detail })
+            {
+                detail.CloseCenterDiff();
+                e.Handled = true;
+                return;
+            }
+
+            base.OnKeyDown(e);
+        }
+
+        private void OnCloseCenterDiff(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.Histories { DetailContext: ViewModels.CommitDetail detail })
+                detail.CloseCenterDiff();
+
+            e.Handled = true;
+        }
+
         private void OnWipRowTapped(object sender, TappedEventArgs e)
         {
             if (DataContext is ViewModels.Histories vm)
