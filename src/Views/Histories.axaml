@@ -146,7 +146,6 @@
           <DataGridTemplateColumn Width="*" IsReadOnly="True">
             <DataGridTemplateColumn.Header>
               <Grid>
-                <TextBlock Classes="table_header" Margin="16,0,0,0" HorizontalAlignment="Left" Text="{DynamicResource Text.Histories.Header.Graph}"/>
                 <TextBlock Classes="table_header" Margin="194,0,0,0" HorizontalAlignment="Left" Text="{DynamicResource Text.Histories.Header.Message}"/>
               </Grid>
             </DataGridTemplateColumn.Header>
@@ -303,9 +302,10 @@
               PointerReleased="OnCommitListHeaderPointerReleased">
         <StackPanel Orientation="Horizontal"
                     Height="18"
-                    Margin="64,0,0,0"
+                    Margin="16,0,0,0"
                     VerticalAlignment="Center"
                     Spacing="6">
+          <TextBlock Classes="table_header" Margin="0,0,4,0" Text="{DynamicResource Text.Histories.Header.Graph}"/>
           <ToggleButton Classes="line_path" Width="18" IsChecked="{Binding IsSearchingCommits, Mode=TwoWay}">
             <ToolTip.Tip>
               <TextBlock>
@@ -479,12 +479,16 @@
                           HorizontalAlignment="Center"
                           Fill="{DynamicResource Brush.FG2}"/>
 
-                    <StackPanel Margin="0,8" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-                      <Path Width="12" Height="12" VerticalAlignment="Center" Data="{StaticResource Icons.Info}" Fill="{DynamicResource Brush.FG2}"/>
-                      <TextBlock Margin="4,0" Text="{DynamicResource Text.Histories.Tips.Prefix}" FontWeight="Bold" Foreground="{DynamicResource Brush.FG2}"/>
-                      <TextBlock Text="{DynamicResource Text.Histories.Tips}" Foreground="{DynamicResource Brush.FG2}" IsVisible="{OnPlatform True, macOS=False}"/>
-                      <TextBlock Text="{DynamicResource Text.Histories.Tips.MacOS}" Foreground="{DynamicResource Brush.FG2}" IsVisible="{OnPlatform False, macOS=True}"/>
-                    </StackPanel>
+                    <Panel Margin="16,8" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                      <TextBlock TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.FG2}" IsVisible="{OnPlatform True, macOS=False}">
+                        <Run Text="{DynamicResource Text.Histories.Tips.Prefix}" FontWeight="Bold"/>
+                        <Run Text="{DynamicResource Text.Histories.Tips}"/>
+                      </TextBlock>
+                      <TextBlock TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.FG2}" IsVisible="{OnPlatform False, macOS=True}">
+                        <Run Text="{DynamicResource Text.Histories.Tips.Prefix}" FontWeight="Bold"/>
+                        <Run Text="{DynamicResource Text.Histories.Tips.MacOS}"/>
+                      </TextBlock>
+                    </Panel>
                   </Grid>
                 </TabItem>
 

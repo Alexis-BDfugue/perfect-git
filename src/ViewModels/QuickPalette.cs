@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Avalonia.Media;
 
@@ -224,8 +225,9 @@ namespace SourceGit.ViewModels
                 }
             }
 
+            // Close scores keep the declared order (the most common action of a family comes first).
             if (!string.IsNullOrWhiteSpace(filter))
-                actions.Sort((l, r) => r.Score.CompareTo(l.Score));
+                actions = actions.OrderByDescending(x => x.Score / 50).ToList();
             AddGroup(items, actions, string.IsNullOrWhiteSpace(filter) ? 8 : 6);
 
             if (!commandsOnly && !_repo.IsBare)
