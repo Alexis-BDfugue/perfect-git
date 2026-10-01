@@ -805,6 +805,17 @@ namespace SourceGit.Views
             if (repoView is not { DataContext: ViewModels.Repository repo })
                 return;
 
+            // Right-click on a ref pill: show the menu of that ref only, not of every ref of the commit.
+            if ((e.Source as Visual)?.FindAncestorOfType<CommitRefsPresenter>(true) is { DataContext: Models.Commit decorated } presenter &&
+                e.TryGetPosition(presenter, out var pos) &&
+                presenter.DecoratorAt(pos) is { } decorator &&
+                CreateContextMenuForDecorator(repo, decorated, decorator) is { } refMenu)
+            {
+                refMenu.Open(CommitListContainer);
+                e.Handled = true;
+                return;
+            }
+
             var selected = CommitListContainer.SelectedItems;
             if (selected is not { Count: > 0 })
                 return;
@@ -1214,6 +1225,49 @@ namespace SourceGit.Views
         {
             if (this.FindAncestorOfType<Repository>() is { DataContext: ViewModels.Repository repo })
                 CreateContextMenuForSingleCommit(repo, commit)?.Open(anchor);
+        }
+
+        private ContextMenu CreateContextMenuForDecorator(ViewModels.Repository repo, Models.Commit commit, Models.Decorator decorator)
+        {
+            var current = repo.CurrentBranch;
+            if (current == null)
+                return null;
+
+            // The Fill*Menu helpers add one submenu named after the ref; lift its items to the top level.
+            var holder = new ContextMenu();
+            switch (decorator.Type)
+            {
+                case Models.DecoratorType.CurrentBranchHead:
+                    FillCurrentBranchMenu(holder, repo, current);
+                    break;
+                case Models.DecoratorType.LocalBranchHead:
+                    var lb = repo.Branches.Find(x => x.IsLocal && decorator.Name.Equals(x.Name, StringComparison.Ordinal));
+                    if (lb != null)
+                        FillOtherLocalBranchMenu(holder, repo, lb, current, commit.IsMerged);
+                    break;
+                case Models.DecoratorType.RemoteBranchHead:
+                    var rb = repo.Branches.Find(x => !x.IsLocal && decorator.Name.Equals(x.FriendlyName, StringComparison.Ordinal));
+                    FillRemoteBranchMenu(holder, repo, rb, current, commit.IsMerged);
+                    break;
+                case Models.DecoratorType.Tag:
+                    var t = repo.Tags.Find(x => decorator.Name.Equals(x.Name, StringComparison.Ordinal));
+                    if (t != null)
+                        FillTagMenu(holder, repo, t, current);
+                    break;
+            }
+
+            if (holder.Items.Count == 0 || holder.Items[0] is not MenuItem submenu)
+                return null;
+
+            var items = new List<object>();
+            foreach (var item in submenu.Items)
+                items.Add(item);
+            submenu.Items.Clear();
+
+            var menu = new ContextMenu();
+            foreach (var item in items)
+                menu.Items.Add(item);
+            return menu;
         }
 
         private ContextMenu CreateContextMenuForSingleCommit(ViewModels.Repository repo, Models.Commit commit)
