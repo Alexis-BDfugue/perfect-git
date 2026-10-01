@@ -5,7 +5,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 
 namespace SourceGit.Views
 {
@@ -25,8 +24,7 @@ namespace SourceGit.Views
 
         public LauncherTabSizeBox()
         {
-            MinWidth = 140;
-            Width = 240;
+            MaxWidth = 240;
         }
 
         protected override Type StyleKeyOverride => typeof(Border);
@@ -37,10 +35,7 @@ namespace SourceGit.Views
 
             if (change.Property == UseFixedWidthProperty)
             {
-                if (_useFixedWidth)
-                    Width = 240;
-                else
-                    Width = double.NaN;
+                MaxWidth = _useFixedWidth ? 240 : double.PositiveInfinity;
             }
         }
 
@@ -63,30 +58,6 @@ namespace SourceGit.Views
         public LauncherTabBar()
         {
             InitializeComponent();
-        }
-
-        public override void Render(DrawingContext context)
-        {
-            base.Render(context);
-
-            if (LauncherTabsList == null || LauncherTabsList.SelectedIndex == -1)
-                return;
-
-            var selected = LauncherTabsList.ContainerFromIndex(LauncherTabsList.SelectedIndex);
-            if (selected == null)
-                return;
-
-            var offsetX = LauncherTabsScroller.Bounds.X - LauncherTabsScroller.Offset.X;
-            var left = Math.Max(selected.Bounds.Left + offsetX, LauncherTabsScroller.Bounds.Left);
-            var right = Math.Min(selected.Bounds.Right + offsetX, LauncherTabsScroller.Bounds.Right);
-            if (right - left < 1)
-                return;
-
-            var shape = new RoundedRect(new Rect(left, 0, right - left, Bounds.Height), new CornerRadius(8, 8, 0, 0));
-            context.DrawRectangle(this.FindResource("Brush.ToolBar") as IBrush, null, shape);
-
-            using (context.PushClip(shape))
-                context.FillRectangle(this.FindResource("Brush.Accent") as IBrush, new Rect(left, 0, right - left, 2));
         }
 
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

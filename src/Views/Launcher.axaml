@@ -106,7 +106,7 @@
       </Button>
 
       <!-- Pages Tabs -->
-      <v:LauncherTabBar Grid.Column="2" Height="32" Margin="4,0,16,0" VerticalAlignment="Bottom"/>
+      <v:LauncherTabBar Grid.Column="2" Height="40" Margin="4,0,16,0" VerticalAlignment="Center"/>
 
       <!-- Search / Command Palette -->
       <Button Grid.Column="3"
