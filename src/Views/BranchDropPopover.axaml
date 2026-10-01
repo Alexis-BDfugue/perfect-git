@@ -1,0 +1,123 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SourceGit.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="300"
+             x:Class="SourceGit.Views.BranchDropPopover"
+             x:DataType="vm:BranchDrop">
+  <Border Width="350"
+          Margin="12,4,12,20"
+          Background="{DynamicResource Brush.Popup}"
+          BorderBrush="{DynamicResource Brush.PopupBorder}"
+          BorderThickness="1"
+          CornerRadius="10"
+          BoxShadow="0 18 44 0 #BB000000">
+    <StackPanel Orientation="Vertical">
+      <!-- Header -->
+      <Border Padding="14,10" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border0}">
+        <TextBlock FontSize="12" Foreground="{DynamicResource Brush.FG2}" TextWrapping="Wrap">
+          <Run Text="{DynamicResource Text.BranchDrop.Drop}"/>
+          <Run Text="{Binding SourceName, Mode=OneWay}" FontWeight="Bold" Foreground="{Binding SourceBrush}"/>
+          <Run Text="{DynamicResource Text.BranchDrop.Onto}"/>
+          <Run Text="{Binding TargetName, Mode=OneWay}" FontWeight="Bold" Foreground="{Binding TargetBrush}"/>
+        </TextBlock>
+      </Border>
+
+      <!-- Options -->
+      <ListBox x:Name="OptionsList"
+               Margin="6"
+               Background="Transparent"
+               ItemsSource="{Binding Options}"
+               SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
+               KeyDown="OnOptionsKeyDown">
+        <ListBox.Styles>
+          <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+          </Style>
+          <Style Selector="ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+          </Style>
+          <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+          </Style>
+          <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+          </Style>
+          <Style Selector="Border.drop_option">
+            <Setter Property="Background" Value="Transparent"/>
+          </Style>
+          <Style Selector="ListBoxItem:pointerover Border.drop_option">
+            <Setter Property="Background" Value="{DynamicResource Brush.Hover}"/>
+          </Style>
+          <Style Selector="ListBoxItem:selected Border.drop_option">
+            <Setter Property="Background" Value="{DynamicResource Brush.Selection}"/>
+          </Style>
+          <Style Selector="Border.drop_option.disabled">
+            <Setter Property="Opacity" Value=".4"/>
+          </Style>
+          <Style Selector="TextBlock.option_title">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+          </Style>
+          <Style Selector="TextBlock.option_title.secondary">
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
+          </Style>
+        </ListBox.Styles>
+
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Vertical"/>
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="vm:BranchDropOption">
+            <StackPanel Orientation="Vertical">
+              <Rectangle Height="1" Margin="6,4" Fill="{DynamicResource Brush.Border0}" IsVisible="{Binding HasSeparator}"/>
+              <Border Classes="drop_option"
+                      Padding="10,8"
+                      CornerRadius="7"
+                      Classes.disabled="{Binding !IsEnabled}"
+                      Tapped="OnOptionTapped">
+                <StackPanel Orientation="Vertical" Spacing="2">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0"
+                               Classes="option_title"
+                               Classes.secondary="{Binding HasSeparator}"
+                               TextTrimming="CharacterEllipsis"
+                               Text="{Binding Title}"/>
+                    <TextBlock Grid.Column="1"
+                               Margin="8,0,0,0"
+                               FontFamily="{DynamicResource Fonts.Monospace}"
+                               FontSize="11"
+                               Foreground="{DynamicResource Brush.FG3}"
+                               VerticalAlignment="Center"
+                               Text="{Binding GitTerm}"/>
+                  </Grid>
+                  <TextBlock FontSize="11.5"
+                             Foreground="{DynamicResource Brush.FG2}"
+                             TextWrapping="Wrap"
+                             Text="{Binding Description}"
+                             IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                </StackPanel>
+              </Border>
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <!-- Footer -->
+      <Border Padding="14,8" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Brush.Border0}">
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <Ellipse Width="7" Height="7" VerticalAlignment="Center" Fill="{Binding ConflictBrush}"/>
+          <TextBlock FontSize="11" Foreground="{DynamicResource Brush.FG3}" Text="{Binding ConflictDescription}"/>
+          <TextBlock FontSize="11" Foreground="{DynamicResource Brush.FG3}" Text="·"/>
+          <TextBlock FontSize="11" Foreground="{DynamicResource Brush.FG3}" Text="{DynamicResource Text.BranchDrop.Cancel}"/>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </Border>
+</UserControl>

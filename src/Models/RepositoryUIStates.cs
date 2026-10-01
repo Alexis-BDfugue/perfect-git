@@ -19,7 +19,7 @@ namespace SourceGit.Models
         {
             get;
             set;
-        } = true;
+        } = false;
 
         public bool IsSHAColumnVisibleInHistory
         {
@@ -208,6 +208,18 @@ namespace SourceGit.Models
         } = false;
 
         public bool IsWorktreeExpandedInSideBar
+        {
+            get;
+            set;
+        } = false;
+
+        public bool IsPullRequestsExpandedInSideBar
+        {
+            get;
+            set;
+        } = true;
+
+        public bool IsStashesExpandedInSideBar
         {
             get;
             set;

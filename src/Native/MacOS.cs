@@ -266,6 +266,12 @@ namespace SourceGit.Native
         public static extern void objc_msgSend_Void_IntPtr(IntPtr receiver, IntPtr selector, IntPtr arg);
 
         [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
+        public static extern IntPtr objc_msgSend_IntPtr_IntPtr(IntPtr receiver, IntPtr selector, IntPtr arg);
+
+        [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
+        public static extern IntPtr objc_msgSend_IntPtr_IntPtr_ULong(IntPtr receiver, IntPtr selector, IntPtr arg1, ulong arg2);
+
+        [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend_Void_Point(IntPtr receiver, IntPtr selector, CGPoint arg);
 
         [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend_stret")]
@@ -276,9 +282,10 @@ namespace SourceGit.Native
 
         private static readonly IntPtr s_selStandardWindowButton = sel_registerName("standardWindowButton:");
         private static readonly IntPtr s_selFrame = sel_registerName("frame");
+        private static readonly IntPtr s_selSuperview = sel_registerName("superview");
         private static readonly IntPtr s_selSetFrameOrigin = sel_registerName("setFrameOrigin:");
 
-        public static void AdjustTrafficLightsForThickTitleBar(Window window)
+        public static void AdjustTrafficLightsForThickTitleBar(Window window, double captionHeight)
         {
             IntPtr nsWindow = window.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
             if (nsWindow == IntPtr.Zero)
@@ -290,24 +297,62 @@ namespace SourceGit.Native
             if (nsCloseBtn == IntPtr.Zero || nsMinBtn == IntPtr.Zero || nsZoomBtn == IntPtr.Zero)
                 return;
 
+            IntPtr nsContainer = objc_msgSend_IntPtr(nsCloseBtn, s_selSuperview);
+            if (nsContainer == IntPtr.Zero)
+                return;
+
             // For Intel CPU, we need to use `objc_msgSend_stret` to get the `CGRect` struct, while for Apple Silicon, we can directly use `objc_msgSend`.
+            CGRect frame, container;
             if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
             {
-                objc_msgSendStrect_Rect(out var frame, nsCloseBtn, s_selFrame);
-                if (Math.Abs(frame.Origin.X - 14) <= 0.5 || Math.Abs(frame.Origin.Y - 2) <= 0.5)
-                    return;
+                objc_msgSendStrect_Rect(out frame, nsCloseBtn, s_selFrame);
+                objc_msgSendStrect_Rect(out container, nsContainer, s_selFrame);
             }
             else
             {
-                CGRect frame = objc_msgSend_Rect(nsCloseBtn, s_selFrame);
-                if (Math.Abs(frame.Origin.X - 14) <= 0.5 || Math.Abs(frame.Origin.Y - 2) <= 0.5)
-                    return;
+                frame = objc_msgSend_Rect(nsCloseBtn, s_selFrame);
+                container = objc_msgSend_Rect(nsContainer, s_selFrame);
             }
 
-            var yOffset = OperatingSystem.IsMacOSVersionAtLeast(26) ? 6 : 2;
-            objc_msgSend_Void_Point(nsCloseBtn, s_selSetFrameOrigin, new(14, yOffset));
-            objc_msgSend_Void_Point(nsMinBtn, s_selSetFrameOrigin, new(14 + 20, yOffset));
-            objc_msgSend_Void_Point(nsZoomBtn, s_selSetFrameOrigin, new(14 + 40, yOffset));
+            // AppKit uses a bottom-left origin: center the buttons vertically in our custom caption.
+            var y = Math.Max(0, container.Size.Height - (captionHeight + frame.Size.Height) * 0.5);
+            if (Math.Abs(frame.Origin.X - 14) <= 0.5 && Math.Abs(frame.Origin.Y - y) <= 0.5)
+                return;
+
+            objc_msgSend_Void_Point(nsCloseBtn, s_selSetFrameOrigin, new(14, y));
+            objc_msgSend_Void_Point(nsMinBtn, s_selSetFrameOrigin, new(14 + 20, y));
+            objc_msgSend_Void_Point(nsZoomBtn, s_selSetFrameOrigin, new(14 + 40, y));
+        }
+
+        /// <summary>
+        ///     Sets the Dock icon. Needed when the app doesn't run from a `.app` bundle (e.g. `dotnet run`),
+        ///     since macOS then shows a generic executable icon.
+        /// </summary>
+        public static void SetDockIcon(byte[] png)
+        {
+            if (png is not { Length: > 0 })
+                return;
+
+            var handle = GCHandle.Alloc(png, GCHandleType.Pinned);
+            try
+            {
+                // `dataWithBytes:length:` copies the bytes, so the buffer can be released afterwards.
+                var data = objc_msgSend_IntPtr_IntPtr_ULong(objc_getClass("NSData"), sel_registerName("dataWithBytes:length:"), handle.AddrOfPinnedObject(), (ulong)png.Length);
+                if (data == IntPtr.Zero)
+                    return;
+
+                var image = objc_msgSend_IntPtr(objc_getClass("NSImage"), sel_registerName("alloc"));
+                image = objc_msgSend_IntPtr_IntPtr(image, sel_registerName("initWithData:"), data);
+                if (image == IntPtr.Zero)
+                    return;
+
+                var app = objc_msgSend_IntPtr(objc_getClass("NSApplication"), sel_registerName("sharedApplication"));
+                objc_msgSend_Void_IntPtr(app, sel_registerName("setApplicationIconImage:"), image);
+            }
+            finally
+            {
+                handle.Free();
+            }
         }
 
         public static void HideSelf()

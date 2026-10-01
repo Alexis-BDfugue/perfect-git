@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0b0c0e;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased}a{color:#a8a0f0}a:hover{color:#c9c3f7}</style>
+</helmet>
+<div style="--bg:#121316;--panel:#17181c;--side:#141519;--bar:#0e0f12;--raise:#1e2025;--fg:#eceef2;--fg2:#a3a7b0;--fg3:#71757e;--line:#26282e;--hover:#ffffff0b;--sel:oklch(0.29 0.045 285);--acc:oklch(0.76 0.13 285);--accfg:#15141a;--addfg:oklch(0.78 0.14 150);--delfg:oklch(0.74 0.15 25);--warnfg:oklch(0.82 0.12 85);--cur:oklch(0.72 0.14 250);--inc:oklch(0.76 0.16 145);--curbg:oklch(0.72 0.14 250 / 0.13);--incbg:oklch(0.76 0.16 145 / 0.12);background:#0b0c0e;color:var(--fg);padding:40px;display:flex;flex-direction:column;gap:28px;width:1440px;font-size:13px">
+
+  <div style="display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap">
+    <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:600;color:var(--fg3)">PerfectGit · Screen</span><span style="font-size:26px;font-weight:700;letter-spacing:-0.02em">Resolve merge conflicts</span></div>
+    <div style="margin-left:auto;display:flex;gap:2px;padding:3px;border-radius:8px;background:var(--raise);border:1px solid var(--line)">
+      <sc-for list="{{ tabs }}" as="m" hint-placeholder-count="4"><span onClick="{{ m.go }}" style="padding:6px 11px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;background:{{ m.bg }};color:{{ m.fg }}">{{ m.l }}</span></sc-for>
+    </div>
+  </div>
+
+  <div style="width:1440px;height:900px;border-radius:12px;overflow:hidden;background:var(--bg);box-shadow:0 30px 80px #00000099,0 0 0 0.5px #ffffff26;display:flex;flex-direction:column;position:relative">
+
+    <div style="height:40px;flex:none;display:flex;align-items:flex-end;gap:2px;padding:0 12px 0 16px;background:var(--bar)">
+      <div style="display:flex;gap:8px;align-self:center;margin-right:16px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div>
+      <div style="height:32px;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:8px 8px 0 0;background:var(--bg);min-width:200px;box-shadow:inset 0 2px 0 var(--acc)"><span style="font-weight:600">perfect-git</span><span style="font-size:11.5px;color:var(--warnfg)">merging</span><span style="margin-left:auto;color:var(--fg3);font-size:11px">✕</span></div>
+      <div style="height:32px;display:flex;align-items:center;gap:8px;padding:0 14px;color:var(--fg2);min-width:140px">avalonia<span style="font-size:11.5px;color:var(--fg3)">master</span></div>
+      <div style="height:32px;display:flex;align-items:center;padding:0 10px;color:var(--fg3);font-size:16px">＋</div>
+      <div style="flex:1"></div>
+      <div style="align-self:center;width:300px;height:26px;border-radius:7px;background:var(--raise);border:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 10px;font-size:12px;color:var(--fg3)">⌕ Search or run a command…<span style="margin-left:auto;font-size:11px;padding:1px 5px;border-radius:4px;border:1px solid var(--line)">⌘P</span></div>
+    </div>
+
+    <div style="height:52px;flex:none;display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid var(--line);background:{{ bannerBg }}">
+      <span style="width:26px;height:26px;border-radius:7px;background:{{ bannerIcoBg }};color:{{ bannerIcoFg }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex:none">{{ bannerIco }}</span>
+      <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+        <span style="display:flex;align-items:center;gap:7px;font-weight:600">Merging<span style="display:flex;align-items:center;gap:5px;padding:1px 7px;border-radius:5px;background:var(--incbg);font-family:'IBM Plex Mono',monospace;font-size:11.5px"><span style="width:7px;height:7px;border-radius:50%;background:var(--inc)"></span>feature/merge-dnd</span>into<span style="display:flex;align-items:center;gap:5px;padding:1px 7px;border-radius:5px;background:var(--curbg);font-family:'IBM Plex Mono',monospace;font-size:11.5px"><span style="width:7px;height:7px;border-radius:50%;background:var(--cur)"></span>develop</span></span>
+        <span style="font-size:12px;color:var(--fg2)">{{ bannerSub }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-left:12px">
+        <div style="width:120px;height:4px;border-radius:2px;background:var(--line);overflow:hidden"><div style="height:100%;width:{{ pct }};background:{{ pctColor }};border-radius:2px"></div></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--fg2)">{{ pctLabel }}</span>
+      </div>
+      <div style="flex:1"></div>
+      <span onClick="{{ goAbort }}" style="cursor:pointer;padding:7px 12px;border-radius:7px;border:1px solid var(--line);color:var(--delfg);font-weight:600;font-size:12.5px">Abort merge</span>
+      <span style="padding:7px 14px;border-radius:7px;background:{{ commitBg }};color:{{ commitFg }};font-weight:600;font-size:12.5px;display:flex;align-items:center;gap:8px">Commit merge<span style="font-size:11px;opacity:0.7">⌘↵</span></span>
+    </div>
+
+    <div style="flex:1;display:flex;min-height:0">
+
+      <div style="width:260px;flex:none;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column">
+        <div style="padding:14px 14px 8px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3);display:flex">CONFLICTED FILES<span style="margin-left:auto;font-family:'IBM Plex Mono',monospace">{{ filesCount }}</span></div>
+        <div style="display:flex;flex-direction:column;padding:0 6px;gap:1px">
+          <sc-for list="{{ files }}" as="f" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;background:{{ f.bg }}">
+              <span style="width:16px;height:16px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:{{ f.dotBg }};color:{{ f.dotFg }};border:1.5px solid {{ f.dotBd }}">{{ f.dot }}</span>
+              <div style="display:flex;flex-direction:column;gap:1px;min-width:0;flex:1">
+                <span style="font-weight:{{ f.fw }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</span>
+                <span style="font-size:11px;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.dir }}</span>
+              </div>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:{{ f.stFg }}">{{ f.st }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:18px 14px 8px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3);display:flex">MERGED AUTOMATICALLY<span style="margin-left:auto;font-family:'IBM Plex Mono',monospace">5</span></div>
+        <div style="display:flex;flex-direction:column;padding:0 6px">
+          <sc-for list="{{ autoFiles }}" as="a" hint-placeholder-count="5"><div style="display:flex;align-items:center;gap:10px;padding:5px 8px;color:var(--fg2)"><span style="width:16px;text-align:center;color:var(--addfg);font-size:11px">✓</span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ a }}</span></div></sc-for>
+        </div>
+        <div style="flex:1"></div>
+        <div style="margin:12px;padding:12px;border-radius:8px;border:1px solid var(--line);display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:12px;font-weight:600">Not sure? You can always undo.</span>
+          <span style="font-size:11.5px;line-height:1.45;color:var(--fg2)">Nothing is final until you commit. Abort puts develop back exactly as it was.</span>
+        </div>
+      </div>
+
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+        <div style="height:44px;flex:none;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid var(--line)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px"><span style="color:var(--fg3)">src/graph/</span>theme.ts</span>
+          <span style="padding:2px 7px;border-radius:5px;background:{{ fileTagBg }};color:{{ fileTagFg }};font-size:11px;font-weight:600">{{ fileTag }}</span>
+          <div style="flex:1"></div>
+          <span style="font-size:12px;color:var(--fg2)">Conflict <span style="font-family:'IBM Plex Mono',monospace;color:var(--fg)">{{ curIdx }}</span> of 2</span>
+          <div style="display:flex;gap:2px"><span style="width:24px;height:24px;border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--fg2);font-size:11px">↑</span><span style="width:24px;height:24px;border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--fg2);font-size:11px">↓</span></div>
+          <span style="width:1px;height:18px;background:var(--line)"></span>
+          <div style="display:flex;gap:2px;padding:2px;border-radius:6px;background:var(--raise);font-size:11.5px"><span style="padding:3px 8px;border-radius:4px;background:var(--sel)">Side by side</span><span style="padding:3px 8px;color:var(--fg2)">Inline</span></div>
+        </div>
+
+        <div style="height:392px;flex:none;display:flex;border-bottom:1px solid var(--line)">
+          <sc-for list="{{ cols }}" as="c" hint-placeholder-count="2">
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--line)">
+              <div style="height:34px;flex:none;display:flex;align-items:center;gap:8px;padding:0 14px;border-bottom:1px solid var(--line);background:var(--panel)">
+                <span style="width:8px;height:8px;border-radius:50%;background:{{ c.color }}"></span>
+                <span style="font-weight:600">{{ c.title }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--fg2)">{{ c.branch }}</span>
+                <span style="margin-left:auto;font-size:11.5px;color:var(--fg3)">{{ c.who }}</span>
+              </div>
+              <div style="flex:1;overflow:hidden;padding:6px 0;font-family:'IBM Plex Mono',monospace;font-size:12px">
+                <sc-for list="{{ c.rows }}" as="r">
+                  <sc-if value="{{ r.isHead }}" hint-placeholder-val="{{ false }}">
+                    <div style="height:30px;display:flex;align-items:center;gap:8px;padding:0 10px 0 14px;margin-top:4px;background:{{ r.bg }};border-left:3px solid {{ r.color }};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;font-size:11.5px">
+                      <span style="font-weight:600;color:var(--fg)">{{ r.label }}</span>
+                      <span style="color:var(--fg3)">{{ r.sub }}</span>
+                      <span onClick="{{ r.pick }}" style="margin-left:auto;cursor:pointer;display:flex;align-items:center;gap:6px;padding:3px 9px;border-radius:5px;font-weight:600;background:{{ r.btnBg }};color:{{ r.btnFg }};border:1px solid {{ r.btnBd }}">{{ r.btn }}<span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;opacity:0.65">{{ r.key }}</span></span>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ r.isLine }}" hint-placeholder-val="{{ true }}">
+                    <div style="height:20px;display:flex;align-items:center;background:{{ r.bg }};opacity:{{ r.op }};border-left:3px solid {{ r.edge }}">
+                      <span style="width:38px;flex:none;text-align:right;padding-right:12px;color:var(--fg3);font-size:11px">{{ r.n }}</span>
+                      <span style="white-space:pre;color:var(--fg);text-decoration:{{ r.strike }};text-decoration-color:var(--fg3)">{{ r.code }}<span style="color:var(--fg3)">{{ r.cm }}</span></span>
+                    </div>
+                  </sc-if>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="height:34px;flex:none;display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--panel);border-bottom:1px solid var(--line)">
+          <span style="font-weight:600">Result</span>
+          <span style="font-size:11.5px;color:var(--fg3)">What theme.ts will contain after the merge. You can type in it.</span>
+          <div style="flex:1"></div>
+          <span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--fg2)"><span style="width:10px;height:3px;border-radius:2px;background:var(--cur)"></span>develop</span>
+          <span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--fg2)"><span style="width:10px;height:3px;border-radius:2px;background:var(--inc)"></span>feature/merge-dnd</span>
+          <span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--fg2)"><span style="width:10px;height:3px;border-radius:2px;background:var(--acc)"></span>edited by you</span>
+        </div>
+        <div style="flex:1;min-height:0;overflow:hidden;padding:6px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;background:#101114">
+          <sc-for list="{{ result }}" as="r">
+            <sc-if value="{{ r.isGap }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:4px 14px 4px 41px;padding:10px 12px;border-radius:7px;border:1px dashed oklch(0.82 0.12 85 / 0.55);background:oklch(0.82 0.12 85 / 0.06);display:flex;align-items:center;gap:12px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;font-size:12px">
+                <span style="width:18px;height:18px;border-radius:50%;background:oklch(0.82 0.12 85 / 0.2);color:var(--warnfg);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none">{{ r.num }}</span>
+                <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><span style="font-weight:600">{{ r.label }}</span><span style="color:var(--fg2)">Pick a side above, combine both, or type the right version here.</span></div>
+                <span onClick="{{ r.both }}" style="cursor:pointer;padding:4px 10px;border-radius:5px;border:1px solid var(--line);color:var(--fg);font-weight:600;font-size:11.5px">Keep both<span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;opacity:0.6;margin-left:6px">⌥↓</span></span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ r.isLine }}" hint-placeholder-val="{{ true }}">
+              <div style="height:20px;display:flex;align-items:center;background:{{ r.bg }}">
+                <span style="width:3px;align-self:stretch;flex:none;background:{{ r.edge }}"></span>
+                <span style="width:38px;flex:none;text-align:right;padding-right:12px;color:var(--fg3);font-size:11px">{{ r.n }}</span>
+                <span style="white-space:pre;color:var(--fg)">{{ r.code }}<span style="color:var(--fg3)">{{ r.cm }}</span></span>
+                <sc-if value="{{ r.tag }}" hint-placeholder-val="{{ false }}"><span onClick="{{ r.undo }}" style="margin-left:auto;margin-right:14px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;font-size:11px;color:var(--fg3)">{{ r.tag }} · Undo</span></sc-if>
+              </div>
+            </sc-if>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="width:300px;flex:none;background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;gap:20px;padding:16px;overflow:hidden">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">WHY THIS HAPPENED</span>
+          <span style="font-size:12.5px;line-height:1.5;color:var(--fg2);text-wrap:pretty">Both branches changed the <b style="color:var(--fg)">same lines</b> of theme.ts since they split. Git merged everything else on its own, but here it can’t guess which version you want.</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">WHO CHANGED WHAT</span>
+          <sc-for list="{{ sides }}" as="s" hint-placeholder-count="2">
+            <div style="display:flex;gap:10px;padding:10px;border-radius:8px;background:var(--raise);border:1px solid var(--line)">
+              <span style="width:26px;height:26px;border-radius:50%;flex:none;background:{{ s.av }};color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--raise),0 0 0 3.5px {{ s.color }}">{{ s.ini }}</span>
+              <div style="display:flex;flex-direction:column;gap:3px;min-width:0">
+                <span style="font-weight:600">{{ s.msg }}</span>
+                <span style="font-size:11.5px;color:var(--fg3)">{{ s.meta }}</span>
+                <span style="display:flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg2)"><span style="width:6px;height:6px;border-radius:50%;background:{{ s.color }}"></span>{{ s.branch }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">SHORTCUTS</span>
+          <sc-for list="{{ keys }}" as="k" hint-placeholder-count="4"><div style="display:flex;align-items:center;font-size:12px;color:var(--fg2);padding:2px 0"><span>{{ k.l }}</span><span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--fg)">{{ k.k }}</span></div></sc-for>
+        </div>
+        <div style="flex:1"></div>
+        <div style="display:flex;flex-direction:column;gap:6px;padding-top:14px;border-top:1px solid var(--line)">
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">UNDER THE HOOD</span>
+          <sc-for list="{{ cmds }}" as="g"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--fg)">{{ g.c }}</span><span style="font-size:11px;color:var(--fg3)">{{ g.d }}</span></div></sc-for>
+        </div>
+        <span style="padding:9px 12px;border-radius:7px;text-align:center;font-weight:600;background:{{ markBg }};color:{{ markFg }};border:1px solid {{ markBd }}">{{ markLabel }}</span>
+      </div>
+    </div>
+
+    <div style="height:28px;flex:none;display:flex;align-items:center;gap:14px;padding:0 14px;border-top:1px solid var(--line);background:var(--bar);font-size:11.5px;color:var(--fg3)">
+      <span style="display:flex;align-items:center;gap:6px;color:{{ statusFg }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ statusFg }}"></span>{{ statusText }}</span>
+      <span>UTF-8 · LF · TypeScript</span>
+      <span style="margin-left:auto">Ln 4, Col 1</span>
+    </div>
+
+    <sc-if value="{{ isAbort }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;background:#0a0b0dcc;display:flex;justify-content:center;padding-top:150px;z-index:10">
+        <div style="width:440px;align-self:flex-start;border-radius:12px;background:var(--raise);border:1px solid #ffffff24;box-shadow:0 30px 80px #000c;padding:22px;display:flex;flex-direction:column;gap:14px">
+          <span style="width:36px;height:36px;border-radius:9px;background:oklch(0.74 0.15 25 / 0.15);color:var(--delfg);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700">↺</span>
+          <span style="font-size:16px;font-weight:700;letter-spacing:-0.01em">Abort this merge?</span>
+          <span style="font-size:12.5px;line-height:1.5;color:var(--fg2)">develop goes back to exactly how it was before the merge. feature/merge-dnd is not touched. The <b style="color:var(--fg)">1 conflict</b> you already resolved will be lost.</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--fg3)">git merge --abort</span>
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px">
+            <span onClick="{{ goPartial }}" style="cursor:pointer;padding:7px 14px;border-radius:7px;border:1px solid var(--line);color:var(--fg);font-weight:600;font-size:12.5px">Keep resolving</span>
+            <span style="padding:7px 14px;border-radius:7px;background:var(--delfg);color:#1a0d0b;font-weight:600;font-size:12.5px">Abort merge</span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px">
+    <sc-for list="{{ notes }}" as="n" hint-placeholder-count="4">
+      <div style="padding:16px;border-radius:8px;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;gap:6px"><span style="font-size:13.5px;font-weight:600">{{ n.t }}</span><span style="font-size:12px;line-height:1.5;color:var(--fg2)">{{ n.b }}</span></div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;conflict&quot;,&quot;partial&quot;,&quot;done&quot;,&quot;abort&quot;],&quot;default&quot;:&quot;conflict&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { mode: null, ch: null };
+  presets = { conflict: { 1: null, 2: null }, partial: { 1: 'inc', 2: null }, done: { 1: 'inc', 2: 'inc' }, abort: { 1: 'inc', 2: null } };
+  renderVals() {
+    const mode = this.state.mode ?? this.props.mode ?? 'conflict';
+    const ch = this.state.ch ?? this.presets[mode];
+    const set = (k, v) => this.setState({ ch: { ...ch, [k]: v }, mode: mode === 'abort' ? 'partial' : mode });
+    const SEG = [
+      { ctx: ["import { oklch } from './color';", '', '// One color per lane: sidebar, graph and inspector.'] },
+      { h: 1, label: 'Lane colours', cur: ['export const laneColors = [', '  oklch(0.72, 0.14, 250), // blue', '  oklch(0.76, 0.16, 55),  // orange', '  oklch(0.76, 0.16, 145), // green', '];'],
+        inc: ['export const laneColors = [', "  '#6aa2ec', // blue", "  '#f59a56', // orange", "  '#6fcf73', // green", "  '#a8a0f0', // violet", '];'] },
+      { ctx: ['', 'export function laneColor(i: number) {', '  return laneColors[i % laneColors.length];', '}', ''] },
+      { h: 2, label: 'Node sizes', cur: ['export const NODE_RADIUS = 7;'], inc: ['export const NODE_RADIUS = 6;', 'export const MERGE_RADIUS = 5; // hollow merge dots'] },
+      { ctx: ['export const ROW_HEIGHT = 28;'] },
+    ];
+    const split = t => { const i = t.indexOf('//'); return i < 0 ? { code: t, cm: '' } : { code: t.slice(0, i), cm: t.slice(i) }; };
+    const C = { cur: 'var(--cur)', inc: 'var(--inc)' }, BG = { cur: 'var(--curbg)', inc: 'var(--incbg)' };
+    const KEY = { cur: '⌥←', inc: '⌥→' };
+    const col = side => {
+      const rows = []; let n = 1;
+      SEG.forEach(s => {
+        if (s.ctx) { s.ctx.forEach(t => rows.push({ isLine: true, n: n++, ...split(t), bg: 'transparent', edge: 'transparent', op: 1, strike: 'none' })); return; }
+        const c = ch[s.h], picked = c === side || c === 'both', dropped = c && !picked;
+        rows.push({ isHead: true, label: `Conflict ${s.h} · ${s.label}`, sub: dropped ? 'not kept' : picked ? 'kept' : '', bg: BG[side], color: C[side],
+          btn: picked ? '✓ Kept' : side === 'cur' ? 'Keep current' : 'Keep incoming', key: picked ? '' : KEY[side],
+          btnBg: picked ? C[side] : 'var(--raise)', btnFg: picked ? 'var(--accfg)' : 'var(--fg)', btnBd: picked ? 'transparent' : 'var(--line)',
+          pick: () => set(s.h, picked ? null : side) });
+        s[side].forEach(t => rows.push({ isLine: true, n: n++, ...split(t), bg: dropped ? 'transparent' : BG[side], edge: C[side], op: dropped ? 0.4 : 1, strike: dropped ? 'line-through' : 'none' }));
+      });
+      return rows;
+    };
+    const result = []; let rn = 1;
+    SEG.forEach(s => {
+      if (s.ctx) { s.ctx.forEach(t => result.push({ isLine: true, n: rn++, ...split(t), bg: 'transparent', edge: 'transparent', tag: '' })); return; }
+      const c = ch[s.h];
+      if (!c) { result.push({ isGap: true, num: String(s.h), label: `Conflict ${s.h} · ${s.label}`, both: () => set(s.h, 'both') }); return; }
+      const lines = c === 'both' ? [...s.cur.map(t => ['cur', t]), ...s.inc.map(t => ['inc', t])] : s[c].map(t => [c, t]);
+      lines.forEach(([sd, t], i) => result.push({ isLine: true, n: rn++, ...split(t), bg: 'transparent', edge: C[sd], tag: i === 0 ? (c === 'both' ? 'Both kept' : c === 'cur' ? 'From develop' : 'From feature/merge-dnd') : '', undo: () => set(s.h, null) }));
+    });
+    const left = [1, 2].filter(k => !ch[k]).length;
+    const otherDone = mode === 'done';
+    const filesLeft = (left ? 1 : 0) + (otherDone ? 0 : 1);
+    const done = filesLeft === 0;
+    const files = [
+      { name: 'theme.ts', dir: 'src/graph', st: left ? `${2 - left}/2` : '✓', sel: true, ok: !left },
+      { name: 'GraphNode.axaml', dir: 'src/Views', st: otherDone ? '✓' : '0/1', ok: otherDone },
+      { name: 'README.md', dir: '', st: '✓', ok: true },
+    ].map(f => ({ ...f, dir: f.dir || 'root', bg: f.sel ? 'var(--sel)' : 'transparent', fw: f.sel ? 600 : 400,
+      dot: f.ok ? '✓' : '!', dotBg: f.ok ? 'oklch(0.78 0.14 150 / 0.18)' : 'oklch(0.82 0.12 85 / 0.18)', dotFg: f.ok ? 'var(--addfg)' : 'var(--warnfg)', dotBd: 'transparent',
+      stFg: f.ok ? 'var(--addfg)' : 'var(--fg2)' }));
+    const resolvedFiles = 3 - filesLeft;
+    const MODES = [['conflict', 'Conflict'], ['partial', 'Partly resolved'], ['done', 'All resolved'], ['abort', 'Abort']];
+    return {
+      tabs: MODES.map(([k, l]) => ({ l, go: () => this.setState({ mode: k, ch: null }), bg: k === mode ? 'var(--sel)' : 'transparent', fg: k === mode ? 'var(--fg)' : 'var(--fg2)' })),
+      cols: [
+        { title: 'Current', branch: 'develop', color: C.cur, who: 'Yanis · 2 days ago', rows: col('cur') },
+        { title: 'Incoming', branch: 'feature/merge-dnd', color: C.inc, who: 'Camille · yesterday', rows: col('inc') },
+      ],
+      result, files, filesCount: `${resolvedFiles}/3`,
+      autoFiles: ['GraphView.axaml.cs', 'BranchList.cs', 'DragDropHandler.cs', 'en_US.axaml', 'CHANGELOG.md'],
+      curIdx: ch[1] ? (ch[2] ? '2' : '2') : '1',
+      fileTag: left ? `${left} left` : 'Resolved', fileTagBg: left ? 'oklch(0.82 0.12 85 / 0.16)' : 'oklch(0.78 0.14 150 / 0.16)', fileTagFg: left ? 'var(--warnfg)' : 'var(--addfg)',
+      bannerBg: done ? 'oklch(0.78 0.14 150 / 0.06)' : 'oklch(0.82 0.12 85 / 0.05)',
+      bannerIco: done ? '✓' : '!', bannerIcoBg: done ? 'oklch(0.78 0.14 150 / 0.18)' : 'oklch(0.82 0.12 85 / 0.18)', bannerIcoFg: done ? 'var(--addfg)' : 'var(--warnfg)',
+      bannerSub: done ? 'All conflicts resolved. Commit to finish the merge.' : `5 files merged on their own · ${filesLeft} still need${filesLeft > 1 ? '' : 's'} you`,
+      pct: Math.round(resolvedFiles / 3 * 100) + '%', pctColor: done ? 'var(--addfg)' : 'var(--warnfg)', pctLabel: `${resolvedFiles} of 3 files`,
+      commitBg: done ? 'var(--acc)' : 'var(--raise)', commitFg: done ? 'var(--accfg)' : 'var(--fg3)',
+      markLabel: left ? `Resolve ${left} more conflict${left > 1 ? 's' : ''} first` : done ? '✓ theme.ts marked resolved' : 'Mark theme.ts resolved · next file →',
+      markBg: left ? 'transparent' : done ? 'transparent' : 'var(--acc)', markFg: left ? 'var(--fg3)' : done ? 'var(--addfg)' : 'var(--accfg)', markBd: left ? 'var(--line)' : done ? 'oklch(0.78 0.14 150 / 0.4)' : 'transparent',
+      sides: [
+        { ini: 'Y', av: '#3f8a6a', color: C.cur, msg: 'Switch lane colours to oklch', meta: 'Yanis · 2 days ago · 3e91c0a', branch: 'develop' },
+        { ini: 'C', av: '#4a6fb0', color: C.inc, msg: 'Add violet lane, hollow merge dots', meta: 'Camille · yesterday · b72d4f1', branch: 'feature/merge-dnd' },
+      ],
+      keys: [['Keep current', '⌥←'], ['Keep incoming', '⌥→'], ['Keep both', '⌥↓'], ['Next conflict', '⌘↓']].map(([l, k]) => ({ l, k })),
+      cmds: [
+        { c: 'git merge feature/merge-dnd', d: 'What started this.' },
+        { c: 'git add src/graph/theme.ts', d: 'What “Mark resolved” runs.' },
+      ],
+      statusText: done ? 'Ready to commit merge' : `Merging · ${left + (otherDone ? 0 : 1)} conflict${left + (otherDone ? 0 : 1) > 1 ? 's' : ''} left`,
+      statusFg: done ? 'var(--addfg)' : 'var(--warnfg)',
+      isAbort: mode === 'abort', goAbort: () => this.setState({ mode: 'abort', ch: null }), goPartial: () => this.setState({ mode: 'partial', ch: null }),
+      notes: [
+        ['One decision per block', 'Each conflict gets its own Keep current / Keep incoming buttons on its header. Keep both lives in the Result placeholder. Clicking a kept button again undoes it.'],
+        ['Result is the truth', 'The bottom pane is the file as it will be committed. Unresolved blocks are dashed yellow placeholders, never raw <<<<<<< markers. It stays editable.'],
+        ['Colours = branches', 'Current always uses the target branch colour (blue here), Incoming the merged branch colour (green), same as the graph. Lines typed by hand get the accent stripe.'],
+        ['Safe exits', 'Abort is always visible and explains what is lost. Commit merge stays disabled until every file is resolved; Mark resolved moves to the next conflicted file.'],
+      ].map(([t, b]) => ({ t, b })),
+    };
+  }
+}
+</script>
+</body>
+</html>

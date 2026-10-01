@@ -24,9 +24,36 @@ namespace SourceGit.Views
             set => SetAndRaise(IsDetailsPanelExpandedProperty, ref _isDetailsPanelExpanded, value);
         }
 
+        public static readonly StyledProperty<bool> ShowChangesTabProperty =
+            AvaloniaProperty.Register<CommitDetail, bool>(nameof(ShowChangesTab), true);
+
+        /// <summary>
+        ///     The history page shows diffs in its center column, so its inspector hides the CHANGES and FILES tabs
+        ///     (kept in the standalone commit window).
+        /// </summary>
+        public bool ShowChangesTab
+        {
+            get => GetValue(ShowChangesTabProperty);
+            set => SetValue(ShowChangesTabProperty, value);
+        }
+
         public CommitDetail()
         {
             InitializeComponent();
+        }
+
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        {
+            base.OnPropertyChanged(change);
+
+            if (change.Property == ShowChangesTabProperty || change.Property == DataContextProperty)
+                LeaveHiddenTabs();
+        }
+
+        private void LeaveHiddenTabs()
+        {
+            if (!ShowChangesTab && DataContext is ViewModels.CommitDetail { ActiveTabIndex: > 0 } vm)
+                vm.ActiveTabIndex = 0;
         }
 
         public ContextMenu CreateChangeContextMenu(Models.Change change)
@@ -315,7 +342,7 @@ namespace SourceGit.Views
             if (DataContext is not ViewModels.CommitDetail vm)
                 return;
 
-            if (sender is not ListBox { SelectedItem: Models.Change change })
+            if (sender is not ListBox { SelectedItem: ViewModels.CommitInspectorRow { Change: { } change } })
                 return;
 
             if (e.Key == Key.C &&
@@ -339,21 +366,86 @@ namespace SourceGit.Views
             }
         }
 
-        private void OnChangeDoubleTapped(object sender, TappedEventArgs e)
+        private void OnInspectorTreeMode(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (DataContext is ViewModels.CommitDetail detail && sender is Grid { DataContext: Models.Change change })
-            {
-                detail.ChangeSelection = new(new List<Models.Change> { change });
-                detail.ActiveTabIndex = 1;
-            }
-
+            if (DataContext is ViewModels.CommitDetail vm)
+                vm.IsInspectorTreeMode = true;
             e.Handled = true;
         }
 
-        private void OnChangeContextRequested(object sender, ContextRequestedEventArgs e)
+        private void OnInspectorListMode(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (sender is Grid { DataContext: Models.Change change } grid)
-                CreateChangeContextMenu(change)?.Open(grid);
+            if (DataContext is ViewModels.CommitDetail vm)
+                vm.IsInspectorTreeMode = false;
+            e.Handled = true;
+        }
+
+        private void OnInspectorRowTapped(object sender, TappedEventArgs e)
+        {
+            if (DataContext is ViewModels.CommitDetail vm && sender is Control { DataContext: ViewModels.CommitInspectorRow { IsFolder: true } folder })
+            {
+                vm.ToggleFolder(folder.FolderPath);
+                e.Handled = true;
+                return;
+            }
+
+            if (DataContext is ViewModels.CommitDetail detail && sender is Control { DataContext: ViewModels.CommitInspectorRow { Change: { } change } })
+            {
+                if (this.FindAncestorOfType<Histories>() != null)
+                {
+                    detail.OpenDiffInCenter(change);
+                }
+                else
+                {
+                    // Standalone commit window: no graph to replace, use the changes page.
+                    detail.ChangeSelection = new(new List<Models.Change> { change });
+                    detail.ActiveTabIndex = 1;
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        private void OnInspectorSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Keyboard navigation in the files list follows along while a diff is open.
+            if (DataContext is ViewModels.CommitDetail { CenterDiff: not null } detail &&
+                sender is ListBox { SelectedItem: ViewModels.CommitInspectorRow { Change: { } change } })
+                detail.OpenDiffInCenter(change);
+        }
+
+        private void OnInspectorRowContextRequested(object sender, ContextRequestedEventArgs e)
+        {
+            if (sender is Control { DataContext: ViewModels.CommitInspectorRow { Change: { } change } } control)
+                CreateChangeContextMenu(change)?.Open(control);
+            e.Handled = true;
+        }
+
+        private void OnCheckoutCommit(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.CommitDetail vm)
+                vm.CheckoutCommit();
+            e.Handled = true;
+        }
+
+        private async void OnCherryPickCommit(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            e.Handled = true;
+            if (DataContext is ViewModels.CommitDetail vm)
+                await vm.CherryPickAsync();
+        }
+
+        private void OnRevertCommit(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.CommitDetail vm)
+                vm.Revert();
+            e.Handled = true;
+        }
+
+        private void OnMoreCommitActions(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Control control && DataContext is ViewModels.CommitDetail { Commit: { } commit })
+                this.FindAncestorOfType<Histories>()?.OpenCommitContextMenu(control, commit);
             e.Handled = true;
         }
 

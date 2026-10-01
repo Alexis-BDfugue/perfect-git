@@ -1,4 +1,5 @@
-﻿using Avalonia.Data.Converters;
+﻿using Avalonia.Controls;
+using Avalonia.Data.Converters;
 using Avalonia.Media;
 
 namespace SourceGit.Converters
@@ -9,9 +10,9 @@ namespace SourceGit.Converters
             new FuncValueConverter<Models.DirtyState, IBrush>(v =>
             {
                 if (v.HasFlag(Models.DirtyState.HasLocalChanges))
-                    return Brushes.Gray;
+                    return App.Current?.FindResource("Brush.Warning") as IBrush ?? Brushes.Goldenrod;
                 if (v.HasFlag(Models.DirtyState.HasPendingPullOrPush))
-                    return Brushes.RoyalBlue;
+                    return App.Current?.FindResource("Brush.Accent") as IBrush ?? Brushes.RoyalBlue;
                 return Brushes.Transparent;
             });
 

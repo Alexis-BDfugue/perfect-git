@@ -93,6 +93,15 @@ namespace SourceGit.ViewModels
             get => _workingCopy;
         }
 
+        /// <summary>
+        ///     The "Resolve conflicts" screen shown over the repository, or null.
+        /// </summary>
+        public ConflictResolver ConflictResolver
+        {
+            get => _conflictResolver;
+            private set => SetProperty(ref _conflictResolver, value);
+        }
+
         public StashesPage StashesPage
         {
             get => _stashesPage;
@@ -158,6 +167,8 @@ namespace SourceGit.ViewModels
                 {
                     if (_histories != null)
                         _histories.CurrentBranch = value;
+
+                    NotifyToolbarTips();
 
                     if (value != null && !value.Head.Equals(oldHead, StringComparison.Ordinal) && _workingCopy is { UseAmend: true })
                         _workingCopy.UseAmend = false;
@@ -238,13 +249,45 @@ namespace SourceGit.ViewModels
         public int LocalChangesCount
         {
             get => _localChangesCount;
-            private set => SetProperty(ref _localChangesCount, value);
+            private set
+            {
+                if (SetProperty(ref _localChangesCount, value))
+                {
+                    _histories?.NotifyLocalChangesChanged();
+                    NotifyToolbarTips();
+                }
+            }
         }
 
         public int StashesCount
         {
             get => _stashesCount;
-            private set => SetProperty(ref _stashesCount, value);
+            private set
+            {
+                if (SetProperty(ref _stashesCount, value))
+                    NotifyToolbarTips();
+            }
+        }
+
+        public string FetchRemote
+        {
+            get => _fetchRemote;
+            private set => SetProperty(ref _fetchRemote, value);
+        }
+
+        public ulong LastFetchTime
+        {
+            get => _lastFetchTimestamp;
+            private set
+            {
+                if (SetProperty(ref _lastFetchTimestamp, value))
+                    OnPropertyChanged(nameof(HasFetched));
+            }
+        }
+
+        public bool HasFetched
+        {
+            get => _lastFetchTimestamp > 0;
         }
 
         public int LocalBranchesCount
@@ -317,6 +360,38 @@ namespace SourceGit.ViewModels
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public bool IsPullRequestGroupExpanded
+        {
+            get => _uiStates.IsPullRequestsExpandedInSideBar;
+            set
+            {
+                if (value != _uiStates.IsPullRequestsExpandedInSideBar)
+                {
+                    _uiStates.IsPullRequestsExpandedInSideBar = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsStashGroupExpanded
+        {
+            get => _uiStates.IsStashesExpandedInSideBar;
+            set
+            {
+                if (value != _uiStates.IsStashesExpandedInSideBar)
+                {
+                    _uiStates.IsStashesExpandedInSideBar = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public List<Models.PullRequest> PullRequests
+        {
+            get => _pullRequests;
+            private set => SetProperty(ref _pullRequests, value);
         }
 
         public bool IsWorktreeGroupExpanded
@@ -506,6 +581,66 @@ namespace SourceGit.ViewModels
 
             if (popup.CanStartDirectly())
                 await page.ProcessPopupAsync();
+        }
+
+        /// <summary>
+        ///     URL of the hosting service page that creates a pull request for `branch` (a local branch uses
+        ///     its upstream). `target` is the base branch, or null to let the service pick its default one.
+        /// </summary>
+        public bool TryGetCreatePullRequestURL(Models.Branch branch, Models.Branch target, out string url)
+        {
+            url = null;
+
+            var remoteName = branch.Remote;
+            var branchName = branch.Name;
+            if (branch.IsLocal)
+            {
+                var upstream = string.IsNullOrEmpty(branch.Upstream) ? null : _branches.Find(x => !x.IsLocal && x.FullName.Equals(branch.Upstream, StringComparison.Ordinal));
+                if (upstream == null)
+                    return false;
+
+                remoteName = upstream.Remote;
+                branchName = upstream.Name;
+            }
+
+            var remote = _remotes.Find(x => x.Name.Equals(remoteName, StringComparison.Ordinal));
+            if (remote == null || !remote.TryGetCreatePullRequestURL(out url, branchName))
+                return false;
+
+            // GitHub can compare against any base branch.
+            if (target != null && url.Contains("github.com", StringComparison.Ordinal) && remote.TryGetVisitURL(out var visit))
+                url = $"{visit}/compare/{Uri.EscapeDataString(target.Name)}...{Uri.EscapeDataString(branchName)}?expand=1";
+
+            return true;
+        }
+
+        /// <summary>
+        ///     A pull request can be created for a branch already on a supported remote, or for a local branch
+        ///     that has never been pushed (it is pushed first, see `CreatePullRequest`).
+        /// </summary>
+        public bool CanCreatePullRequest(Models.Branch branch, out bool needPush)
+        {
+            needPush = false;
+            if (TryGetCreatePullRequestURL(branch, null, out _))
+                return true;
+
+            if (!branch.IsLocal || IsBare || !string.IsNullOrEmpty(branch.Upstream))
+                return false;
+
+            needPush = _remotes.Find(x => x.TryGetCreatePullRequestURL(out _, branch.Name)) != null;
+            return needPush;
+        }
+
+        public void CreatePullRequest(Models.Branch branch)
+        {
+            if (TryGetCreatePullRequestURL(branch, null, out var url))
+            {
+                Native.OS.OpenBrowser(url);
+                return;
+            }
+
+            if (branch.IsLocal && CanCreatePopup())
+                ShowPopup(new Push(this, branch) { Tracking = true, CreatePullRequestAfterPush = true });
         }
 
         public bool IsGitFlowEnabled()
@@ -1053,6 +1188,37 @@ namespace SourceGit.ViewModels
                 await _workingCopy.SkipMergeAsync();
         }
 
+        /// <summary>
+        ///     "Resolve" in the in-progress bar: shows the conflicted files in the history view, with the resolver in the center.
+        /// </summary>
+        public void ResolveConflicts(string path = null)
+        {
+            SelectedViewIndex = 0;
+
+            // Conflicts without an operation in progress (stash pop...) are resolved from the working copy.
+            if (_workingCopy?.InProgressContext == null)
+            {
+                _histories?.ShowConflicts();
+                return;
+            }
+
+            if (_conflictResolver == null)
+                ConflictResolver = new ConflictResolver(this, path);
+            else if (path != null)
+                _conflictResolver.Refresh(path);
+        }
+
+        public void CloseConflictResolver()
+        {
+            ConflictResolver = null;
+        }
+
+        public async Task ContinueMergeAsync()
+        {
+            if (_workingCopy != null)
+                await _workingCopy.ContinueMergeAsync();
+        }
+
         public async Task AbortMergeAsync()
         {
             if (_workingCopy != null)
@@ -1140,14 +1306,191 @@ namespace SourceGit.ViewModels
                             localBranchesCount++;
                     }
                     LocalBranchesCount = localBranchesCount;
+                    _histories?.NotifyStatusChanged();
 
                     if (_workingCopy != null)
                         _workingCopy.HasRemotes = remotes.Count > 0;
 
                     var hasPendingPullOrPush = CurrentBranch?.IsTrackStatusVisible ?? false;
                     GetOwnerPage()?.ChangeDirtyState(Models.DirtyState.HasPendingPullOrPush, !hasPendingPullOrPush);
+
+                    UpdateFetchStatus();
+                    RefreshPullRequests(false);
                 });
             }, token);
+        }
+
+        public void RefreshPullRequests(bool force)
+        {
+            if (!force && DateTime.Now - _lastPullRequestsQueryTime < TimeSpan.FromMinutes(2))
+                return;
+
+            _lastPullRequestsQueryTime = DateTime.Now;
+
+            var remotes = new List<Models.Remote>(_remotes);
+            Task.Run(async () =>
+            {
+                var prs = await Models.PullRequestProvider.FetchAsync(remotes).ConfigureAwait(false);
+                Dispatcher.UIThread.Post(() => PullRequests = prs);
+            });
+        }
+
+        public void OpenStash(Models.Stash stash)
+        {
+            SelectedViewIndex = 2;
+
+            if (_stashesPage != null)
+                _stashesPage.SelectedStash = stash;
+        }
+
+        /// <summary>
+        ///     Makes sure `branch` is checked out before running an operation that works on HEAD.
+        /// </summary>
+        public async Task<bool> SwitchToBranchIfNeededAsync(Models.Branch branch)
+        {
+            if (branch.IsLocal && _currentBranch != null && _currentBranch.Name.Equals(branch.Name, StringComparison.Ordinal))
+                return true;
+
+            if (!branch.IsLocal || IsBare || !CanCreatePopup())
+                return false;
+
+            if (_workingCopy is not { CanSwitchBranchDirectly: true })
+            {
+                SendNotification(App.Text("BranchDrop.NeedsCleanWorkingCopy", branch.Name), true);
+                return false;
+            }
+
+            await ShowAndStartPopupAsync(new Checkout(this, branch));
+
+            var head = await new Commands.QueryHeadBranchName(FullPath).GetResultAsync();
+            return head.Equals(branch.Name, StringComparison.Ordinal);
+        }
+
+        public void PopLatestStash()
+        {
+            var stashes = _stashesPage?.Stashes;
+            if (stashes is not { Count: > 0 } || !CanCreatePopup())
+                return;
+
+            ShowPopup(new ApplyStash(this, stashes[0]) { DropAfterApply = true });
+        }
+
+        private void UpdateFetchStatus()
+        {
+            string remote = null;
+            var upstream = CurrentBranch?.Upstream;
+            if (!string.IsNullOrEmpty(upstream))
+                remote = _remotes.Find(x => upstream.StartsWith($"refs/remotes/{x.Name}/", StringComparison.Ordinal))?.Name;
+
+            FetchRemote = remote ?? (_remotes.Count > 0 ? _remotes[0].Name : null);
+
+            var fetchHead = new FileInfo(Path.Combine(GitDir, "FETCH_HEAD"));
+            if (!fetchHead.Exists)
+                fetchHead = new FileInfo(Path.Combine(_gitCommonDir, "FETCH_HEAD"));
+
+            LastFetchTime = fetchHead.Exists ? (ulong)new DateTimeOffset(fetchHead.LastWriteTimeUtc).ToUnixTimeSeconds() : 0;
+            NotifyToolbarTips();
+        }
+
+        public string FetchTip
+        {
+            get
+            {
+                var tip = App.Text("Tip.Fetch.Body", FetchRemote ?? "origin");
+                return _lastFetchTimestamp > 0 ? $"{tip} {App.Text("Tip.Fetch.Last", Models.RelativeTime.Format(_lastFetchTimestamp, true))}" : tip;
+            }
+        }
+
+        public string PullTip
+        {
+            get
+            {
+                if (_currentBranch == null)
+                    return App.Text("Tip.NoBranch");
+
+                var upstream = FriendlyUpstream(_currentBranch);
+                if (upstream == null)
+                    return App.Text("Tip.Pull.NoUpstream", _currentBranch.Name);
+
+                return _currentBranch.Behind.Count switch
+                {
+                    0 => App.Text("Tip.Pull.UpToDate", _currentBranch.Name, upstream),
+                    1 => App.Text("Tip.Pull.BehindOne", upstream, _currentBranch.Name),
+                    var n => App.Text("Tip.Pull.Behind", n, upstream, _currentBranch.Name),
+                };
+            }
+        }
+
+        public string PushTip
+        {
+            get
+            {
+                if (_currentBranch == null)
+                    return App.Text("Tip.NoBranch");
+
+                var machine = App.Text(OperatingSystem.IsMacOS() ? "Tip.ThisMachine.Mac" : "Tip.ThisMachine.Other");
+                var upstream = FriendlyUpstream(_currentBranch);
+                if (upstream == null)
+                    return App.Text("Tip.Push.NoUpstream", _currentBranch.Name, FetchRemote ?? "origin");
+
+                var remote = upstream.Contains('/') ? upstream.Substring(0, upstream.IndexOf('/')) : upstream;
+                return _currentBranch.Ahead.Count switch
+                {
+                    0 => App.Text("Tip.Push.UpToDate", _currentBranch.Name, upstream),
+                    1 => App.Text("Tip.Push.AheadOne", _currentBranch.Name, machine, remote),
+                    var n => App.Text("Tip.Push.Ahead", n, _currentBranch.Name, machine, remote),
+                };
+            }
+        }
+
+        public string BranchTip
+        {
+            get => App.Text("Tip.Branch.Body", _currentBranch?.Name ?? "HEAD");
+        }
+
+        public string StashTip
+        {
+            get => _localChangesCount switch
+            {
+                0 => App.Text("Tip.Stash.None"),
+                1 => App.Text("Tip.Stash.One"),
+                var n => App.Text("Tip.Stash.Body", n),
+            };
+        }
+
+        public string PopTip
+        {
+            get
+            {
+                var stashes = _stashesPage?.Stashes;
+                return stashes is { Count: > 0 } ? App.Text("Tip.Pop.Body", stashes[0].Subject) : App.Text("Tip.Pop.None");
+            }
+        }
+
+        public string TerminalTip
+        {
+            get => App.Text("Tip.Terminal.Body", Path.GetFileName(FullPath));
+        }
+
+        private void NotifyToolbarTips()
+        {
+            OnPropertyChanged(nameof(FetchTip));
+            OnPropertyChanged(nameof(PullTip));
+            OnPropertyChanged(nameof(PushTip));
+            OnPropertyChanged(nameof(BranchTip));
+            OnPropertyChanged(nameof(StashTip));
+            OnPropertyChanged(nameof(PopTip));
+            _histories?.NotifyStatusChanged();
+        }
+
+        private static string FriendlyUpstream(Models.Branch branch)
+        {
+            if (string.IsNullOrEmpty(branch.Upstream) || branch.IsUpstreamGone)
+                return null;
+
+            return branch.Upstream.StartsWith("refs/remotes/", StringComparison.Ordinal)
+                ? branch.Upstream.Substring("refs/remotes/".Length)
+                : branch.Upstream;
         }
 
         public void RefreshWorktrees()
@@ -1319,9 +1662,18 @@ namespace SourceGit.ViewModels
                     if (token.IsCancellationRequested)
                         return;
 
+                    var hadConflicts = _workingCopy.HasUnsolvedConflicts;
                     _workingCopy.SetData(changes);
                     LocalChangesCount = changes.Count;
                     OnPropertyChanged(nameof(InProgressContext));
+
+                    // A merge, rebase, cherry-pick... just stopped on conflicts: open the resolver right away.
+                    if (!hadConflicts && _workingCopy.HasUnsolvedConflicts && _selectedViewIndex == 0)
+                        ResolveConflicts();
+                    else if (_conflictResolver != null && _workingCopy.InProgressContext == null)
+                        CloseConflictResolver();
+                    else
+                        _conflictResolver?.Refresh();
                     GetOwnerPage()?.ChangeDirtyState(Models.DirtyState.HasLocalChanges, changes.Count == 0);
                 });
             }, token);
@@ -1924,12 +2276,17 @@ namespace SourceGit.ViewModels
         private Models.Watcher _watcher = null;
         private Histories _histories = null;
         private WorkingCopy _workingCopy = null;
+        private ConflictResolver _conflictResolver = null;
         private StashesPage _stashesPage = null;
         private int _selectedViewIndex = 0;
 
         private int _localBranchesCount = 0;
         private int _localChangesCount = 0;
         private int _stashesCount = 0;
+        private string _fetchRemote = null;
+        private ulong _lastFetchTimestamp = 0;
+        private List<Models.PullRequest> _pullRequests = [];
+        private DateTime _lastPullRequestsQueryTime = DateTime.MinValue;
 
         private string _filter = string.Empty;
         private List<Models.Remote> _remotes = [];

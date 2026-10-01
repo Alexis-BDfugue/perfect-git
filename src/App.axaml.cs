@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
@@ -509,6 +509,22 @@ namespace SourceGit
                     e.Cancel = true;
                     Dispatcher.UIThread.Post(() => Quit(0));
                 };
+
+                // Outside of a `.app` bundle macOS doesn't know our icon (App.icns), so set it for the Dock.
+                if (!AppContext.BaseDirectory.Contains(".app/Contents/", StringComparison.Ordinal))
+                {
+                    try
+                    {
+                        using var icon = AssetLoader.Open(new Uri("avares://SourceGit/Resources/Images/AppIcon.png"));
+                        using var buffer = new MemoryStream();
+                        icon.CopyTo(buffer);
+                        Native.MacOSUtilities.SetDockIcon(buffer.ToArray());
+                    }
+                    catch (Exception ex)
+                    {
+                        Native.OS.LogException(ex);
+                    }
+                }
             }
 
             desktop.Exit += (_, _) =>

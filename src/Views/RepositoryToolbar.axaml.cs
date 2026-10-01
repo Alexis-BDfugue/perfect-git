@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -520,6 +520,76 @@ namespace SourceGit.Views
                 await repo.CleanupAsync();
                 e.Handled = true;
             }
+        }
+
+        private void OpenBranchSwitcher(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.Repository repo)
+            {
+                new ViewModels.CheckoutCommandPalette(repo).Open();
+                e.Handled = true;
+            }
+        }
+
+        private void PopStash(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.Repository repo)
+            {
+                repo.PopLatestStash();
+                e.Handled = true;
+            }
+        }
+
+        private void OpenTerminal(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.Repository repo && Directory.Exists(repo.FullPath))
+            {
+                Native.OS.OpenTerminal(repo.FullPath);
+                e.Handled = true;
+            }
+        }
+
+        private void OpenMoreMenu(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button || DataContext is not ViewModels.Repository repo)
+                return;
+
+            var menu = new ContextMenu();
+            menu.Placement = PlacementMode.BottomEdgeAlignedRight;
+
+            void Add(string label, string icon, Action<Button, RoutedEventArgs> action)
+            {
+                var item = new MenuItem();
+                item.Header = App.Text(label);
+                item.Icon = this.CreateMenuIcon(icon);
+                item.Click += (_, ev) =>
+                {
+                    action(button, ev);
+                    ev.Handled = true;
+                };
+                menu.Items.Add(item);
+            }
+
+            Add("Repository.OpenWithExternalTools", "Icons.OpenWith", OpenWithExternalTools);
+            Add("Repository.NavigateToCurrentHead", "Icons.Target", NavigateToHead);
+            menu.Items.Add(new MenuItem() { Header = "-" });
+
+            if (!repo.IsBare)
+            {
+                Add("Apply.Title", "Icons.ApplyPatch", (_, _) => repo.ApplyPatch());
+                Add("GitFlow", "Icons.GitFlow", OpenGitFlowMenu);
+                Add("GitLFS", "Icons.LFS", OpenGitLFSMenu);
+                Add("Bisect", "Icons.Bisect", StartBisect);
+            }
+
+            Add("Repository.CustomActions", "Icons.Action", OpenCustomActionMenu);
+            Add("Repository.Clean", "Icons.Clean", Cleanup);
+            menu.Items.Add(new MenuItem() { Header = "-" });
+            Add("Repository.ViewLogs", "Icons.Logs", OpenGitLogs);
+            Add("Repository.Statistics", "Icons.Statistics", OpenStatistics);
+
+            menu.Open(button);
+            e.Handled = true;
         }
 
         private void NavigateToHead(object sender, RoutedEventArgs e)

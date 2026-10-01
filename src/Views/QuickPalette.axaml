@@ -1,0 +1,157 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SourceGit.ViewModels"
+             xmlns:c="using:SourceGit.Converters"
+             mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="450"
+             x:Class="SourceGit.Views.QuickPalette"
+             x:DataType="vm:QuickPalette">
+  <UserControl.Styles>
+    <Style Selector="TextBox.palette_input">
+      <Setter Property="FontSize" Value="15"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="MinHeight" Value="22"/>
+      <Setter Property="CaretBrush" Value="{DynamicResource Brush.Accent}"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBox.palette_input:pointerover /template/ Border#PART_BorderElement, TextBox.palette_input:focus /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style Selector="ListBoxItem">
+      <Setter Property="Padding" Value="0"/>
+    </Style>
+    <Style Selector="ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="Border.palette_row">
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="ListBoxItem:pointerover Border.palette_row">
+      <Setter Property="Background" Value="{DynamicResource Brush.Hover}"/>
+    </Style>
+    <Style Selector="ListBoxItem:selected Border.palette_row">
+      <Setter Property="Background" Value="{DynamicResource Brush.Selection}"/>
+    </Style>
+    <Style Selector="TextBlock.enter_hint">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="ListBoxItem:selected TextBlock.enter_hint">
+      <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="TextBlock.footer">
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
+    </Style>
+  </UserControl.Styles>
+
+  <StackPanel Orientation="Vertical">
+    <!-- Input -->
+    <Grid ColumnDefinitions="Auto,*,Auto" Margin="16,14">
+      <Path Grid.Column="0" Width="14" Height="14" Data="{StaticResource Icons.Search}" Fill="{DynamicResource Brush.FG3}"/>
+      <TextBox Grid.Column="1"
+               x:Name="FilterTextBox"
+               Classes="palette_input"
+               Margin="10,0"
+               Watermark="{DynamicResource Text.Palette.Placeholder}"
+               Text="{Binding Filter, Mode=TwoWay}"/>
+      <Border Grid.Column="2"
+              Padding="6,1"
+              CornerRadius="4"
+              BorderThickness="1"
+              BorderBrush="{DynamicResource Brush.Border2}"
+              VerticalAlignment="Center">
+        <TextBlock FontSize="11" Foreground="{DynamicResource Brush.FG3}" Text="Esc"/>
+      </Border>
+    </Grid>
+
+    <Rectangle Height="1" Fill="{DynamicResource Brush.Border0}"/>
+
+    <!-- Results -->
+    <ListBox x:Name="ItemsList"
+             Margin="6"
+             MaxHeight="440"
+             Background="Transparent"
+             Focusable="False"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+             ItemsSource="{Binding Items}"
+             SelectedItem="{Binding Selected, Mode=TwoWay}"
+             IsVisible="{Binding Items, Converter={x:Static c:ListConverters.IsNotNullOrEmpty}}">
+      <ListBox.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Vertical"/>
+        </ItemsPanelTemplate>
+      </ListBox.ItemsPanel>
+
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="vm:QuickPaletteItem">
+          <StackPanel Orientation="Vertical">
+            <TextBlock Classes="group_header_label"
+                       Margin="10,8,10,4"
+                       Text="{Binding Group}"
+                       IsVisible="{Binding IsGroupStart}"/>
+
+            <Border Classes="palette_row" CornerRadius="8" Tapped="OnItemTapped">
+              <Panel>
+                <!-- Action -->
+                <Grid ColumnDefinitions="Auto,*,Auto" Margin="10,9" IsVisible="{Binding IsAction}">
+                  <Border Grid.Column="0" Width="26" Height="26" CornerRadius="7" Background="{DynamicResource Brush.Hover}">
+                    <Path Width="13" Height="13" Data="{Binding Icon, Converter={x:Static c:StringConverters.ToIcon}}" Fill="{DynamicResource Brush.FG2}"/>
+                  </Border>
+                  <StackPanel Grid.Column="1" Margin="12,0,0,0" Orientation="Vertical" VerticalAlignment="Center" Spacing="1">
+                    <TextBlock FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Text="{Binding Title}"/>
+                    <TextBlock FontSize="11.5" Foreground="{DynamicResource Brush.FG2}" TextTrimming="CharacterEllipsis">
+                      <Run Text="{Binding Subtitle, Mode=OneWay}"/>
+                      <Run Text=" · " Foreground="{DynamicResource Brush.FG3}"/>
+                      <Run Text="{Binding GitCommand, Mode=OneWay}" FontFamily="{DynamicResource Fonts.Monospace}"/>
+                    </TextBlock>
+                  </StackPanel>
+                  <TextBlock Grid.Column="2" Classes="enter_hint" Margin="8,0,0,0" FontSize="11" Foreground="{DynamicResource Brush.FG3}" VerticalAlignment="Center" Text="↵"/>
+                </Grid>
+
+                <!-- Branch -->
+                <Grid ColumnDefinitions="Auto,*,Auto" Margin="10,8" IsVisible="{Binding IsBranch}">
+                  <Ellipse Grid.Column="0" Width="9" Height="9" Margin="8,0" Fill="{Binding Brush}" VerticalAlignment="Center"/>
+                  <TextBlock Grid.Column="1" Margin="12,0,0,0" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Text="{Binding Title}"/>
+                  <TextBlock Grid.Column="2" Margin="8,0,0,0" FontSize="11.5" Foreground="{DynamicResource Brush.FG3}" VerticalAlignment="Center" Text="{Binding Hint}"/>
+                </Grid>
+
+                <!-- Commit -->
+                <Grid ColumnDefinitions="Auto,*" Margin="10,8" IsVisible="{Binding IsCommit}">
+                  <TextBlock Grid.Column="0" Width="60" FontFamily="{DynamicResource Fonts.Monospace}" FontSize="11.5" Foreground="{DynamicResource Brush.FG3}" VerticalAlignment="Center" Text="{Binding SHA}"/>
+                  <TextBlock Grid.Column="1" Margin="6,0,0,0" Foreground="{DynamicResource Brush.FG2}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Text="{Binding Title}"/>
+                </Grid>
+              </Panel>
+            </Border>
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <Rectangle Height="1" Fill="{DynamicResource Brush.Border0}"/>
+
+    <!-- Footer -->
+    <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto" Margin="16,9">
+      <TextBlock Grid.Column="0" Classes="footer" Text="{DynamicResource Text.Palette.Footer.Navigate}"/>
+      <TextBlock Grid.Column="1" Classes="footer" Margin="16,0,0,0" Text="{DynamicResource Text.Palette.Footer.Run}"/>
+      <TextBlock Grid.Column="2" Classes="footer" Margin="16,0,0,0">
+        <Run Text="{OnPlatform Ctrl+↵, macOS=⌘↵}"/>
+        <Run Text="{DynamicResource Text.Palette.Footer.ShowGit}"/>
+      </TextBlock>
+      <TextBlock Grid.Column="4" Classes="footer" Text="{DynamicResource Text.Palette.Footer.CommandsOnly}"
+                 IsVisible="{Binding Message, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+      <TextBlock Grid.Column="4" Classes="footer" FontFamily="{DynamicResource Fonts.Monospace}" Foreground="{DynamicResource Brush.Accent}" Text="{Binding Message}"
+                 IsVisible="{Binding Message, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+    </Grid>
+  </StackPanel>
+</UserControl>

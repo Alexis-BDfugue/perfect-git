@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 using Avalonia;
@@ -55,6 +55,15 @@ namespace SourceGit.Views
         {
             get => _supportsContainsIn;
             private set => SetAndRaise(SupportsContainsInProperty, ref _supportsContainsIn, value);
+        }
+
+        public static readonly StyledProperty<bool> UseInspectorLayoutProperty =
+            AvaloniaProperty.Register<CommitBaseInfo, bool>(nameof(UseInspectorLayout));
+
+        public bool UseInspectorLayout
+        {
+            get => GetValue(UseInspectorLayoutProperty);
+            set => SetValue(UseInspectorLayoutProperty, value);
         }
 
         public CommitBaseInfo()

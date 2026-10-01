@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b0c0e;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:oklch(0.76 0.13 285)}a:hover{color:oklch(0.86 0.1 285)}
+</style>
+</helmet>
+<section style="display:flex;flex-direction:column;gap:40px;padding:56px 64px 80px;background:#0b0c0e">
+  <div style="display:flex;flex-direction:column;gap:8px;max-width:980px">
+    <div style="font-size:13px;font-weight:600;color:#8a8e97">Round 3 · Perfect Git</div>
+    <div style="font-size:34px;font-weight:700;letter-spacing:-0.02em;color:#eceef2">Graph-first, dark, drag & drop</div>
+    <div style="font-size:15px;line-height:1.5;color:#a3a7b0;text-wrap:pretty">Its own identity (lavender accent, cool grays). Avatars on nodes, details on the right, repo tabs, local / remote / PR / tags sidebar. Guidance stays subtle: hover tips, explanations in menus, a hint in the status bar. <a href="#3a">3a</a> default state, <a href="#3b">3b</a> dragging a branch onto another, <a href="#3c">3c</a> ⌘P palette.</div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:56px">
+    <div id="3a" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:14px;font-weight:600;color:#eceef2">3a · History (hovering Push)</div>
+      <dc-import name="PG Screen" mode="default" hint-size="1440px,900px"></dc-import>
+    </div>
+    <div id="3b" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:14px;font-weight:600;color:#eceef2">3b · Dragging feature/merge-dnd onto develop</div>
+      <dc-import name="PG Screen" mode="drag" hint-size="1440px,900px"></dc-import>
+    </div>
+    <div id="3c" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:14px;font-weight:600;color:#eceef2">3c · Command palette ⌘P</div>
+      <dc-import name="PG Screen" mode="palette" hint-size="1440px,900px"></dc-import>
+    </div>
+  </div>
+</section>
+</x-dc>
+</body>
+</html>

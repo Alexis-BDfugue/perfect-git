@@ -372,6 +372,11 @@ namespace SourceGit.Views
         public Histories()
         {
             InitializeComponent();
+
+            // The data grid captures the pointer to select rows, so track ref pills dragging from the tunnel.
+            CommitListContainer.AddHandler(PointerPressedEvent, OnCommitListPointerPressedTunnel, RoutingStrategies.Tunnel, true);
+            CommitListContainer.AddHandler(PointerMovedEvent, OnCommitListPointerMovedTunnel, RoutingStrategies.Tunnel, true);
+            CommitListContainer.AddHandler(PointerReleasedEvent, OnCommitListPointerReleasedTunnel, RoutingStrategies.Tunnel, true);
         }
 
         public async Task GotoParent()
@@ -777,6 +782,7 @@ namespace SourceGit.Views
             }
 
             IsScrollToTopVisible = startY >= rowHeight;
+            UpdateWipDatePosition(dataGrid);
 
             var clipWidth = dataGrid.Columns[0].ActualWidth - 4;
             var lastLayout = CommitGraph.Layout;
@@ -798,6 +804,17 @@ namespace SourceGit.Views
             var repoView = this.FindAncestorOfType<Repository>();
             if (repoView is not { DataContext: ViewModels.Repository repo })
                 return;
+
+            // Right-click on a ref pill: show the menu of that ref only, not of every ref of the commit.
+            if ((e.Source as Visual)?.FindAncestorOfType<CommitRefsPresenter>(true) is { DataContext: Models.Commit decorated } presenter &&
+                e.TryGetPosition(presenter, out var pos) &&
+                presenter.DecoratorAt(pos) is { } decorator &&
+                CreateContextMenuForDecorator(repo, decorated, decorator) is { } refMenu)
+            {
+                refMenu.Open(CommitListContainer);
+                e.Handled = true;
+                return;
+            }
 
             var selected = CommitListContainer.SelectedItems;
             if (selected is not { Count: > 0 })
@@ -849,6 +866,168 @@ namespace SourceGit.Views
                 await histories.CheckoutBranchByCommitAsync(c);
             }
         }
+
+        private void OnCommitListPointerPressedTunnel(object sender, PointerPressedEventArgs e)
+        {
+            _pressedPill = null;
+
+            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                return;
+
+            var presenter = (e.Source as Visual)?.FindAncestorOfType<CommitRefsPresenter>(true);
+            var decorator = presenter?.DecoratorAt(e.GetPosition(presenter));
+            if (decorator == null || FindBranch(decorator) == null)
+                return;
+
+            _pressedPill = (e, presenter, decorator);
+        }
+
+        private async void OnCommitListPointerMovedTunnel(object sender, PointerEventArgs e)
+        {
+            if (_pressedPill is not { } pressed)
+                return;
+
+            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            {
+                _pressedPill = null;
+                return;
+            }
+
+            var delta = e.GetPosition(this) - pressed.Event.GetPosition(this);
+            if (delta.X * delta.X + delta.Y * delta.Y < 36)
+                return;
+
+            _pressedPill = null;
+
+            var branch = FindBranch(pressed.Decorator);
+            if (branch != null)
+                await BranchDragDrop.StartAsync(pressed.Event, pressed.Presenter, branch, dimmed => pressed.Presenter.DimmedDecorator = dimmed ? pressed.Decorator : null);
+        }
+
+        private void OnCommitListPointerReleasedTunnel(object sender, PointerReleasedEventArgs e)
+        {
+            _pressedPill = null;
+        }
+
+        private void OnRefsDragOver(object sender, DragEventArgs e)
+        {
+            if (sender is CommitRefsPresenter presenter &&
+                presenter.DecoratorAt(e.GetPosition(presenter)) is { } decorator &&
+                FindBranch(decorator) is { } target &&
+                BranchDragDrop.CanDropOn(target))
+            {
+                presenter.DropTargetDecorator = decorator;
+                BranchDragDrop.SetTarget(presenter, () => presenter.DropTargetDecorator = null);
+                e.DragEffects = DragDropEffects.Move;
+                e.Handled = true;
+                return;
+            }
+
+            BranchDragDrop.ClearTarget();
+            e.DragEffects = DragDropEffects.None;
+        }
+
+        private void OnRefsDragLeave(object sender, DragEventArgs e)
+        {
+            BranchDragDrop.ClearTarget();
+        }
+
+        private void OnRefsDrop(object sender, DragEventArgs e)
+        {
+            BranchDragDrop.ClearTarget();
+
+            if (sender is CommitRefsPresenter presenter &&
+                presenter.DecoratorAt(e.GetPosition(presenter)) is { } decorator &&
+                FindBranch(decorator) is { } target &&
+                BranchDragDrop.Dragging is { } source &&
+                BranchDragDrop.CanDropOn(target) &&
+                this.FindAncestorOfType<Repository>() is { DataContext: ViewModels.Repository repo })
+            {
+                BranchDragDrop.ShowPopover(presenter, repo, source, target, presenter.GetDecoratorX(decorator));
+                e.Handled = true;
+            }
+        }
+
+        private Models.Branch FindBranch(Models.Decorator decorator)
+        {
+            if (this.FindAncestorOfType<Repository>() is not { DataContext: ViewModels.Repository repo })
+                return null;
+
+            return decorator.Type switch
+            {
+                Models.DecoratorType.CurrentBranchHead or Models.DecoratorType.LocalBranchHead =>
+                    repo.Branches.Find(x => x.IsLocal && x.Name.Equals(decorator.Name, StringComparison.Ordinal)),
+                Models.DecoratorType.RemoteBranchHead =>
+                    repo.Branches.Find(x => !x.IsLocal && x.FriendlyName.Equals(decorator.Name, StringComparison.Ordinal)),
+                _ => null,
+            };
+        }
+
+        private void UpdateWipDatePosition(DataGrid dataGrid)
+        {
+            if (!WipRow.IsVisible)
+                return;
+
+            // Align the "now" label of the uncommitted changes row with the DATE column (declared 4th in XAML).
+            var dateColumn = dataGrid.Columns.Count > 3 ? dataGrid.Columns[3] : null;
+            if (dateColumn is not { IsVisible: true })
+            {
+                WipDate.IsVisible = false;
+                return;
+            }
+
+            var x = 0.0;
+            foreach (var column in dataGrid.Columns)
+            {
+                if (column.IsVisible && column.DisplayIndex < dateColumn.DisplayIndex)
+                    x += column.ActualWidth;
+            }
+
+            WipDate.Margin = new Thickness(x, 0, 0, 0);
+            WipDate.Width = Math.Max(0, dateColumn.ActualWidth - 8);
+            WipDate.IsVisible = true;
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape && e.KeyModifiers == KeyModifiers.None &&
+                DataContext is ViewModels.Histories { CenterContent: not null } vm)
+            {
+                vm.CloseCenterContent(false);
+                e.Handled = true;
+                return;
+            }
+
+            base.OnKeyDown(e);
+        }
+
+        private void OnCloseCenterDiff(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.Histories vm)
+                vm.CloseCenterContent(true);
+
+            e.Handled = true;
+        }
+
+        private void OnWipRowTapped(object sender, TappedEventArgs e)
+        {
+            if (DataContext is ViewModels.Histories vm)
+            {
+                vm.SelectLocalChanges();
+                e.Handled = true;
+            }
+        }
+
+        private void OnWipRowDoubleTapped(object sender, TappedEventArgs e)
+        {
+            if (DataContext is ViewModels.Histories vm)
+            {
+                vm.OpenLocalChanges();
+                e.Handled = true;
+            }
+        }
+
+        private (PointerPressedEventArgs Event, CommitRefsPresenter Presenter, Models.Decorator Decorator)? _pressedPill = null;
 
         private void OnCommitGraphLoaded(object sender, RoutedEventArgs e)
         {
@@ -1047,6 +1226,55 @@ namespace SourceGit.Views
             copy.Items.Add(copySubjects);
             copy.Items.Add(copyMessage);
             menu.Items.Add(copy);
+            return menu;
+        }
+
+        public void OpenCommitContextMenu(Control anchor, Models.Commit commit)
+        {
+            if (this.FindAncestorOfType<Repository>() is { DataContext: ViewModels.Repository repo })
+                CreateContextMenuForSingleCommit(repo, commit)?.Open(anchor);
+        }
+
+        private ContextMenu CreateContextMenuForDecorator(ViewModels.Repository repo, Models.Commit commit, Models.Decorator decorator)
+        {
+            var current = repo.CurrentBranch;
+            if (current == null)
+                return null;
+
+            // The Fill*Menu helpers add one submenu named after the ref; lift its items to the top level.
+            var holder = new ContextMenu();
+            switch (decorator.Type)
+            {
+                case Models.DecoratorType.CurrentBranchHead:
+                    FillCurrentBranchMenu(holder, repo, current);
+                    break;
+                case Models.DecoratorType.LocalBranchHead:
+                    var lb = repo.Branches.Find(x => x.IsLocal && decorator.Name.Equals(x.Name, StringComparison.Ordinal));
+                    if (lb != null)
+                        FillOtherLocalBranchMenu(holder, repo, lb, current, commit.IsMerged);
+                    break;
+                case Models.DecoratorType.RemoteBranchHead:
+                    var rb = repo.Branches.Find(x => !x.IsLocal && decorator.Name.Equals(x.FriendlyName, StringComparison.Ordinal));
+                    FillRemoteBranchMenu(holder, repo, rb, current, commit.IsMerged);
+                    break;
+                case Models.DecoratorType.Tag:
+                    var t = repo.Tags.Find(x => decorator.Name.Equals(x.Name, StringComparison.Ordinal));
+                    if (t != null)
+                        FillTagMenu(holder, repo, t, current);
+                    break;
+            }
+
+            if (holder.Items.Count == 0 || holder.Items[0] is not MenuItem submenu)
+                return null;
+
+            var items = new List<object>();
+            foreach (var item in submenu.Items)
+                items.Add(item);
+            submenu.Items.Clear();
+
+            var menu = new ContextMenu();
+            foreach (var item in items)
+                menu.Items.Add(item);
             return menu;
         }
 
@@ -1596,6 +1824,10 @@ namespace SourceGit.Views
             };
             submenu.Items.Add(push);
 
+            var createPR = this.CreatePullRequestMenuItem(repo, current);
+            if (createPR != null)
+                submenu.Items.Add(createPR);
+
             var rename = new MenuItem();
             rename.Header = App.Text("BranchCM.Rename", current.Name);
             rename.Icon = this.CreateMenuIcon("Icons.Rename");
@@ -1688,6 +1920,10 @@ namespace SourceGit.Views
                 e.Handled = true;
             };
             submenu.Items.Add(push);
+
+            var createPR = this.CreatePullRequestMenuItem(repo, branch);
+            if (createPR != null)
+                submenu.Items.Add(createPR);
 
             var rename = new MenuItem();
             rename.Header = App.Text("BranchCM.Rename", branch.Name);
@@ -1794,6 +2030,10 @@ namespace SourceGit.Views
                 e.Handled = true;
             };
             submenu.Items.Add(merge);
+
+            var createPR = this.CreatePullRequestMenuItem(repo, branch);
+            if (createPR != null)
+                submenu.Items.Add(createPR);
 
             var delete = new MenuItem();
             delete.Header = App.Text("BranchCM.Delete", name);

@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:String x:Key="Text.About" xml:space="preserve">About</x:String>
-  <x:String x:Key="Text.About.Menu" xml:space="preserve">About SourceGit</x:String>
+  <x:String x:Key="Text.About.BasedOn" xml:space="preserve">Based on SourceGit (MIT license).</x:String>
+  <x:String x:Key="Text.About.Menu" xml:space="preserve">About PerfectGit</x:String>
   <x:String x:Key="Text.About.ReleaseDate" xml:space="preserve">Release Date: {0}</x:String>
   <x:String x:Key="Text.About.ReleaseNotes" xml:space="preserve">Release Notes</x:String>
   <x:String x:Key="Text.About.SubTitle" xml:space="preserve">Opensource &amp; Free Git GUI Client</x:String>
@@ -22,7 +23,7 @@
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">RE-GENERATE</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Use AI to generate commit message</x:String>
   <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">Use</x:String>
-  <x:String x:Key="Text.App.Hide" xml:space="preserve">Hide SourceGit</x:String>
+  <x:String x:Key="Text.App.Hide" xml:space="preserve">Hide PerfectGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">Hide Others</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Show All</x:String>
   <x:String x:Key="Text.Apply.3Way" xml:space="preserve">3-Way Merge</x:String>
@@ -42,7 +43,7 @@
   <x:String x:Key="Text.Archive.File.Placeholder" xml:space="preserve">Select archive file path</x:String>
   <x:String x:Key="Text.Archive.Revision" xml:space="preserve">Revision:</x:String>
   <x:String x:Key="Text.Archive.Title" xml:space="preserve">Archive</x:String>
-  <x:String x:Key="Text.Askpass" xml:space="preserve">SourceGit Askpass</x:String>
+  <x:String x:Key="Text.Askpass" xml:space="preserve">PerfectGit Askpass</x:String>
   <x:String x:Key="Text.Askpass.Passphrase" xml:space="preserve">Enter passphrase:</x:String>
   <x:String x:Key="Text.AssumeUnchanged" xml:space="preserve">FILES ASSUME UNCHANGED</x:String>
   <x:String x:Key="Text.AssumeUnchanged.Empty" xml:space="preserve">NO FILES ASSUMED AS UNCHANGED</x:String>
@@ -83,11 +84,33 @@
   <x:String x:Key="Text.BranchCM.Pull" xml:space="preserve">Pull ${0}$...</x:String>
   <x:String x:Key="Text.BranchCM.PullInto" xml:space="preserve">Pull ${0}$ into ${1}$...</x:String>
   <x:String x:Key="Text.BranchCM.Push" xml:space="preserve">Push ${0}$...</x:String>
+  <x:String x:Key="Text.BranchCM.PushAndCreatePR" xml:space="preserve">Push and create PR...</x:String>
   <x:String x:Key="Text.BranchCM.Rebase" xml:space="preserve">Rebase ${0}$ on ${1}$...</x:String>
   <x:String x:Key="Text.BranchCM.Rename" xml:space="preserve">Rename ${0}$...</x:String>
   <x:String x:Key="Text.BranchCM.ResetToSelectedCommit" xml:space="preserve">Reset ${0}$ to ${1}$...</x:String>
   <x:String x:Key="Text.BranchCM.SwitchToWorktree" xml:space="preserve">Switch to ${0}$ (worktree)</x:String>
   <x:String x:Key="Text.BranchCM.Tracking" xml:space="preserve">Set Tracking Branch...</x:String>
+  <x:String x:Key="Text.BranchDrop.Cancel" xml:space="preserve">Esc to cancel</x:String>
+  <x:String x:Key="Text.BranchDrop.Conflict" xml:space="preserve">1 file may conflict</x:String>
+  <x:String x:Key="Text.BranchDrop.Conflicts" xml:space="preserve">{0} files may conflict</x:String>
+  <x:String x:Key="Text.BranchDrop.Drop" xml:space="preserve">Drop</x:String>
+  <x:String x:Key="Text.BranchDrop.Interactive" xml:space="preserve">Interactive rebase…</x:String>
+  <x:String x:Key="Text.BranchDrop.Interactive.Desc" xml:space="preserve">Pick, reorder or squash commits first.</x:String>
+  <x:String x:Key="Text.BranchDrop.Merge" xml:space="preserve">Merge into {0}</x:String>
+  <x:String x:Key="Text.BranchDrop.Merge.Desc" xml:space="preserve">Creates a commit joining both branches. History is kept as is.</x:String>
+  <x:String x:Key="Text.BranchDrop.Merge.Remote" xml:space="preserve">Drop onto a local branch to merge into it.</x:String>
+  <x:String x:Key="Text.BranchDrop.NeedsCleanWorkingCopy" xml:space="preserve">Commit or stash your changes before switching to '{0}'.</x:String>
+  <x:String x:Key="Text.BranchDrop.NoConflicts" xml:space="preserve">No conflicts expected</x:String>
+  <x:String x:Key="Text.BranchDrop.Onto" xml:space="preserve">onto</x:String>
+  <x:String x:Key="Text.BranchDrop.PullRequest" xml:space="preserve">Create a pull request into {0}</x:String>
+  <x:String x:Key="Text.BranchDrop.Rebase" xml:space="preserve">Rebase onto {0}</x:String>
+  <x:String x:Key="Text.BranchDrop.Rebase.Desc" xml:space="preserve">Replays your commits on top of {0}. Linear history.</x:String>
+  <x:String x:Key="Text.BranchDrop.Rebase.DescCount" xml:space="preserve">Replays your {0} commits on top of {1}. Linear history.</x:String>
+  <x:String x:Key="Text.BranchDrop.Rebase.DescOne" xml:space="preserve">Replays your commit on top of {0}. Linear history.</x:String>
+  <x:String x:Key="Text.BranchDrop.Rebase.Remote" xml:space="preserve">Only local branches can be rebased.</x:String>
+  <x:String x:Key="Text.BranchDrop.SwitchFirst" xml:space="preserve">Switches to {0} first.</x:String>
+  <x:String x:Key="Text.BranchDrop.Testing" xml:space="preserve">Checking for conflicts…</x:String>
+  <x:String x:Key="Text.BranchDrop.Unknown" xml:space="preserve">Conflicts can't be predicted</x:String>
   <x:String x:Key="Text.BranchTree.Ahead" xml:space="preserve">{0} commit(s) ahead</x:String>
   <x:String x:Key="Text.BranchTree.AheadBehind" xml:space="preserve">{0} commit(s) ahead, {1} commit(s) behind</x:String>
   <x:String x:Key="Text.BranchTree.Behind" xml:space="preserve">{0} commit(s) behind</x:String>
@@ -175,6 +198,9 @@
   <x:String x:Key="Text.CommitCM.Reset" xml:space="preserve">Reset ${0}$ to ${1}$...</x:String>
   <x:String x:Key="Text.CommitCM.Revert" xml:space="preserve">Revert Commit...</x:String>
   <x:String x:Key="Text.CommitCM.SaveAsPatch" xml:space="preserve">Save as Patch...</x:String>
+  <x:String x:Key="Text.CommitDetail.Action.Checkout" xml:space="preserve">Checkout</x:String>
+  <x:String x:Key="Text.CommitDetail.Action.CherryPick" xml:space="preserve">Cherry-pick</x:String>
+  <x:String x:Key="Text.CommitDetail.Action.Revert" xml:space="preserve">Revert</x:String>
   <x:String x:Key="Text.CommitDetail.Changes" xml:space="preserve">CHANGES</x:String>
   <x:String x:Key="Text.CommitDetail.Changes.Count" xml:space="preserve">changed file(s)</x:String>
   <x:String x:Key="Text.CommitDetail.Changes.Search" xml:space="preserve">Search Changes...</x:String>
@@ -186,19 +212,27 @@
   <x:String x:Key="Text.CommitDetail.Files.Tips" xml:space="preserve">SELECT FILE TO VIEW CONTENT</x:String>
   <x:String x:Key="Text.CommitDetail.Info" xml:space="preserve">INFORMATION</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Author" xml:space="preserve">AUTHOR</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.Branches" xml:space="preserve">Branches</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.CommittedBy" xml:space="preserve">Committed by {0}</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Committer" xml:space="preserve">COMMITTER</x:String>
   <x:String x:Key="Text.CommitDetail.Info.ContainsIn" xml:space="preserve">Check refs that contains this commit</x:String>
   <x:String x:Key="Text.CommitDetail.Info.ContainsIn.Title" xml:space="preserve">COMMIT IS CONTAINED BY</x:String>
   <x:String x:Key="Text.CommitDetail.Info.CopyEmail" xml:space="preserve">Copy Email</x:String>
   <x:String x:Key="Text.CommitDetail.Info.CopyName" xml:space="preserve">Copy Name</x:String>
   <x:String x:Key="Text.CommitDetail.Info.CopyNameAndEmail" xml:space="preserve">Copy Name &amp; Email</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.Files" xml:space="preserve">{0} FILES</x:String>
   <x:String x:Key="Text.CommitDetail.Info.GotoChangesPage" xml:space="preserve">Shows only the first 100 changes. See all changes on the CHANGES tab.</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Key" xml:space="preserve">Key:</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.List" xml:space="preserve">List</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Message" xml:space="preserve">MESSAGE</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.OnlyFirstFiles" xml:space="preserve">Only the first 100 changed files are listed.</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.Parent" xml:space="preserve">Parent</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Parents" xml:space="preserve">PARENTS</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Refs" xml:space="preserve">REFS</x:String>
   <x:String x:Key="Text.CommitDetail.Info.SHA" xml:space="preserve">SHA</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.Signed" xml:space="preserve">✓ signed</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Signer" xml:space="preserve">Signer:</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.Tree" xml:space="preserve">Tree</x:String>
   <x:String x:Key="Text.CommitDetail.Info.WebLinks" xml:space="preserve">Open in Browser</x:String>
   <x:String x:Key="Text.CommitMessageTextBox.Column" xml:space="preserve">COL</x:String>
   <x:String x:Key="Text.CommitMessageTextBox.Placeholder" xml:space="preserve">Enter commit message. Please use an empty-line to separate subject and description!</x:String>
@@ -272,7 +306,7 @@
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">Please use $1, $2 to access regex groups values.</x:String>
   <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">AI</x:String>
   <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">Preferred Service:</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">If the 'Preferred Service' is set, SourceGit will only use it in this repository. Otherwise, if there is more than one service available, a context menu to choose one of them will be shown.</x:String>
+  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">If the 'Preferred Service' is set, PerfectGit will only use it in this repository. Otherwise, if there is more than one service available, a context menu to choose one of them will be shown.</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">HTTP Proxy</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">HTTP proxy used by this repository</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">User Name</x:String>
@@ -302,6 +336,74 @@
   <x:String x:Key="Text.ConfirmEmptyCommit.WithLocalChanges" xml:space="preserve">Empty commit detected! Do you want to continue (--allow-empty) or auto-stage then commit?</x:String>
   <x:String x:Key="Text.ConfirmRestart.Title" xml:space="preserve">Restart Required</x:String>
   <x:String x:Key="Text.ConfirmRestart.Message" xml:space="preserve">You need to restart this app to apply changes.</x:String>
+  <x:String x:Key="Text.Conflict.SaveAndStage.Tip" xml:space="preserve">Write the resolved file and stage it, then go to the next conflict</x:String>
+  <x:String x:Key="Text.Conflict.UseMine.Tip" xml:space="preserve">Keep my version of the whole file</x:String>
+  <x:String x:Key="Text.Conflict.UseTheirs.Tip" xml:space="preserve">Keep their version of the whole file</x:String>
+  <x:String x:Key="Text.ConflictResolver.Abort" xml:space="preserve">Abort {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.AbortConfirm.Desc" xml:space="preserve">{0} goes back to exactly how it was before. {1} is not touched.</x:String>
+  <x:String x:Key="Text.ConflictResolver.AbortConfirm.Keep" xml:space="preserve">Keep resolving</x:String>
+  <x:String x:Key="Text.ConflictResolver.AbortConfirm.Lost" xml:space="preserve">What you resolved in {0} file(s) will be lost.</x:String>
+  <x:String x:Key="Text.ConflictResolver.AbortConfirm.Title" xml:space="preserve">Abort this {0}?</x:String>
+  <x:String x:Key="Text.ConflictResolver.AllResolved" xml:space="preserve">All conflicts resolved. Commit to finish the {0}.</x:String>
+  <x:String x:Key="Text.ConflictResolver.AutoMerged" xml:space="preserve">MERGED AUTOMATICALLY</x:String>
+  <x:String x:Key="Text.ConflictResolver.Back" xml:space="preserve">History</x:String>
+  <x:String x:Key="Text.ConflictResolver.Back.Tip" xml:space="preserve">Back to the history; the in-progress bar brings you back here</x:String>
+  <x:String x:Key="Text.ConflictResolver.BothKept" xml:space="preserve">Both kept</x:String>
+  <x:String x:Key="Text.ConflictResolver.CherryPick.Connector" xml:space="preserve">onto</x:String>
+  <x:String x:Key="Text.ConflictResolver.CherryPick.Finish" xml:space="preserve">Continue cherry-pick</x:String>
+  <x:String x:Key="Text.ConflictResolver.CherryPick.Verb" xml:space="preserve">Cherry-picking</x:String>
+  <x:String x:Key="Text.ConflictResolver.Conflict" xml:space="preserve">Conflict {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.ConflictedFiles" xml:space="preserve">CONFLICTED FILES</x:String>
+  <x:String x:Key="Text.ConflictResolver.Counter" xml:space="preserve">Conflict {0} of {1}</x:String>
+  <x:String x:Key="Text.ConflictResolver.Current" xml:space="preserve">Current</x:String>
+  <x:String x:Key="Text.ConflictResolver.FileResolved" xml:space="preserve">{0} is resolved and staged.</x:String>
+  <x:String x:Key="Text.ConflictResolver.From" xml:space="preserve">From {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.Incoming" xml:space="preserve">Incoming</x:String>
+  <x:String x:Key="Text.ConflictResolver.KeepBoth" xml:space="preserve">Keep both</x:String>
+  <x:String x:Key="Text.ConflictResolver.KeepCurrent" xml:space="preserve">Keep current</x:String>
+  <x:String x:Key="Text.ConflictResolver.KeepIncoming" xml:space="preserve">Keep incoming</x:String>
+  <x:String x:Key="Text.ConflictResolver.Kept" xml:space="preserve">Kept</x:String>
+  <x:String x:Key="Text.ConflictResolver.KeptSub" xml:space="preserve">kept</x:String>
+  <x:String x:Key="Text.ConflictResolver.Left" xml:space="preserve">{0} left</x:String>
+  <x:String x:Key="Text.ConflictResolver.Mark" xml:space="preserve">Mark {0} resolved</x:String>
+  <x:String x:Key="Text.ConflictResolver.Mark.Done" xml:space="preserve">✓ {0} marked resolved</x:String>
+  <x:String x:Key="Text.ConflictResolver.Mark.Next" xml:space="preserve">Mark {0} resolved · next file →</x:String>
+  <x:String x:Key="Text.ConflictResolver.Mark.Pending" xml:space="preserve">Resolve {0} more conflict(s) first</x:String>
+  <x:String x:Key="Text.ConflictResolver.MarkRuns" xml:space="preserve">What “Mark resolved” runs.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Merge.Connector" xml:space="preserve">into</x:String>
+  <x:String x:Key="Text.ConflictResolver.Merge.Finish" xml:space="preserve">Commit merge</x:String>
+  <x:String x:Key="Text.ConflictResolver.Merge.Verb" xml:space="preserve">Merging</x:String>
+  <x:String x:Key="Text.ConflictResolver.NotKept" xml:space="preserve">not kept</x:String>
+  <x:String x:Key="Text.ConflictResolver.Op.CherryPick" xml:space="preserve">cherry-pick</x:String>
+  <x:String x:Key="Text.ConflictResolver.Op.Merge" xml:space="preserve">merge</x:String>
+  <x:String x:Key="Text.ConflictResolver.Op.Rebase" xml:space="preserve">rebase</x:String>
+  <x:String x:Key="Text.ConflictResolver.Op.Revert" xml:space="preserve">revert</x:String>
+  <x:String x:Key="Text.ConflictResolver.Placeholder.Hint" xml:space="preserve">Pick a side above, or keep both.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Progress" xml:space="preserve">{0} of {1} files</x:String>
+  <x:String x:Key="Text.ConflictResolver.Rebase.Connector" xml:space="preserve">onto</x:String>
+  <x:String x:Key="Text.ConflictResolver.Rebase.Finish" xml:space="preserve">Continue rebase</x:String>
+  <x:String x:Key="Text.ConflictResolver.Rebase.Verb" xml:space="preserve">Rebasing</x:String>
+  <x:String x:Key="Text.ConflictResolver.Resolved" xml:space="preserve">Resolved</x:String>
+  <x:String x:Key="Text.ConflictResolver.Result" xml:space="preserve">Result</x:String>
+  <x:String x:Key="Text.ConflictResolver.Result.Desc" xml:space="preserve">What {0} will contain after the {1}.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Revert.Connector" xml:space="preserve">on</x:String>
+  <x:String x:Key="Text.ConflictResolver.Revert.Finish" xml:space="preserve">Continue revert</x:String>
+  <x:String x:Key="Text.ConflictResolver.Revert.Verb" xml:space="preserve">Reverting</x:String>
+  <x:String x:Key="Text.ConflictResolver.Shortcuts" xml:space="preserve">SHORTCUTS</x:String>
+  <x:String x:Key="Text.ConflictResolver.StartedBy" xml:space="preserve">What started this.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Status.Left" xml:space="preserve">{0} conflicted file(s) left</x:String>
+  <x:String x:Key="Text.ConflictResolver.Status.Ready" xml:space="preserve">Ready to finish the {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.Subtitle" xml:space="preserve">{0} file(s) merged on their own · {1} still need you</x:String>
+  <x:String x:Key="Text.ConflictResolver.UnderTheHood" xml:space="preserve">UNDER THE HOOD</x:String>
+  <x:String x:Key="Text.ConflictResolver.Undo" xml:space="preserve">Undo</x:String>
+  <x:String x:Key="Text.ConflictResolver.Undo.Desc" xml:space="preserve">Nothing is final until you commit. Abort puts {0} back exactly as it was.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Undo.Title" xml:space="preserve">Not sure? You can always undo.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Who" xml:space="preserve">WHO CHANGED WHAT</x:String>
+  <x:String x:Key="Text.ConflictResolver.WholeFile" xml:space="preserve">Whole file</x:String>
+  <x:String x:Key="Text.ConflictResolver.WholeFile.Current" xml:space="preserve">Keep the whole file from {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.WholeFile.Incoming" xml:space="preserve">Keep the whole file from {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.Why" xml:space="preserve">WHY THIS HAPPENED</x:String>
+  <x:String x:Key="Text.ConflictResolver.Why.Desc" xml:space="preserve">Both sides changed the same lines of {0} since they split. Git merged everything else on its own, but here it can’t guess which version you want.</x:String>
   <x:String x:Key="Text.ConventionalCommit" xml:space="preserve">Conventional Commit Helper</x:String>
   <x:String x:Key="Text.ConventionalCommit.BreakingChanges" xml:space="preserve">Breaking Change:</x:String>
   <x:String x:Key="Text.ConventionalCommit.ClosedIssue" xml:space="preserve">Closed Issue:</x:String>
@@ -337,6 +439,8 @@
   <x:String x:Key="Text.CtrlClickTip" xml:space="preserve">Hold Ctrl to start directly</x:String>
   <x:String x:Key="Text.Cut" xml:space="preserve">Cut</x:String>
   <x:String x:Key="Text.Dashboard" xml:space="preserve">Dashboard</x:String>
+  <x:String x:Key="Text.Date.Today" xml:space="preserve">Today</x:String>
+  <x:String x:Key="Text.Date.Yesterday" xml:space="preserve">Yesterday</x:String>
   <x:String x:Key="Text.DealWithLocalChanges.Discard" xml:space="preserve">Discard</x:String>
   <x:String x:Key="Text.DealWithLocalChanges.DoNothing" xml:space="preserve">Do Nothing</x:String>
   <x:String x:Key="Text.DealWithLocalChanges.StashAndReapply" xml:space="preserve">Stash &amp; Reapply</x:String>
@@ -512,10 +616,15 @@
   <x:String x:Key="Text.GitLFS.TrackByExtension" xml:space="preserve">Track all *{0} files</x:String>
   <x:String x:Key="Text.GotoRevisionSelector" xml:space="preserve">Select Commit</x:String>
   <x:String x:Key="Text.Histories.AdvancedOptions" xml:space="preserve">Advanced Options</x:String>
+  <x:String x:Key="Text.Histories.BackToGraph" xml:space="preserve">History</x:String>
+  <x:String x:Key="Text.Histories.BackToGraph.Tip" xml:space="preserve">Back to the commit graph</x:String>
   <x:String x:Key="Text.Histories.Header.Author" xml:space="preserve">AUTHOR</x:String>
   <x:String x:Key="Text.Histories.Header.AuthorTime" xml:space="preserve">AUTHOR TIME</x:String>
   <x:String x:Key="Text.Histories.Header.CommitTime" xml:space="preserve">COMMIT TIME</x:String>
+  <x:String x:Key="Text.Histories.Header.Date" xml:space="preserve">DATE</x:String>
+  <x:String x:Key="Text.Histories.Header.Graph" xml:space="preserve">GRAPH</x:String>
   <x:String x:Key="Text.Histories.Header.GraphAndSubject" xml:space="preserve">GRAPH &amp; SUBJECT</x:String>
+  <x:String x:Key="Text.Histories.Header.Message" xml:space="preserve">MESSAGE</x:String>
   <x:String x:Key="Text.Histories.Header.SHA" xml:space="preserve">SHA</x:String>
   <x:String x:Key="Text.Histories.HighlightsInGraph" xml:space="preserve">HIGHLIGHTS IN GRAPH</x:String>
   <x:String x:Key="Text.Histories.HighlightsInGraph.All" xml:space="preserve">All</x:String>
@@ -523,11 +632,28 @@
   <x:String x:Key="Text.Histories.HighlightsInGraph.CurrentBranchAndSelectedCommits" xml:space="preserve">Current Branch &amp; Selected Commits</x:String>
   <x:String x:Key="Text.Histories.HighlightsInGraph.SelectedCommitsOnly" xml:space="preserve">Selected Commits Only</x:String>
   <x:String x:Key="Text.Histories.HighlightsInGraph.SelectedCommitsOnlyFirstParent" xml:space="preserve">Selected Commits (First-parent Only)</x:String>
+  <x:String x:Key="Text.Histories.Hint.Ahead" xml:space="preserve">{0} new commits aren't on {1} yet. Push ({2}) sends them.</x:String>
+  <x:String x:Key="Text.Histories.Hint.Behind" xml:space="preserve">{0} new commits are waiting upstream. Pull ({1}) brings them in.</x:String>
+  <x:String x:Key="Text.Histories.Hint.Drag" xml:space="preserve">Drag a branch onto another to merge or rebase it.</x:String>
+  <x:String x:Key="Text.Histories.Hint.LocalChanges" xml:space="preserve">Your uncommitted changes are on the first row. Click it to review and commit them.</x:String>
+  <x:String x:Key="Text.Histories.Hint.Palette" xml:space="preserve">Press {0} to search actions, branches and commits.</x:String>
   <x:String x:Key="Text.Histories.Selected" xml:space="preserve">SELECTED {0} COMMITS</x:String>
   <x:String x:Key="Text.Histories.ShowColumns" xml:space="preserve">SHOW COLUMNS</x:String>
+  <x:String x:Key="Text.Histories.Stats" xml:space="preserve">{0} commits · {1} branches</x:String>
   <x:String x:Key="Text.Histories.Tips" xml:space="preserve">Hold 'Ctrl' or 'Shift' to select multiple commits.</x:String>
   <x:String x:Key="Text.Histories.Tips.MacOS" xml:space="preserve">Hold ⌘ or ⇧ to select multiple commits.</x:String>
   <x:String x:Key="Text.Histories.Tips.Prefix" xml:space="preserve">TIPS:</x:String>
+  <x:String x:Key="Text.Histories.WIP" xml:space="preserve">// {0} changed files, not committed yet</x:String>
+  <x:String x:Key="Text.Histories.WIP.Inspector" xml:space="preserve">LOCAL CHANGES</x:String>
+  <x:String x:Key="Text.Histories.WIP.OnBranch" xml:space="preserve">on {0}</x:String>
+  <x:String x:Key="Text.Histories.WIP.One" xml:space="preserve">// 1 changed file, not committed yet</x:String>
+  <x:String x:Key="Text.Histories.WIP.OpenStaging" xml:space="preserve">Open the full staging view (or double-click the row)</x:String>
+  <x:String x:Key="Text.Histories.WIP.Stage" xml:space="preserve">Stage</x:String>
+  <x:String x:Key="Text.Histories.WIP.StageAll" xml:space="preserve">Stage all</x:String>
+  <x:String x:Key="Text.Histories.WIP.Tip" xml:space="preserve">Click to review, stage and commit your local changes in the inspector. Double-click to open the full staging view.</x:String>
+  <x:String x:Key="Text.Histories.WIP.Title" xml:space="preserve">Uncommitted changes</x:String>
+  <x:String x:Key="Text.Histories.WIP.Unstage" xml:space="preserve">Unstage</x:String>
+  <x:String x:Key="Text.Histories.WIP.UnstageAll" xml:space="preserve">Unstage all</x:String>
   <x:String x:Key="Text.HistoriesDetailsStandalone" xml:space="preserve">Open in separate window</x:String>
   <x:String x:Key="Text.HistoriesDetailsStandalone.CommitDetail" xml:space="preserve">Commit Detail</x:String>
   <x:String x:Key="Text.HistoriesDetailsStandalone.RevisionCompare" xml:space="preserve">Revision Compare</x:String>
@@ -589,6 +715,7 @@
   <x:String x:Key="Text.Launcher.NewVersion" xml:space="preserve">New Version Available</x:String>
   <x:String x:Key="Text.Launcher.OpenRepository" xml:space="preserve">Open Repositories</x:String>
   <x:String x:Key="Text.Launcher.Pages" xml:space="preserve">Tabs</x:String>
+  <x:String x:Key="Text.Launcher.Search" xml:space="preserve">Search or run a command…</x:String>
   <x:String x:Key="Text.Launcher.Workspaces" xml:space="preserve">Workspaces</x:String>
   <x:String x:Key="Text.Merge" xml:space="preserve">Merge Branch</x:String>
   <x:String x:Key="Text.Merge.Edit" xml:space="preserve">Customize merge message</x:String>
@@ -648,7 +775,76 @@
   <x:String x:Key="Text.PageTabBar.Tab.MoveToWorkspace" xml:space="preserve">Move to Workspace</x:String>
   <x:String x:Key="Text.PageTabBar.Tab.Refresh" xml:space="preserve">Refresh</x:String>
   <x:String x:Key="Text.PageTabBar.Welcome.Title" xml:space="preserve">Repositories</x:String>
+  <x:String x:Key="Text.Palette.ApplyPatch" xml:space="preserve">Apply patch…</x:String>
+  <x:String x:Key="Text.Palette.ApplyPatch.Desc" xml:space="preserve">Apply changes from a .patch file</x:String>
+  <x:String x:Key="Text.Palette.Blame" xml:space="preserve">Blame file…</x:String>
+  <x:String x:Key="Text.Palette.Blame.Desc" xml:space="preserve">See who changed each line of a file</x:String>
+  <x:String x:Key="Text.Palette.Branch.Checkout" xml:space="preserve">Switch to this branch</x:String>
+  <x:String x:Key="Text.Palette.Branch.Merge" xml:space="preserve">Merge into current branch</x:String>
+  <x:String x:Key="Text.Palette.Branch.Rebase" xml:space="preserve">Rebase current branch onto it</x:String>
+  <x:String x:Key="Text.Palette.Branch.Squash" xml:space="preserve">Squash into current branch</x:String>
+  <x:String x:Key="Text.Palette.Checkout" xml:space="preserve">Switch branch…</x:String>
+  <x:String x:Key="Text.Palette.Checkout.Desc" xml:space="preserve">Check out another branch</x:String>
+  <x:String x:Key="Text.Palette.CherryPick" xml:space="preserve">Cherry-pick {0}</x:String>
+  <x:String x:Key="Text.Palette.CherryPick.Desc" xml:space="preserve">Copy the selected commit onto the current branch</x:String>
+  <x:String x:Key="Text.Palette.Compare" xml:space="preserve">Compare with…</x:String>
+  <x:String x:Key="Text.Palette.Compare.Desc" xml:space="preserve">Show the differences between two refs</x:String>
+  <x:String x:Key="Text.Palette.Copied" xml:space="preserve">Copied: {0}</x:String>
+  <x:String x:Key="Text.Palette.CreateBranch" xml:space="preserve">Create branch…</x:String>
+  <x:String x:Key="Text.Palette.CreateBranch.Desc" xml:space="preserve">Start a new line of work from here</x:String>
+  <x:String x:Key="Text.Palette.CreateTag" xml:space="preserve">Create tag…</x:String>
+  <x:String x:Key="Text.Palette.CreateTag.Desc" xml:space="preserve">Name this point in history, e.g. a release</x:String>
+  <x:String x:Key="Text.Palette.CustomActions" xml:space="preserve">Run custom action…</x:String>
+  <x:String x:Key="Text.Palette.CustomActions.Desc" xml:space="preserve">Your own scripts for this repository</x:String>
+  <x:String x:Key="Text.Palette.Discard" xml:space="preserve">Discard all changes</x:String>
+  <x:String x:Key="Text.Palette.Discard.Desc" xml:space="preserve">Throw away every uncommitted change</x:String>
+  <x:String x:Key="Text.Palette.Fetch" xml:space="preserve">Fetch</x:String>
+  <x:String x:Key="Text.Palette.Fetch.Desc" xml:space="preserve">Download new commits from your remotes</x:String>
+  <x:String x:Key="Text.Palette.FileHistory" xml:space="preserve">File history…</x:String>
+  <x:String x:Key="Text.Palette.FileHistory.Desc" xml:space="preserve">Every commit that touched a file</x:String>
+  <x:String x:Key="Text.Palette.Footer.CommandsOnly" xml:space="preserve">&gt; commands only</x:String>
+  <x:String x:Key="Text.Palette.Footer.Navigate" xml:space="preserve">↑↓ navigate</x:String>
+  <x:String x:Key="Text.Palette.Footer.Run" xml:space="preserve">↵ run</x:String>
+  <x:String x:Key="Text.Palette.Footer.ShowGit" xml:space="preserve">show Git command</x:String>
+  <x:String x:Key="Text.Palette.GotoRepository" xml:space="preserve">Go to repository…</x:String>
+  <x:String x:Key="Text.Palette.GotoRepository.Desc" xml:space="preserve">Switch to another open tab or repository</x:String>
+  <x:String x:Key="Text.Palette.Group.Actions" xml:space="preserve">ACTIONS</x:String>
+  <x:String x:Key="Text.Palette.Group.Branches" xml:space="preserve">BRANCHES</x:String>
+  <x:String x:Key="Text.Palette.Group.Commits" xml:space="preserve">COMMITS</x:String>
+  <x:String x:Key="Text.Palette.Merge" xml:space="preserve">Merge a branch into {0}…</x:String>
+  <x:String x:Key="Text.Palette.Merge.Desc" xml:space="preserve">Bring in work from another branch</x:String>
+  <x:String x:Key="Text.Palette.OpenFile" xml:space="preserve">Open file…</x:String>
+  <x:String x:Key="Text.Palette.OpenFile.Desc" xml:space="preserve">Open a file of this repository</x:String>
+  <x:String x:Key="Text.Palette.Placeholder" xml:space="preserve">Search actions, branches, commits…</x:String>
+  <x:String x:Key="Text.Palette.Pop" xml:space="preserve">Pop latest stash</x:String>
+  <x:String x:Key="Text.Palette.Pop.Desc" xml:space="preserve">Bring back the changes you stashed last</x:String>
+  <x:String x:Key="Text.Palette.Pull" xml:space="preserve">Pull into {0}</x:String>
+  <x:String x:Key="Text.Palette.Pull.Desc" xml:space="preserve">Fetch and merge the upstream of {0}</x:String>
+  <x:String x:Key="Text.Palette.Push" xml:space="preserve">Push to {0}</x:String>
+  <x:String x:Key="Text.Palette.Push.Desc" xml:space="preserve">Send your local commits to {0}</x:String>
+  <x:String x:Key="Text.Palette.Rebase" xml:space="preserve">Rebase {0} onto…</x:String>
+  <x:String x:Key="Text.Palette.Rebase.Desc" xml:space="preserve">Replays your commits on top of another branch</x:String>
+  <x:String x:Key="Text.Palette.Reveal" xml:space="preserve">Show in Finder</x:String>
+  <x:String x:Key="Text.Palette.Reveal.Desc" xml:space="preserve">Open the repository folder</x:String>
+  <x:String x:Key="Text.Palette.RevealOther" xml:space="preserve">Show in file manager</x:String>
+  <x:String x:Key="Text.Palette.RevealOther.Desc" xml:space="preserve">Open the repository folder</x:String>
+  <x:String x:Key="Text.Palette.Revert" xml:space="preserve">Revert {0}</x:String>
+  <x:String x:Key="Text.Palette.Revert.Desc" xml:space="preserve">Create a commit that undoes the selected commit</x:String>
+  <x:String x:Key="Text.Palette.Squash" xml:space="preserve">Squash merge…</x:String>
+  <x:String x:Key="Text.Palette.Squash.Desc" xml:space="preserve">Combines all commits into one</x:String>
+  <x:String x:Key="Text.Palette.Stash" xml:space="preserve">Stash changes</x:String>
+  <x:String x:Key="Text.Palette.Stash.Desc" xml:space="preserve">Put your uncommitted changes aside</x:String>
+  <x:String x:Key="Text.Palette.Terminal" xml:space="preserve">Open in Terminal</x:String>
+  <x:String x:Key="Text.Palette.Terminal.Desc" xml:space="preserve">Open a shell in this repository</x:String>
   <x:String x:Key="Text.Paste" xml:space="preserve">Paste</x:String>
+  <x:String x:Key="Text.Period.Compact.Days" xml:space="preserve">{0} d ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Hours" xml:space="preserve">{0} h ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Minutes" xml:space="preserve">{0} min ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Months" xml:space="preserve">{0} mo ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Now" xml:space="preserve">now</x:String>
+  <x:String x:Key="Text.Period.Compact.Weeks" xml:space="preserve">{0} wk ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Years" xml:space="preserve">{0} yr ago</x:String>
+  <x:String x:Key="Text.Period.Compact.Yesterday" xml:space="preserve">yesterday</x:String>
   <x:String x:Key="Text.Period.DaysAgo" xml:space="preserve">{0} days ago</x:String>
   <x:String x:Key="Text.Period.HourAgo" xml:space="preserve">1 hour ago</x:String>
   <x:String x:Key="Text.Period.HoursAgo" xml:space="preserve">{0} hours ago</x:String>
@@ -744,6 +940,27 @@
   <x:String x:Key="Text.Pull.Remote" xml:space="preserve">Remote:</x:String>
   <x:String x:Key="Text.Pull.Title" xml:space="preserve">Pull (Fetch &amp; Merge)</x:String>
   <x:String x:Key="Text.Pull.UseRebase" xml:space="preserve">Use rebase instead of merge</x:String>
+  <x:String x:Key="Text.PullRequest.Checkout" xml:space="preserve">Checkout</x:String>
+  <x:String x:Key="Text.PullRequest.ClosedAt" xml:space="preserve">closed {0}</x:String>
+  <x:String x:Key="Text.PullRequest.Comment" xml:space="preserve">1 comment</x:String>
+  <x:String x:Key="Text.PullRequest.Comments" xml:space="preserve">{0} comments</x:String>
+  <x:String x:Key="Text.PullRequest.Commit" xml:space="preserve">1 commit</x:String>
+  <x:String x:Key="Text.PullRequest.Commits" xml:space="preserve">{0} commits</x:String>
+  <x:String x:Key="Text.PullRequest.Description.Row" xml:space="preserve">Description</x:String>
+  <x:String x:Key="Text.PullRequest.FetchFailed" xml:space="preserve">Couldn't fetch the commits of this pull request. Check your network and your access to the remote.</x:String>
+  <x:String x:Key="Text.PullRequest.Fetching" xml:space="preserve">Fetching the pull request…</x:String>
+  <x:String x:Key="Text.PullRequest.File" xml:space="preserve">1 file</x:String>
+  <x:String x:Key="Text.PullRequest.Files" xml:space="preserve">{0} files</x:String>
+  <x:String x:Key="Text.PullRequest.Inspector" xml:space="preserve">PULL REQUEST</x:String>
+  <x:String x:Key="Text.PullRequest.LoadFailed" xml:space="preserve">Couldn't load this pull request from GitHub.</x:String>
+  <x:String x:Key="Text.PullRequest.MergedAt" xml:space="preserve">merged {0}</x:String>
+  <x:String x:Key="Text.PullRequest.NoDescription" xml:space="preserve">No description provided.</x:String>
+  <x:String x:Key="Text.PullRequest.OpenOnGitHub" xml:space="preserve">Open on GitHub</x:String>
+  <x:String x:Key="Text.PullRequest.Opened" xml:space="preserve">opened {0}</x:String>
+  <x:String x:Key="Text.PullRequest.State.Closed" xml:space="preserve">closed</x:String>
+  <x:String x:Key="Text.PullRequest.State.Draft" xml:space="preserve">draft</x:String>
+  <x:String x:Key="Text.PullRequest.State.InReview" xml:space="preserve">in review</x:String>
+  <x:String x:Key="Text.PullRequest.State.Merged" xml:space="preserve">merged</x:String>
   <x:String x:Key="Text.Push" xml:space="preserve">Push</x:String>
   <x:String x:Key="Text.Push.CheckSubmodules" xml:space="preserve">Make sure submodules have been pushed</x:String>
   <x:String x:Key="Text.Push.Force" xml:space="preserve">Force push</x:String>
@@ -824,14 +1041,15 @@
   <x:String x:Key="Text.Repository.HistoriesOrder" xml:space="preserve">COMMITS ORDER</x:String>
   <x:String x:Key="Text.Repository.HistoriesOrder.ByDate" xml:space="preserve">Commit Date</x:String>
   <x:String x:Key="Text.Repository.HistoriesOrder.Topo" xml:space="preserve">Topologically</x:String>
-  <x:String x:Key="Text.Repository.LocalBranches" xml:space="preserve">LOCAL BRANCHES</x:String>
+  <x:String x:Key="Text.Repository.LocalBranches" xml:space="preserve">LOCAL</x:String>
   <x:String x:Key="Text.Repository.NavigateToCurrentHead" xml:space="preserve">Navigate to HEAD</x:String>
   <x:String x:Key="Text.Repository.NewBranch" xml:space="preserve">Create Branch</x:String>
   <x:String x:Key="Text.Repository.Notifications.Clear" xml:space="preserve">CLEAR NOTIFICATIONS</x:String>
   <x:String x:Key="Text.Repository.OpenAsFolder" xml:space="preserve">Open as Folder</x:String>
   <x:String x:Key="Text.Repository.OpenIn" xml:space="preserve">Open in {0}</x:String>
   <x:String x:Key="Text.Repository.OpenWithExternalTools" xml:space="preserve">Open in External Tools</x:String>
-  <x:String x:Key="Text.Repository.Remotes" xml:space="preserve">REMOTES</x:String>
+  <x:String x:Key="Text.Repository.PullRequests" xml:space="preserve">PULL REQUESTS</x:String>
+  <x:String x:Key="Text.Repository.Remotes" xml:space="preserve">REMOTE</x:String>
   <x:String x:Key="Text.Repository.Remotes.Add" xml:space="preserve">Add Remote</x:String>
   <x:String x:Key="Text.Repository.Resolve" xml:space="preserve">RESOLVE</x:String>
   <x:String x:Key="Text.Repository.Search" xml:space="preserve">SEARCH COMMITS</x:String>
@@ -850,6 +1068,7 @@
   <x:String x:Key="Text.Repository.ShowSubmodulesAsTree" xml:space="preserve">Show Submodules as Tree</x:String>
   <x:String x:Key="Text.Repository.ShowTagsAsTree" xml:space="preserve">Show Tags as Tree</x:String>
   <x:String x:Key="Text.Repository.Skip" xml:space="preserve">SKIP</x:String>
+  <x:String x:Key="Text.Repository.Stashes" xml:space="preserve">STASHES</x:String>
   <x:String x:Key="Text.Repository.Statistics" xml:space="preserve">Statistics</x:String>
   <x:String x:Key="Text.Repository.Submodules" xml:space="preserve">SUBMODULES</x:String>
   <x:String x:Key="Text.Repository.Submodules.Add" xml:space="preserve">Add Submodule</x:String>
@@ -908,6 +1127,7 @@
   <x:String x:Key="Text.SetUpstream.Upstream" xml:space="preserve">Upstream:</x:String>
   <x:String x:Key="Text.SHALinkCM.CopySHA" xml:space="preserve">Copy SHA</x:String>
   <x:String x:Key="Text.SHALinkCM.NavigateTo" xml:space="preserve">Go to</x:String>
+  <x:String x:Key="Text.Sidebar.Filter" xml:space="preserve">Filter</x:String>
   <x:String x:Key="Text.SSHKey" xml:space="preserve">SSH Private Key:</x:String>
   <x:String x:Key="Text.SSHKey.Placeholder" xml:space="preserve">Private SSH key store path</x:String>
   <x:String x:Key="Text.SSHKeyHelper" xml:space="preserve">Open SSH Key Helper</x:String>
@@ -950,7 +1170,7 @@
   <x:String x:Key="Text.Statistics.Overview" xml:space="preserve">OVERVIEW</x:String>
   <x:String x:Key="Text.Statistics.ThisMonth" xml:space="preserve">MONTH</x:String>
   <x:String x:Key="Text.Statistics.ThisWeek" xml:space="preserve">WEEK</x:String>
-  <x:String x:Key="Text.Statistics.Tips" xml:space="preserve">SourceGit will only get a maximum of 200,000 commits according to the target branch for analysis.</x:String>
+  <x:String x:Key="Text.Statistics.Tips" xml:space="preserve">PerfectGit will only get a maximum of 200,000 commits according to the target branch for analysis.</x:String>
   <x:String x:Key="Text.Statistics.TotalAuthors" xml:space="preserve">AUTHORS: </x:String>
   <x:String x:Key="Text.Statistics.TotalCommits" xml:space="preserve">COMMITS: </x:String>
   <x:String x:Key="Text.Submodule" xml:space="preserve">SUBMODULES</x:String>
@@ -994,6 +1214,43 @@
   <x:String x:Key="Text.TagCM.Merge" xml:space="preserve">Merge ${0}$ into ${1}$...</x:String>
   <x:String x:Key="Text.TagCM.Push" xml:space="preserve">Push ${0}$...</x:String>
   <x:String x:Key="Text.Terminate" xml:space="preserve">TERMINATE</x:String>
+  <x:String x:Key="Text.Tip.Branch.Body" xml:space="preserve">Creates a new branch from {0}, so your work stays separate.</x:String>
+  <x:String x:Key="Text.Tip.Branch.Title" xml:space="preserve">Branch · start something new</x:String>
+  <x:String x:Key="Text.Tip.Fetch.Body" xml:space="preserve">Downloads new commits from {0} without touching your files.</x:String>
+  <x:String x:Key="Text.Tip.Fetch.Last" xml:space="preserve">Last fetched {0}.</x:String>
+  <x:String x:Key="Text.Tip.Fetch.Title" xml:space="preserve">Fetch · check for new work</x:String>
+  <x:String x:Key="Text.Tip.NoBranch" xml:space="preserve">You are not on a branch (detached HEAD).</x:String>
+  <x:String x:Key="Text.Tip.Pop.Body" xml:space="preserve">Re-applies your latest stash: “{0}”.</x:String>
+  <x:String x:Key="Text.Tip.Pop.None" xml:space="preserve">You have no stashed changes.</x:String>
+  <x:String x:Key="Text.Tip.Pop.Title" xml:space="preserve">Pop · bring changes back</x:String>
+  <x:String x:Key="Text.Tip.Pull.Behind" xml:space="preserve">{0} new commits on {1} will be brought into {2}.</x:String>
+  <x:String x:Key="Text.Tip.Pull.BehindOne" xml:space="preserve">1 new commit on {0} will be brought into {1}.</x:String>
+  <x:String x:Key="Text.Tip.Pull.NoUpstream" xml:space="preserve">{0} doesn't track a remote branch yet.</x:String>
+  <x:String x:Key="Text.Tip.Pull.Title" xml:space="preserve">Pull · get the latest</x:String>
+  <x:String x:Key="Text.Tip.Pull.UpToDate" xml:space="preserve">{0} already has everything from {1}.</x:String>
+  <x:String x:Key="Text.Tip.Push.Ahead" xml:space="preserve">{0} commits on {1} only exist on {2}. Push copies them to {3}.</x:String>
+  <x:String x:Key="Text.Tip.Push.AheadOne" xml:space="preserve">1 commit on {0} only exists on {1}. Push copies it to {2}.</x:String>
+  <x:String x:Key="Text.Tip.Push.NoUpstream" xml:space="preserve">{0} isn't on {1} yet. Push publishes it.</x:String>
+  <x:String x:Key="Text.Tip.Push.Title" xml:space="preserve">Push · send your commits</x:String>
+  <x:String x:Key="Text.Tip.Push.UpToDate" xml:space="preserve">Nothing to push: {0} matches {1}.</x:String>
+  <x:String x:Key="Text.Tip.Stash.Body" xml:space="preserve">Saves your {0} changed files and gives you a clean working copy.</x:String>
+  <x:String x:Key="Text.Tip.Stash.None" xml:space="preserve">There are no local changes to stash.</x:String>
+  <x:String x:Key="Text.Tip.Stash.One" xml:space="preserve">Saves your changed file and gives you a clean working copy.</x:String>
+  <x:String x:Key="Text.Tip.Stash.Title" xml:space="preserve">Stash · put changes aside</x:String>
+  <x:String x:Key="Text.Tip.Terminal.Body" xml:space="preserve">Opens your terminal in {0}.</x:String>
+  <x:String x:Key="Text.Tip.Terminal.Title" xml:space="preserve">Terminal · open a shell</x:String>
+  <x:String x:Key="Text.Tip.ThisMachine.Mac" xml:space="preserve">your Mac</x:String>
+  <x:String x:Key="Text.Tip.ThisMachine.Other" xml:space="preserve">this computer</x:String>
+  <x:String x:Key="Text.Toolbar.Branch" xml:space="preserve">Branch</x:String>
+  <x:String x:Key="Text.Toolbar.Fetch" xml:space="preserve">Fetch</x:String>
+  <x:String x:Key="Text.Toolbar.More" xml:space="preserve">More actions</x:String>
+  <x:String x:Key="Text.Toolbar.NeverFetched" xml:space="preserve">never fetched</x:String>
+  <x:String x:Key="Text.Toolbar.Pop" xml:space="preserve">Pop</x:String>
+  <x:String x:Key="Text.Toolbar.Pull" xml:space="preserve">Pull</x:String>
+  <x:String x:Key="Text.Toolbar.Push" xml:space="preserve">Push</x:String>
+  <x:String x:Key="Text.Toolbar.Stash" xml:space="preserve">Stash</x:String>
+  <x:String x:Key="Text.Toolbar.SwitchBranch" xml:space="preserve">Switch branch</x:String>
+  <x:String x:Key="Text.Toolbar.Terminal" xml:space="preserve">Terminal</x:String>
   <x:String x:Key="Text.UpdateSubmodules" xml:space="preserve">Update Submodules</x:String>
   <x:String x:Key="Text.UpdateSubmodules.All" xml:space="preserve">All submodules</x:String>
   <x:String x:Key="Text.UpdateSubmodules.Init" xml:space="preserve">Initialize as needed</x:String>

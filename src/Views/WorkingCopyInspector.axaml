@@ -1,0 +1,206 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SourceGit.ViewModels"
+             xmlns:v="using:SourceGit.Views"
+             xmlns:c="using:SourceGit.Converters"
+             mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="800"
+             x:Class="SourceGit.Views.WorkingCopyInspector"
+             x:DataType="vm:WorkingCopy">
+  <TabControl Padding="0,4,0,0">
+    <TabItem>
+      <TabItem.Header>
+        <TextBlock Classes="tab_header" Text="{DynamicResource Text.Histories.WIP.Inspector}"/>
+      </TabItem.Header>
+
+      <Grid RowDefinitions="Auto,Auto,*,Auto,*,Auto">
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="18,14" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border0}">
+          <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+            <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center">
+              <TextBlock FontSize="17" FontWeight="Bold" Text="{DynamicResource Text.Histories.WIP.Title}"/>
+              <TextBlock Margin="0,2,0,0"
+                         FontSize="12"
+                         Foreground="{DynamicResource Brush.FG3}"
+                         TextTrimming="CharacterEllipsis"
+                         Text="{Binding Repository.CurrentBranch.Name, Converter={x:Static c:StringConverters.FormatByResourceKey}, ConverterParameter='Histories.WIP.OnBranch', FallbackValue=''}"/>
+            </StackPanel>
+            <Border Grid.Column="1" Margin="8,0,4,0" Padding="2" CornerRadius="6" VerticalAlignment="Center" Background="{DynamicResource Brush.Hover}">
+              <StackPanel Orientation="Horizontal">
+                <Button Classes="segment"
+                        Classes.active="{Binding Source={x:Static vm:Preferences.Instance}, Path=ChangeViewMode, Converter={x:Static c:ChangeViewModeConverters.IsTree}}"
+                        Content="{DynamicResource Text.CommitDetail.Info.Tree}"
+                        Click="OnTreeMode"/>
+                <Button Classes="segment"
+                        Classes.active="{Binding Source={x:Static vm:Preferences.Instance}, Path=ChangeViewMode, Converter={x:Static c:ChangeViewModeConverters.IsNotTree}}"
+                        Content="{DynamicResource Text.CommitDetail.Info.List}"
+                        Click="OnListMode"/>
+              </StackPanel>
+            </Border>
+            <Button Grid.Column="2"
+                    Classes="icon_button"
+                    Width="26" Height="26"
+                    VerticalAlignment="Center"
+                    Command="{Binding DiscardAllChanges}"
+                    ToolTip.Tip="{DynamicResource Text.WorkingCopy.DiscardAll}">
+              <Path Width="13" Height="13" Data="{StaticResource Icons.Undo}"/>
+            </Button>
+            <Button Grid.Column="3"
+                    Classes="icon_button"
+                    Width="26" Height="26"
+                    VerticalAlignment="Center"
+                    Click="OnOpenStagingView"
+                    ToolTip.Tip="{DynamicResource Text.Histories.WIP.OpenStaging}">
+              <Path Width="13" Height="13" Data="{StaticResource Icons.OpenWith}"/>
+            </Button>
+          </Grid>
+        </Border>
+
+        <!-- Unstaged header -->
+        <Grid Grid.Row="1" Margin="18,12,12,6" ColumnDefinitions="Auto,Auto,*,Auto">
+          <TextBlock Grid.Column="0" Classes="group_header_label">
+            <Run Text="{DynamicResource Text.WorkingCopy.Unstaged}"/>
+            <Run Text="{Binding UnstagedCountInfo, Mode=OneWay}"/>
+          </TextBlock>
+          <v:LoadingIcon Grid.Column="1" Width="12" Height="12" Margin="8,0,0,0" IsVisible="{Binding IsStaging}"/>
+          <Button Grid.Column="3"
+                  Classes="inspector_action"
+                  Padding="8,2" MinHeight="22"
+                  Content="{DynamicResource Text.Histories.WIP.StageAll}"
+                  ToolTip.Tip="{DynamicResource Text.WorkingCopy.Unstaged.StageAll}"
+                  IsEnabled="{Binding VisibleUnstaged, Converter={x:Static c:ListConverters.IsNotNullOrEmpty}}"
+                  Click="OnStageAll"/>
+        </Grid>
+
+        <v:ChangeCollectionView Grid.Row="2"
+                                x:Name="UnstagedChangesView"
+                                Margin="10,0"
+                                MinHeight="60"
+                                IsUnstagedChange="True"
+                                Background="Transparent"
+                                ViewMode="{Binding Source={x:Static vm:Preferences.Instance}, Path=ChangeViewMode}"
+                                EnableCompactFolders="{Binding Source={x:Static vm:Preferences.Instance}, Path=EnableCompactFoldersInChangesTree}"
+                                Changes="{Binding VisibleUnstaged}"
+                                Selection="{Binding SelectedUnstaged, Mode=TwoWay}"
+                                ContextRequested="OnUnstagedContextRequested"
+                                RowActionLabel="{DynamicResource Text.Histories.WIP.Stage}"
+                                RowActionRequested="OnStageRow"
+                                ChangeDoubleTapped="OnUnstagedChangeDoubleTapped"
+                                KeyDown="OnUnstagedKeyDown"/>
+
+        <!-- Staged header -->
+        <Border Grid.Row="3" Margin="0,6,0,0" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Brush.Border0}">
+          <Grid Margin="18,12,12,6" ColumnDefinitions="Auto,Auto,*,Auto">
+            <TextBlock Grid.Column="0" Classes="group_header_label">
+              <Run Text="{DynamicResource Text.WorkingCopy.Staged}"/>
+              <Run Text="{Binding StagedCountInfo, Mode=OneWay}"/>
+            </TextBlock>
+            <v:LoadingIcon Grid.Column="1" Width="12" Height="12" Margin="8,0,0,0" IsVisible="{Binding IsUnstaging}"/>
+            <Button Grid.Column="3"
+                    Classes="inspector_action"
+                    Padding="8,2" MinHeight="22"
+                    Content="{DynamicResource Text.Histories.WIP.UnstageAll}"
+                    ToolTip.Tip="{DynamicResource Text.WorkingCopy.Staged.UnstageAll}"
+                    IsEnabled="{Binding VisibleStaged, Converter={x:Static c:ListConverters.IsNotNullOrEmpty}}"
+                    Click="OnUnstageAll"/>
+          </Grid>
+        </Border>
+
+        <v:ChangeCollectionView Grid.Row="4"
+                                x:Name="StagedChangesView"
+                                Margin="10,0"
+                                MinHeight="60"
+                                IsUnstagedChange="False"
+                                Background="Transparent"
+                                ViewMode="{Binding Source={x:Static vm:Preferences.Instance}, Path=ChangeViewMode}"
+                                EnableCompactFolders="{Binding Source={x:Static vm:Preferences.Instance}, Path=EnableCompactFoldersInChangesTree}"
+                                Changes="{Binding VisibleStaged}"
+                                Selection="{Binding SelectedStaged, Mode=TwoWay}"
+                                ContextRequested="OnStagedContextRequested"
+                                RowActionLabel="{DynamicResource Text.Histories.WIP.Unstage}"
+                                RowActionRequested="OnUnstageRow"
+                                ChangeDoubleTapped="OnStagedChangeDoubleTapped"
+                                KeyDown="OnStagedKeyDown"/>
+
+        <!-- Commit -->
+        <Border Grid.Row="5" Padding="18,12,18,14" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Brush.Border0}">
+          <StackPanel Orientation="Vertical" Spacing="10">
+            <v:CommitMessageToolBox Height="120"
+                                    ShowAdvancedOptions="True"
+                                    CommitMessage="{Binding CommitMessage, Mode=TwoWay}"/>
+
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+              <CheckBox Grid.Column="0"
+                        Height="24"
+                        IsChecked="{Binding UseAmend, Mode=TwoWay}"
+                        Content="{DynamicResource Text.WorkingCopy.Amend}"
+                        ToolTip.Tip="--amend"/>
+
+              <v:LoadingIcon Grid.Column="1"
+                             Width="16" Height="16"
+                             Margin="8,0"
+                             HorizontalAlignment="Right"
+                             IsVisible="{Binding IsCommitting}"/>
+
+              <Button Grid.Column="2"
+                      Classes="flat"
+                      Height="28"
+                      Padding="10,0"
+                      Content="{DynamicResource Text.WorkingCopy.CommitAndPush}"
+                      Click="OnCommitWithPush"
+                      ToolTip.Tip="{OnPlatform Ctrl+Alt+Enter, macOS=⌘+⌥+Enter}">
+                <Button.IsEnabled>
+                  <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Path="IsCommitting" Converter="{x:Static BoolConverters.Not}"/>
+                    <Binding Path="CommitMessage" Converter="{x:Static c:StringConverters.IsNotNullOrWhitespace}"/>
+                  </MultiBinding>
+                </Button.IsEnabled>
+                <Button.IsVisible>
+                  <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Path="HasRemotes"/>
+                    <Binding Path="UseAmend" Converter="{x:Static BoolConverters.Not}"/>
+                    <Binding Path="InProgressContext" Converter="{x:Static ObjectConverters.IsNull}"/>
+                  </MultiBinding>
+                </Button.IsVisible>
+              </Button>
+
+              <Button Grid.Column="3"
+                      Classes="flat primary"
+                      Height="28"
+                      Margin="8,0,0,0"
+                      Padding="12,0"
+                      Content="{DynamicResource Text.WorkingCopy.Commit}"
+                      Click="OnCommit"
+                      IsVisible="{Binding InProgressContext, Converter={x:Static ObjectConverters.IsNull}}"
+                      ToolTip.Tip="{OnPlatform Ctrl+Enter, macOS=⌘+Enter}">
+                <Button.IsEnabled>
+                  <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Path="IsCommitting" Converter="{x:Static BoolConverters.Not}"/>
+                    <Binding Path="CommitMessage" Converter="{x:Static c:StringConverters.IsNotNullOrWhitespace}"/>
+                  </MultiBinding>
+                </Button.IsEnabled>
+              </Button>
+
+              <Button Grid.Column="3"
+                      Classes="flat primary"
+                      Height="28"
+                      Margin="8,0,0,0"
+                      Padding="12,0"
+                      Content="{DynamicResource Text.Repository.Continue}"
+                      Click="OnContinue"
+                      IsVisible="{Binding InProgressContext, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <Button.IsEnabled>
+                  <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Path="IsCommitting" Converter="{x:Static BoolConverters.Not}"/>
+                    <Binding Path="HasUnsolvedConflicts" Converter="{x:Static BoolConverters.Not}"/>
+                  </MultiBinding>
+                </Button.IsEnabled>
+              </Button>
+            </Grid>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </TabItem>
+  </TabControl>
+</UserControl>

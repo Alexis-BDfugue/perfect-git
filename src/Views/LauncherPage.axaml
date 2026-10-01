@@ -9,10 +9,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SourceGit.Views.LauncherPage"
              x:DataType="vm:LauncherPage">
-  <Grid RowDefinitions="36,*" Background="{DynamicResource Brush.ToolBar}">
+  <Grid RowDefinitions="50,*" Background="{DynamicResource Brush.ToolBar}">
     <!-- ToolBar -->
     <Border Grid.Row="0"
             Background="Transparent"
+            BorderThickness="0,0,0,1"
+            BorderBrush="{DynamicResource Brush.Border0}"
             PointerPressed="OnToolBarPointerPressed">
       <ContentControl Content="{Binding Data}">
         <ContentControl.DataTemplates>
@@ -65,6 +67,25 @@
         </ContentControl.DataTemplates>
       </ContentControl>
     </Border>
+
+    <!-- Conflict resolver: covers the toolbar and the repository while a merge, rebase... is stopped on conflicts -->
+    <ContentControl Grid.Row="0" Grid.RowSpan="2" Content="{Binding Data}">
+      <ContentControl.DataTemplates>
+        <DataTemplate DataType="vm:Welcome">
+          <Panel/>
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:Repository">
+          <ContentControl Content="{Binding ConflictResolver}" IsVisible="{Binding ConflictResolver, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <ContentControl.DataTemplates>
+              <DataTemplate DataType="vm:ConflictResolver">
+                <v:ConflictResolver/>
+              </DataTemplate>
+            </ContentControl.DataTemplates>
+          </ContentControl>
+        </DataTemplate>
+      </ContentControl.DataTemplates>
+    </ContentControl>
 
     <!-- Floating -->
     <Grid Grid.Row="1" ClipToBounds="True">

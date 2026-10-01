@@ -33,40 +33,54 @@
       <Color x:Key="Color.InlineCode">#FFE4E4E4</Color>
       <Color x:Key="Color.InlineCodeFG">Black</Color>
       <Color x:Key="Color.SubPanel">#FFFBFBFB</Color>
+      <Color x:Key="Color.FG3">#FF9A9A9A</Color>
+      <Color x:Key="Color.Hover">#0A000000</Color>
+      <Color x:Key="Color.AccentFG">#FFFFFFFF</Color>
+      <Color x:Key="Color.Added">#FF1F8A45</Color>
+      <Color x:Key="Color.Deleted">#FFCC4135</Color>
+      <Color x:Key="Color.Warning">#FFA87A00</Color>
+      <SolidColorBrush x:Key="Brush.Selection" Color="{DynamicResource SystemAccentColor}" Opacity="0.65"/>
     </ResourceDictionary>
 
     <ResourceDictionary x:Key="Dark">
-      <Color x:Key="Color.Window">#FF252525</Color>
-      <Color x:Key="Color.WindowBorder">#FF606060</Color>
-      <Color x:Key="Color.TitleBar">#FF1F1F1F</Color>
-      <Color x:Key="Color.ToolBar">#FF2F2F2F</Color>
-      <Color x:Key="Color.Popup">#FF2B2B2B</Color>
-      <Color x:Key="Color.PopupBorder">#FF393939</Color>
-      <Color x:Key="Color.Contents">#FF1C1C1C</Color>
-      <Color x:Key="Color.Badge">#FF8F8F8F</Color>
-      <Color x:Key="Color.BadgeFG">#FFE0E0E0</Color>
-      <Color x:Key="Color.Conflict">#FFFAFAD2</Color>
-      <Color x:Key="Color.Conflict.Foreground">#FF252525</Color>
+      <Color x:Key="Color.Window">#FF141519</Color>
+      <Color x:Key="Color.WindowBorder">#26FFFFFF</Color>
+      <Color x:Key="Color.TitleBar">#FF0E0F12</Color>
+      <Color x:Key="Color.ToolBar">#FF121316</Color>
+      <Color x:Key="Color.Popup">#FF1E2025</Color>
+      <Color x:Key="Color.PopupBorder">#1FFFFFFF</Color>
+      <Color x:Key="Color.Contents">#FF121316</Color>
+      <Color x:Key="Color.Badge">#FF34373F</Color>
+      <Color x:Key="Color.BadgeFG">#FFECEEF2</Color>
+      <Color x:Key="Color.Conflict">#FFE8BE62</Color>
+      <Color x:Key="Color.Conflict.Foreground">#FF15141A</Color>
       <Color x:Key="Color.Conflict.MineBG">#400078D7</Color>
       <Color x:Key="Color.Conflict.TheirsBG">#40FF8C00</Color>
-      <Color x:Key="Color.Border0">#FF181818</Color>
-      <Color x:Key="Color.Border1">#FF7C7C7C</Color>
-      <Color x:Key="Color.Border2">#FF404040</Color>
-      <Color x:Key="Color.FlatButton.Background">#FF303030</Color>
-      <Color x:Key="Color.FlatButton.BackgroundHovered">#FF333333</Color>
-      <Color x:Key="Color.FlatButton.FloatingBorder">#FF4F4F4F</Color>
-      <Color x:Key="Color.FG1">#FFDFDFDF</Color>
-      <Color x:Key="Color.FG2">#FF9F9F9F</Color>
+      <Color x:Key="Color.Border0">#FF26282E</Color>
+      <Color x:Key="Color.Border1">#FF71757E</Color>
+      <Color x:Key="Color.Border2">#FF26282E</Color>
+      <Color x:Key="Color.FlatButton.Background">#FF1E2025</Color>
+      <Color x:Key="Color.FlatButton.BackgroundHovered">#FF282A2F</Color>
+      <Color x:Key="Color.FlatButton.FloatingBorder">#1FFFFFFF</Color>
+      <Color x:Key="Color.FG1">#FFECEEF2</Color>
+      <Color x:Key="Color.FG2">#FFA3A7B0</Color>
       <Color x:Key="Color.Diff.EmptyBG">#3C000000</Color>
       <Color x:Key="Color.Diff.AddedBG">#C03A5C3F</Color>
       <Color x:Key="Color.Diff.DeletedBG">#C0633F3E</Color>
       <Color x:Key="Color.Diff.AddedHighlight">#A0308D3C</Color>
       <Color x:Key="Color.Diff.DeletedHighlight">#A09F4247</Color>
       <Color x:Key="Color.Diff.BlockBorderHighlight">DarkCyan</Color>
-      <Color x:Key="Color.Link">#4DAAFC</Color>
-      <Color x:Key="Color.InlineCode">#FF383838</Color>
-      <Color x:Key="Color.InlineCodeFG">#FFF0F0F0</Color>
-      <Color x:Key="Color.SubPanel">#FF272727</Color>
+      <Color x:Key="Color.Link">#FFA9A5FF</Color>
+      <Color x:Key="Color.InlineCode">#12FFFFFF</Color>
+      <Color x:Key="Color.InlineCodeFG">#FFECEEF2</Color>
+      <Color x:Key="Color.SubPanel">#FF17181C</Color>
+      <Color x:Key="Color.FG3">#FF71757E</Color>
+      <Color x:Key="Color.Hover">#0BFFFFFF</Color>
+      <Color x:Key="Color.AccentFG">#FF15141A</Color>
+      <Color x:Key="Color.Added">#FF6FD087</Color>
+      <Color x:Key="Color.Deleted">#FFFB817A</Color>
+      <Color x:Key="Color.Warning">#FFE8BE62</Color>
+      <SolidColorBrush x:Key="Brush.Selection" Color="#FF292841"/>
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
 
@@ -103,4 +117,10 @@
   <SolidColorBrush x:Key="Brush.InlineCode" Color="{DynamicResource Color.InlineCode}"/>
   <SolidColorBrush x:Key="Brush.InlineCodeFG" Color="{DynamicResource Color.InlineCodeFG}"/>
   <SolidColorBrush x:Key="Brush.SubPanel" Color="{DynamicResource Color.SubPanel}"/>
+  <SolidColorBrush x:Key="Brush.FG3" Color="{DynamicResource Color.FG3}"/>
+  <SolidColorBrush x:Key="Brush.Hover" Color="{DynamicResource Color.Hover}"/>
+  <SolidColorBrush x:Key="Brush.AccentFG" Color="{DynamicResource Color.AccentFG}"/>
+  <SolidColorBrush x:Key="Brush.Added" Color="{DynamicResource Color.Added}"/>
+  <SolidColorBrush x:Key="Brush.Deleted" Color="{DynamicResource Color.Deleted}"/>
+  <SolidColorBrush x:Key="Brush.Warning" Color="{DynamicResource Color.Warning}"/>
 </ResourceDictionary>

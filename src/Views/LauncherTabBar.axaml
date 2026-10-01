@@ -10,11 +10,36 @@
              x:Class="SourceGit.Views.LauncherTabBar"
              x:DataType="vm:Launcher"
              x:Name="ThisControl">
+  <UserControl.Styles>
+    <Style Selector="Button.pg_add">
+      <Setter Property="Width" Value="26"/>
+      <Setter Property="Height" Value="26"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+      <Setter Property="Background" Value="#08FFFFFF"/>
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}" BorderBrush="{DynamicResource Brush.Border0}" BorderThickness="1" CornerRadius="13">
+            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="Button.pg_add:pointerover">
+      <Setter Property="Background" Value="{DynamicResource Brush.Hover}"/>
+    </Style>
+    <Style Selector="Button.pg_add Path">
+      <Setter Property="Fill" Value="{DynamicResource Brush.FG2}"/>
+    </Style>
+    <Style Selector="Button.pg_add:pointerover Path">
+      <Setter Property="Fill" Value="{DynamicResource Brush.FG1}"/>
+    </Style>
+  </UserControl.Styles>
+
   <Grid ColumnDefinitions="Auto,*,Auto">
     <RepeatButton Grid.Column="0"
                   Classes="icon_button"
-                  Width="18" Height="28"
-                  Margin="0,2,0,0"
+                  Width="18" Height="26"
                   Click="ScrollTabsLeft"
                   IsVisible="{Binding #ThisControl.IsScrollButtonVisible}">
       <Path Width="8" Height="14" Stretch="Fill" Data="{StaticResource Icons.TriangleLeft}"/>
@@ -38,32 +63,96 @@
           <ListBox.Styles>
             <Style Selector="ListBoxItem">
               <Setter Property="Padding" Value="0"/>
+              <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
             <Style Selector="ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
               <Setter Property="Background" Value="Transparent"/>
-              <Setter Property="Opacity" Value=".5"/>
             </Style>
             <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
               <Setter Property="Background" Value="Transparent"/>
-              <Setter Property="Opacity" Value=".85"/>
             </Style>
             <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
               <Setter Property="Background" Value="Transparent"/>
-              <Setter Property="Opacity" Value="1"/>
+            </Style>
+
+            <!-- Pill: plain text when inactive, raised with an accent dot and a close button when active -->
+            <Style Selector="Border.pg_tab">
+              <Setter Property="Background" Value="Transparent"/>
+              <Setter Property="BorderBrush" Value="Transparent"/>
+              <Setter Property="BorderThickness" Value="1"/>
+              <Setter Property="CornerRadius" Value="13"/>
+            </Style>
+            <Style Selector="ListBoxItem:pointerover Border.pg_tab">
+              <Setter Property="Background" Value="{DynamicResource Brush.Hover}"/>
+            </Style>
+            <Style Selector="ListBoxItem:selected Border.pg_tab">
+              <Setter Property="Background" Value="{DynamicResource Brush.Popup}"/>
+              <Setter Property="BorderBrush" Value="{DynamicResource Brush.PopupBorder}"/>
+              <Setter Property="BoxShadow" Value="0 1 2 0 #66000000"/>
+            </Style>
+            <Style Selector="Grid.pg_tab_content">
+              <Setter Property="Margin" Value="11,0,11,0"/>
+            </Style>
+            <Style Selector="ListBoxItem:pointerover Grid.pg_tab_content, ListBoxItem:selected Grid.pg_tab_content">
+              <Setter Property="Margin" Value="10,0,5,0"/>
+            </Style>
+            <Style Selector="TextBlock.tab_name">
+              <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
+            </Style>
+            <Style Selector="ListBoxItem:pointerover TextBlock.tab_name">
+              <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+            </Style>
+            <Style Selector="ListBoxItem:selected TextBlock.tab_name">
+              <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+              <Setter Property="FontWeight" Value="SemiBold"/>
+            </Style>
+            <Style Selector="Ellipse.pg_dot">
+              <Setter Property="IsVisible" Value="False"/>
+            </Style>
+            <Style Selector="ListBoxItem:selected Ellipse.pg_dot">
+              <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="Button.pg_close">
+              <Setter Property="IsVisible" Value="False"/>
+              <Setter Property="Width" Value="16"/>
+              <Setter Property="Height" Value="16"/>
+              <Setter Property="Margin" Value="8,0,0,0"/>
+              <Setter Property="Padding" Value="0"/>
+              <Setter Property="Background" Value="#0FFFFFFF"/>
+              <Setter Property="VerticalAlignment" Value="Center"/>
+              <Setter Property="Template">
+                <ControlTemplate>
+                  <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                    <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                </ControlTemplate>
+              </Setter>
+            </Style>
+            <Style Selector="ListBoxItem:pointerover Button.pg_close, ListBoxItem:selected Button.pg_close">
+              <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="Button.pg_close:pointerover">
+              <Setter Property="Background" Value="#24FFFFFF"/>
+            </Style>
+            <Style Selector="Button.pg_close Path">
+              <Setter Property="Fill" Value="{DynamicResource Brush.FG3}"/>
+            </Style>
+            <Style Selector="Button.pg_close:pointerover Path">
+              <Setter Property="Fill" Value="{DynamicResource Brush.FG1}"/>
             </Style>
           </ListBox.Styles>
 
           <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
-              <StackPanel Orientation="Horizontal" Height="30"/>
+              <StackPanel Orientation="Horizontal" Height="40" Spacing="4"/>
             </ItemsPanelTemplate>
           </ListBox.ItemsPanel>
 
           <ListBox.ItemTemplate>
             <DataTemplate DataType="vm:LauncherPage">
-              <v:LauncherTabSizeBox UseFixedWidth="{Binding Source={x:Static vm:Preferences.Instance}, Path=UseFixedTabWidth}" Height="30"
-                                    Padding="0,2,0,0"
-                                    Background="Transparent"
+              <v:LauncherTabSizeBox Classes="pg_tab"
+                                    UseFixedWidth="{Binding Source={x:Static vm:Preferences.Instance}, Path=UseFixedTabWidth}"
+                                    Height="26"
                                     PointerPressed="OnPointerPressedTab"
                                     PointerMoved="OnPointerMovedOverTab"
                                     PointerReleased="OnPointerReleasedTab"
@@ -81,51 +170,44 @@
                   </Grid>
                 </ToolTip.Tip>
 
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                  <v:Bookmark Grid.Column="0"
-                              Width="12" Height="12"
-                              Margin="12,0"
-                              Value="{Binding Node.Bookmark, Mode=OneWay}"
-                              IsVisible="{Binding Node.IsRepository}"/>
-                  <Path Grid.Column="0"
-                        Width="12" Height="12" Margin="12,0"
-                        Fill="{DynamicResource Brush.FG1}"
-                        Data="{StaticResource Icons.Repositories}"
-                        IsVisible="{Binding !Node.IsRepository}"
-                        IsHitTestVisible="False"/>
+                <Grid Classes="pg_tab_content" ColumnDefinitions="Auto,*,Auto">
+                  <Grid Grid.Column="0" VerticalAlignment="Center">
+                    <Ellipse Classes="pg_dot"
+                             Width="7" Height="7" Margin="0,0,8,0"
+                             Fill="{DynamicResource Brush.Accent}"
+                             IsHitTestVisible="False"/>
+                    <v:Bookmark Width="12" Height="12"
+                                Margin="0,0,8,0"
+                                Value="{Binding Node.Bookmark, Mode=OneWay}"
+                                IsVisible="{Binding Node.Bookmark, Converter={x:Static c:IntConverters.IsGreaterThanZero}}"/>
+                  </Grid>
 
-                  <Grid Grid.Column="1"
-                        HorizontalAlignment="Center" VerticalAlignment="Center"
-                        ColumnDefinitions="Auto,*"
-                        IsHitTestVisible="False"
-                        IsVisible="{Binding Node.IsRepository}">
-                    <Ellipse Grid.Column="0"
-                             Width="8" Height="8"
-                             Margin="0,0,6,0"
+                  <StackPanel Grid.Column="1"
+                              Orientation="Horizontal"
+                              Spacing="8"
+                              VerticalAlignment="Center"
+                              IsHitTestVisible="False"
+                              ClipToBounds="True">
+                    <TextBlock Classes="tab_name"
+                               VerticalAlignment="Center"
+                               Text="{Binding Node.Name}"
+                               IsVisible="{Binding Node.IsRepository}"/>
+                    <TextBlock Classes="tab_name"
+                               VerticalAlignment="Center"
+                               Text="{DynamicResource Text.PageTabBar.Welcome.Title}"
+                               IsVisible="{Binding !Node.IsRepository}"/>
+                    <TextBlock VerticalAlignment="Center"
+                               FontSize="11.5"
+                               Foreground="{DynamicResource Brush.FG3}"
+                               TextTrimming="CharacterEllipsis"
+                               Text="{Binding ((vm:Repository)Data).CurrentBranch.Name, FallbackValue={x:Null}}"/>
+                    <Ellipse Width="6" Height="6"
                              VerticalAlignment="Center"
                              IsVisible="{Binding DirtyState, Converter={x:Static ObjectConverters.NotEqual}, ConverterParameter={x:Static m:DirtyState.None}}"
                              Fill="{Binding DirtyState, Converter={x:Static c:DirtyStateConverters.ToBrush}}"/>
+                  </StackPanel>
 
-                    <TextBlock Grid.Column="1"
-                               VerticalAlignment="Center"
-                               FontSize="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static c:DoubleConverters.Decrease}}"
-                               TextAlignment="Center"
-                               Text="{Binding Node.Name}"
-                               IsHitTestVisible="False"/>
-                  </Grid>
-
-                  <TextBlock Grid.Column="1"
-                             HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                             FontSize="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static c:DoubleConverters.Decrease}}"
-                             TextAlignment="Center"
-                             Text="{DynamicResource Text.PageTabBar.Welcome.Title}"
-                             IsVisible="{Binding !Node.IsRepository}"
-                             IsHitTestVisible="False"/>
-
-                  <Button Grid.Column="2"
-                          Classes="icon_button"
-                          Width="14" Height="12" Margin="12,0"
-                          Click="OnCloseTab">
+                  <Button Grid.Column="2" Classes="pg_close" Click="OnCloseTab">
                     <ToolTip.Tip>
                       <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="{DynamicResource Text.PageTabBar.Tab.Close}" VerticalAlignment="Center"/>
@@ -136,7 +218,7 @@
                                    Foreground="{DynamicResource MenuFlyoutItemKeyboardAcceleratorTextForeground}"/>
                       </StackPanel>
                     </ToolTip.Tip>
-                    <Path Width="9" Height="9" Data="{StaticResource Icons.Close}"/>
+                    <Path Width="7" Height="7" Data="{StaticResource Icons.Close}"/>
                   </Button>
                 </Grid>
               </v:LauncherTabSizeBox>
@@ -144,9 +226,8 @@
           </ListBox.ItemTemplate>
         </ListBox>
 
-        <Button Classes="icon_button"
-                Width="16" Height="16"
-                Margin="8,2,8,0"
+        <Button Classes="pg_add"
+                Margin="6,0,8,0"
                 Command="{Binding AddNewTab}"
                 IsVisible="{Binding !#ThisControl.IsScrollButtonVisible}">
           <ToolTip.Tip>
@@ -160,17 +241,17 @@
             </StackPanel>
           </ToolTip.Tip>
 
-          <Path Width="12" Height="12" Data="{StaticResource Icons.Plus}"/>
+          <Path Width="11" Height="11" Data="{StaticResource Icons.Plus}"/>
         </Button>
       </StackPanel>
     </ScrollViewer>
 
     <StackPanel Grid.Column="2" Orientation="Horizontal" IsVisible="{Binding #ThisControl.IsScrollButtonVisible}">
-      <RepeatButton Classes="icon_button" Width="18" Height="28" Margin="0,2,0,0" Click="ScrollTabsRight">
+      <RepeatButton Classes="icon_button" Width="18" Height="26" Click="ScrollTabsRight">
         <Path Width="8" Height="14" Stretch="Fill" Data="{StaticResource Icons.TriangleRight}"/>
       </RepeatButton>
 
-      <Button Classes="icon_button" Width="16" Height="28" Margin="4,2,0,0" Command="{Binding AddNewTab}">
+      <Button Classes="pg_add" Margin="4,0,0,0" Command="{Binding AddNewTab}">
         <ToolTip.Tip>
           <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
             <TextBlock Text="{DynamicResource Text.PageTabBar.New}" VerticalAlignment="Center"/>
@@ -182,7 +263,7 @@
           </StackPanel>
         </ToolTip.Tip>
 
-        <Path Width="12" Height="12" Data="{StaticResource Icons.Plus}"/>
+        <Path Width="11" Height="11" Data="{StaticResource Icons.Plus}"/>
       </Button>
     </StackPanel>
   </Grid>

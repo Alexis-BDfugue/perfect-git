@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 using Avalonia;
 using Avalonia.Media;
@@ -17,11 +18,15 @@ namespace SourceGit.Models
         SelectedCommitsOnlyFirstParent,
     }
 
-    public class CommitGraph
+    public partial class CommitGraph
     {
+        public const double LANE_WIDTH = 30;
+        public const double FIRST_LANE_X = 24;
+        public const double CONTENT_MIN_X = 192;
+
         public static List<Pen> Pens { get; } = [];
 
-        public static void SetDefaultPens(double thickness = 2)
+        public static void SetDefaultPens(double thickness = 2.5)
         {
             SetPens(s_defaultPenColors, thickness);
         }
@@ -31,7 +36,7 @@ namespace SourceGit.Models
             Pens.Clear();
 
             foreach (var c in colors)
-                Pens.Add(new Pen(c.ToUInt32(), thickness));
+                Pens.Add(new Pen(c.ToUInt32(), thickness, lineCap: PenLineCap.Round));
 
             s_penCount = colors.Count;
         }
@@ -65,6 +70,7 @@ namespace SourceGit.Models
             public Point Center;
             public int Color;
             public bool IsHighlighted;
+            public User Author;
         }
 
         public List<Path> Paths { get; } = [];
@@ -73,8 +79,8 @@ namespace SourceGit.Models
 
         public static CommitGraph Generate(List<Commit> commits, bool firstParentOnlyEnabled, CommitGraphHighlighting highlighting, HashSet<string> highlightExtraCommits)
         {
-            const double unitWidth = 12;
-            const double halfWidth = 6;
+            const double unitWidth = LANE_WIDTH;
+            const double halfWidth = LANE_WIDTH * 0.5;
             const double unitHeight = 1;
             const double halfHeight = 0.5;
 
@@ -93,7 +99,7 @@ namespace SourceGit.Models
                 offsetY += unitHeight;
 
                 // Find first curves that links to this commit and marks others that links to this commit ended.
-                var offsetX = 4 - halfWidth;
+                var offsetX = FIRST_LANE_X - unitWidth;
                 var maxOffsetOld = unsolved.Count > 0 ? unsolved[^1].LastX : offsetX + unitWidth;
                 var isHighlighted = defHighlighting;
                 foreach (var l in unsolved)
@@ -184,7 +190,7 @@ namespace SourceGit.Models
 
                     if (commit.Parents.Count > 0)
                     {
-                        major = new PathHelper(commit.Parents[0], isHighlighted, colorPicker.Next(), new Point(offsetX, offsetY));
+                        major = new PathHelper(commit.Parents[0], isHighlighted, PickBranchColor(commit, colorPicker), new Point(offsetX, offsetY));
                         unsolved.Add(major);
                         temp.Paths.Add(major.Path);
                     }
@@ -195,10 +201,21 @@ namespace SourceGit.Models
                     temp.Paths.Add(major.Path);
                 }
 
+                // A lane takes the color of each branch whose tip it reaches.
+                if (major != null && commit.Parents.Count > 0)
+                {
+                    var branchColor = FindBranchColor(commit);
+                    if (branchColor >= 0 && branchColor != major.Path.Color)
+                    {
+                        major.Recolor(branchColor);
+                        temp.Paths.Add(major.Path);
+                    }
+                }
+
                 // Calculate link position of this commit.
                 var position = new Point(major?.LastX ?? offsetX, offsetY);
                 var dotColor = major?.Path.Color ?? 0;
-                var anchor = new Dot() { Center = position, Color = dotColor, IsHighlighted = isHighlighted };
+                var anchor = new Dot() { Center = position, Color = dotColor, IsHighlighted = isHighlighted, Author = commit.Author };
                 if (commit.IsCurrentHead)
                     anchor.Type = DotType.Head;
                 else if (commit.Parents.Count > 1)
@@ -240,7 +257,7 @@ namespace SourceGit.Models
                             offsetX += unitWidth;
 
                             // Create new curve for parent commit that not includes before
-                            var l = new PathHelper(parentHash, isHighlighted, colorPicker.Next(), position, new Point(offsetX, position.Y + halfHeight));
+                            var l = new PathHelper(parentHash, isHighlighted, PickMergedBranchColor(commit, colorPicker), position, new Point(offsetX, position.Y + halfHeight));
                             unsolved.Add(l);
                             temp.Paths.Add(l.Path);
                         }
@@ -249,7 +266,7 @@ namespace SourceGit.Models
 
                 // Margins & colors (used by Views.Histories).
                 commit.Color = dotColor;
-                commit.LeftMargin = Math.Max(offsetX, maxOffsetOld) + halfWidth + 2;
+                commit.LeftMargin = Math.Max(CONTENT_MIN_X, Math.Max(offsetX, maxOffsetOld) + halfWidth + 8);
             }
 
             // Deal with curves haven't ended yet.
@@ -261,12 +278,64 @@ namespace SourceGit.Models
                 if (path.Path.Points.Count == 1 && Math.Abs(path.Path.Points[0].Y - endY) < 0.0001)
                     continue;
 
-                path.End((i + 0.5) * unitWidth + 4, endY + halfHeight, halfHeight);
+                path.End(FIRST_LANE_X + i * unitWidth, endY + halfHeight, halfHeight);
             }
             unsolved.Clear();
 
             return temp;
         }
+
+        /// <summary>
+        ///     A lane that starts at a branch tip takes the color of that branch.
+        /// </summary>
+        private static int PickBranchColor(Commit commit, ColorPicker picker)
+        {
+            var color = FindBranchColor(commit);
+            return color >= 0 ? color : picker.Next();
+        }
+
+        private static int FindBranchColor(Commit commit)
+        {
+            string remoteName = null;
+            foreach (var d in commit.Decorators)
+            {
+                if (d.Type is DecoratorType.CurrentBranchHead or DecoratorType.LocalBranchHead)
+                    return BranchColor.IndexOf(d.Name);
+
+                if (d.Type == DecoratorType.RemoteBranchHead && remoteName == null)
+                {
+                    var idx = d.Name.IndexOf('/');
+                    remoteName = idx > 0 ? d.Name.Substring(idx + 1) : d.Name;
+                }
+            }
+
+            return remoteName != null ? BranchColor.IndexOf(remoteName) : -1;
+        }
+
+        /// <summary>
+        ///     The second parent of a merge commit usually is the merged branch: guess its name from the message.
+        /// </summary>
+        private static int PickMergedBranchColor(Commit commit, ColorPicker picker)
+        {
+            var match = REG_MERGE_BRANCH().Match(commit.Subject ?? string.Empty);
+            if (match.Success)
+            {
+                var name = match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value;
+                if (match.Groups[1].Success && commit.Subject.StartsWith("Merge remote-tracking", StringComparison.Ordinal))
+                {
+                    var idx = name.IndexOf('/');
+                    if (idx > 0)
+                        name = name.Substring(idx + 1);
+                }
+
+                return BranchColor.IndexOf(name);
+            }
+
+            return picker.Next();
+        }
+
+        [GeneratedRegex(@"^Merge (?:remote-tracking )?branch '([^']+)'|^Merge pull request #\d+ from [^/\s]+/(\S+)")]
+        private static partial Regex REG_MERGE_BRANCH();
 
         private class ColorPicker
         {
@@ -394,6 +463,18 @@ namespace SourceGit.Models
             }
 
             /// <summary>
+            ///     End the current path and continue it with another color from the end.
+            /// </summary>
+            public void Recolor(int color)
+            {
+                Add(LastX, _lastY);
+
+                Path = new Path(color, Path.IsHighlighted);
+                Path.Points.Add(new Point(LastX, _lastY));
+                _endY = 0;
+            }
+
+            /// <summary>
             ///     End the current path and create a new highlighted from the end.
             /// </summary>
             public void Highlight()
@@ -421,16 +502,11 @@ namespace SourceGit.Models
 
         private static int s_penCount = 0;
         private static readonly List<Color> s_defaultPenColors = [
-            Colors.Orange,
-            Colors.ForestGreen,
-            Colors.Turquoise,
-            Colors.Olive,
-            Colors.Magenta,
-            Colors.Red,
-            Colors.Khaki,
-            Colors.Lime,
-            Colors.RoyalBlue,
-            Colors.Teal,
+            Color.Parse("#59AAF8"),
+            Color.Parse("#FD923E"),
+            Color.Parse("#68CB6E"),
+            Color.Parse("#E1C34B"),
+            Color.Parse("#F072B3"),
         ];
     }
 }

@@ -36,6 +36,8 @@ package-lock.json
 build/resources/
 build/SourceGit/
 build/SourceGit.app/
+build/PerfectGit.app/
+build/dev/
 build/*.zip
 build/*.tar.gz
 build/*.deb

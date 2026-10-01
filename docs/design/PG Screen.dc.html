@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="--bg:#121316;--panel:#17181c;--side:#141519;--bar:#0e0f12;--raise:#1e2025;--fg:#eceef2;--fg2:#a3a7b0;--fg3:#71757e;--line:#26282e;--hover:#ffffff0b;--sel:oklch(0.29 0.045 285);--acc:oklch(0.76 0.13 285);--accfg:#15141a;--addfg:oklch(0.78 0.14 150);--delfg:oklch(0.74 0.15 25);--warnfg:oklch(0.82 0.12 85);--code:#ffffff12;--l0:oklch(0.72 0.14 250);--l1:oklch(0.76 0.16 55);--l2:oklch(0.76 0.16 145);--l3:oklch(0.82 0.14 95);--l4:oklch(0.72 0.17 350);width:1440px;height:900px;border-radius:12px;overflow:hidden;background:var(--bg);color:var(--fg);box-shadow:0 30px 80px #00000099,0 0 0 0.5px #ffffff26;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;font-size:13px;position:relative">
+  <div style="height:40px;flex:none;display:flex;align-items:flex-end;gap:2px;padding:0 12px 0 16px;background:var(--bar)">
+    <div style="display:flex;gap:8px;align-self:center;margin-right:16px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div>
+    <div style="height:32px;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:8px 8px 0 0;background:var(--bg);min-width:200px;box-shadow:inset 0 2px 0 var(--acc)"><span style="font-weight:600">perfect-git</span><span style="font-size:11.5px;color:var(--fg3)">feature/graph-avatars</span><span style="margin-left:auto;color:var(--fg3);font-size:11px">✕</span></div>
+    <div style="height:32px;display:flex;align-items:center;gap:8px;padding:0 14px;color:var(--fg2);min-width:140px">avalonia<span style="font-size:11.5px;color:var(--fg3)">master</span></div>
+    <div style="height:32px;display:flex;align-items:center;gap:8px;padding:0 14px;color:var(--fg2);min-width:140px">site-vitrine<span style="width:6px;height:6px;border-radius:50%;background:var(--warnfg)"></span></div>
+    <div style="height:32px;display:flex;align-items:center;padding:0 10px;color:var(--fg3);font-size:16px">＋</div>
+    <div style="flex:1"></div>
+    <div style="align-self:center;width:300px;height:26px;border-radius:7px;background:var(--raise);border:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 10px;font-size:12px;color:var(--fg3)">⌕ Search or run a command…<span style="margin-left:auto;font-size:11px;padding:1px 5px;border-radius:4px;border:1px solid var(--line)">⌘P</span></div>
+  </div>
+  <div style="height:50px;flex:none;display:flex;align-items:center;gap:6px;padding:0 14px;border-bottom:1px solid var(--line);position:relative">
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:var(--raise);border:1px solid var(--line)"><span style="width:9px;height:9px;border-radius:50%;background:var(--l1)"></span><span style="font-weight:600">feature/graph-avatars</span><span style="font-size:11px;color:var(--fg2);font-family:'IBM Plex Mono',monospace">↑2</span><span style="color:var(--fg3)">▾</span></div>
+    <div style="flex:1"></div>
+    <div style="display:flex;gap:2px">
+      <div style="display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:7px;color:var(--fg2)"><span>↻</span>Fetch</div>
+      <div style="display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:7px;color:var(--fg2)"><span>↓</span>Pull</div>
+      <div style="display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:7px;background:{{ pushBg }};color:var(--fg)"><span>↑</span>Push<span style="min-width:16px;height:16px;border-radius:8px;background:var(--acc);color:var(--accfg);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">2</span></div>
+      <div style="width:1px;background:var(--line);margin:6px 6px"></div>
+      <div style="display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:7px;color:var(--fg2)"><span>⑂</span>Branch</div>
+      <div style="display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:7px;color:var(--fg2)"><span>⊟</span>Stash</div>
+      <div style="display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:7px;color:var(--fg2)"><span>⊞</span>Pop</div>
+      <div style="width:1px;background:var(--line);margin:6px 6px"></div>
+      <div style="display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:7px;color:var(--fg2)"><span>›_</span>Terminal</div>
+    </div>
+    <div style="flex:1"></div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--fg3)"><span style="width:7px;height:7px;border-radius:50%;background:var(--addfg)"></span>origin · 2 min ago</div>
+    <sc-if value="{{ showTip }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;top:46px;left:calc(50% - 120px);width:270px;padding:10px 12px;border-radius:9px;background:var(--raise);border:1px solid #ffffff1f;box-shadow:0 12px 30px #0009;z-index:5;display:flex;flex-direction:column;gap:4px">
+        <span style="font-weight:600;font-size:12.5px">Push · send your commits</span>
+        <span style="font-size:12px;line-height:1.45;color:var(--fg2)">2 commits on <b style="color:var(--fg)">feature/graph-avatars</b> only exist on your Mac. Push copies them to <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px">origin</span>.</span>
+        <span style="font-size:11px;color:var(--fg3)">⇧⌘↑</span>
+      </div>
+    </sc-if>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <div style="width:260px;flex:none;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:10px 8px;gap:14px;font-size:12.5px;overflow:hidden">
+      <div style="height:28px;border-radius:7px;background:var(--raise);border:1px solid var(--line);display:flex;align-items:center;padding:0 9px;color:var(--fg3);font-size:12px">⌕ Filter</div>
+      <div style="display:flex;flex-direction:column;gap:1px">
+        <div style="display:flex;align-items:center;padding:2px 8px 5px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">LOCAL<span style="margin-left:6px;font-weight:500">5</span><span style="margin-left:auto">＋</span></div>
+        <sc-for list="{{ local }}" as="b" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:9px;padding:5px 8px;border-radius:6px;background:{{ b.bg }};opacity:{{ b.op }}"><span style="width:9px;height:9px;flex:none;border-radius:50%;background:{{ b.c }}"></span><span style="font-weight:{{ b.w }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.n }}</span><span style="margin-left:auto;font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--fg2);white-space:nowrap">{{ b.ab }}</span></div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1px">
+        <div style="display:flex;align-items:center;padding:2px 8px 5px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">REMOTE<span style="margin-left:6px;font-weight:500">2</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 8px"><span style="color:var(--fg3);font-size:10px">▾</span>origin<span style="margin-left:auto;font-size:11px;color:var(--fg3)">github</span></div>
+        <sc-for list="{{ remote }}" as="b" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:9px;padding:4px 8px 4px 26px;color:var(--fg2)"><span style="width:8px;height:8px;flex:none;border-radius:50%;border:1.5px solid {{ b.c }};box-sizing:border-box"></span>{{ b.n }}</div>
+        </sc-for>
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 8px;color:var(--fg2)"><span style="color:var(--fg3);font-size:10px">▸</span>upstream<span style="margin-left:auto;font-size:11px;color:var(--fg3)">sourcegit-scm</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="display:flex;align-items:center;padding:2px 8px 5px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">PULL REQUESTS<span style="margin-left:6px;font-weight:500">2</span></div>
+        <div style="display:flex;flex-direction:column;gap:3px;padding:6px 8px;border-radius:6px"><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--fg3);font-family:'IBM Plex Mono',monospace;font-size:11px">#14</span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Drag & drop merge / rebase</span></div><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--fg3)"><span style="padding:0 6px;border-radius:8px;background:oklch(0.82 0.12 85 / 0.14);color:var(--warnfg);font-weight:600">in review</span>Yanis · 2 comments</div></div>
+        <div style="display:flex;flex-direction:column;gap:3px;padding:6px 8px;border-radius:6px"><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--fg3);font-family:'IBM Plex Mono',monospace;font-size:11px">#12</span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Command palette ⌘P</span></div><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--fg3)"><span style="padding:0 6px;border-radius:8px;background:oklch(0.78 0.14 150 / 0.14);color:var(--addfg);font-weight:600">merged</span>Camille</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1px;color:var(--fg2)">
+        <div style="display:flex;align-items:center;padding:4px 8px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">TAGS<span style="margin-left:6px;font-weight:500">3</span><span style="margin-left:auto">▸</span></div>
+        <div style="display:flex;align-items:center;padding:4px 8px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">STASHS<span style="margin-left:6px;font-weight:500">1</span><span style="margin-left:auto">▸</span></div>
+        <div style="display:flex;align-items:center;padding:4px 8px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">SUBMODULES<span style="margin-left:6px;font-weight:500">0</span></div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;background:var(--bg);position:relative">
+      <div style="height:30px;flex:none;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid var(--line);font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)"><span style="width:166px">GRAPH</span><span style="flex:1">MESSAGE</span><span style="width:64px;text-align:right">DATE</span><span style="width:62px">SHA</span></div>
+      <div style="flex:1;position:relative;overflow:hidden">
+        <div style="position:absolute;left:0;top:0">{{ graph }}</div>
+        <sc-for list="{{ rows }}" as="c" hint-placeholder-count="20">
+          <div style="height:38px;display:flex;align-items:center;gap:8px;padding:0 16px 0 194px;background:{{ c.bg }};box-shadow:{{ c.sh }}">
+            <sc-for list="{{ c.refs }}" as="r"><span style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;white-space:nowrap;background:{{ r.bg }};border:{{ r.border }};color:{{ r.fg }};opacity:{{ r.op }};box-shadow:{{ r.sh }}">{{ r.label }}</span></sc-for>
+            <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:{{ c.color }};font-style:{{ c.fs }}"><span style="color:{{ c.tfg }};font-weight:600">{{ c.type }}</span>{{ c.m }}</span>
+            <span style="width:64px;text-align:right;font-size:12px;color:var(--fg3);white-space:nowrap">{{ c.d }}</span>
+            <span style="width:62px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3)">{{ c.s }}</span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ drag }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;left:300px;top:218px;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;background:color-mix(in oklch,var(--l2) 30%,var(--raise));border:1px solid var(--l2);color:var(--fg);box-shadow:0 10px 24px #000a;transform:rotate(-3deg);z-index:4">⠿ feature/merge-dnd</div>
+          <div style="position:absolute;left:300px;top:254px;width:350px;border-radius:10px;background:var(--raise);border:1px solid #ffffff1f;box-shadow:0 18px 44px #000b;z-index:3;overflow:hidden">
+            <div style="padding:10px 14px;border-bottom:1px solid var(--line);font-size:12px;color:var(--fg2)">Drop <b style="color:var(--l2)">feature/merge-dnd</b> onto <b style="color:var(--l0)">develop</b></div>
+            <div style="display:flex;flex-direction:column;padding:6px">
+              <div style="display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:7px;background:var(--sel)"><span style="font-weight:600;display:flex">Merge into develop<span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3)">merge ↵</span></span><span style="font-size:11.5px;color:var(--fg2)">Creates a commit joining both branches. History is kept as is.</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:7px"><span style="font-weight:600;display:flex">Rebase onto develop<span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3)">rebase</span></span><span style="font-size:11.5px;color:var(--fg2)">Replays your 2 commits on top of develop. Linear history.</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:7px"><span style="font-weight:600;display:flex">Interactive rebase…<span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3)">rebase -i</span></span><span style="font-size:11.5px;color:var(--fg2)">Pick, reorder or squash commits first.</span></div>
+              <div style="height:1px;background:var(--line);margin:4px 6px"></div>
+              <div style="display:flex;padding:7px 10px;color:var(--fg2)">Create a pull request into develop</div>
+            </div>
+            <div style="padding:8px 14px;border-top:1px solid var(--line);font-size:11px;color:var(--fg3);display:flex;gap:6px"><span style="color:var(--addfg)">●</span>No conflicts expected · Esc to cancel</div>
+          </div>
+        </sc-if>
+      </div>
+      <div style="height:28px;flex:none;display:flex;align-items:center;gap:14px;padding:0 16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--fg3);background:var(--side)">
+        <span style="display:flex;align-items:center;gap:6px"><span style="padding:0 5px;border-radius:4px;border:1px solid var(--line);font-size:10.5px">?</span>Drag a branch onto another to merge or rebase it.</span>
+        <span style="margin-left:auto">412 commits · 5 branches</span>
+      </div>
+    </div>
+    <div style="width:380px;flex:none;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;overflow:hidden">
+      <div style="padding:16px 18px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--fg3)"><span style="font-family:'IBM Plex Mono',monospace;color:var(--fg2)">c4f21a9</span><span>⧉</span><span style="margin-left:auto;padding:1px 7px;border-radius:5px;background:oklch(0.78 0.14 150 / 0.14);color:var(--addfg);font-weight:600">✓ signed</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Author avatars on graph nodes</span><span style="font-size:12.5px;line-height:1.5;color:var(--fg2);text-wrap:pretty">Each commit shows its author's initials or photo, ringed in its branch color. Merges stay as simple dots.</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:oklch(0.6 0.13 20);box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--l1);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center">L</div><div style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:600">Léa Martin</span><span style="font-size:11.5px;color:var(--fg3)">Today, 2:02 PM · 12 min ago</span></div></div>
+        <div style="display:grid;grid-template-columns:72px 1fr;gap:7px 10px;font-size:12px;align-items:center">
+          <span style="color:var(--fg3)">Parent</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--acc)">8e0b3d2</span>
+          <span style="color:var(--fg3)">Branches</span><span style="display:flex;gap:5px;flex-wrap:wrap"><span style="font-size:11px;font-weight:600;padding:1px 7px;border-radius:5px;background:color-mix(in oklch,var(--l1) 22%,transparent)">feature/graph-avatars</span></span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:12px 18px 8px"><span style="font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">4 FILES</span><span style="font-size:11px;color:var(--addfg)">+86</span><span style="font-size:11px;color:var(--delfg)">−21</span><span style="margin-left:auto;display:flex;padding:2px;border-radius:6px;background:var(--hover);font-size:11px"><span style="padding:2px 8px;border-radius:4px;background:var(--raise)">Tree</span><span style="padding:2px 8px;color:var(--fg3)">List</span></span></div>
+      <div style="display:flex;flex-direction:column;padding:0 10px;gap:1px;font-size:12.5px">
+        <sc-for list="{{ files }}" as="f" hint-placeholder-count="6">
+          <div style="display:flex;align-items:center;gap:8px;padding:5px 8px;padding-left:{{ f.pl }};border-radius:6px;background:{{ f.bg }}"><span style="width:14px;font-size:10px;font-weight:700;color:{{ f.kc }}">{{ f.k }}</span><span style="flex:1;color:{{ f.nc }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.n }}</span><span style="font-size:11px;color:var(--addfg)">{{ f.a }}</span><span style="font-size:11px;color:var(--delfg)">{{ f.dl }}</span></div>
+        </sc-for>
+      </div>
+      <div style="margin-top:auto;padding:14px 18px;border-top:1px solid var(--line);display:flex;gap:6px;font-size:12px;flex-wrap:wrap">
+        <span style="padding:6px 11px;border-radius:7px;background:var(--raise);border:1px solid var(--line)">Checkout</span>
+        <span style="padding:6px 11px;border-radius:7px;background:var(--raise);border:1px solid var(--line)">Cherry-pick</span>
+        <span style="padding:6px 11px;border-radius:7px;background:var(--raise);border:1px solid var(--line)">Revert</span>
+        <span style="padding:6px 11px;border-radius:7px;background:var(--raise);border:1px solid var(--line);color:var(--fg2)">···</span>
+      </div>
+    </div>
+  </div>
+  <sc-if value="{{ palette }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#0a0b0dcc;display:flex;justify-content:center;padding-top:110px;z-index:10">
+      <div style="width:640px;align-self:flex-start;border-radius:12px;background:var(--raise);border:1px solid #ffffff24;box-shadow:0 30px 80px #000c;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);font-size:15px"><span style="color:var(--fg3)">⌕</span><span>merge</span><span style="width:1.5px;height:18px;background:var(--acc);margin-left:-8px"></span><span style="margin-left:auto;font-size:11px;color:var(--fg3);padding:1px 6px;border-radius:4px;border:1px solid var(--line)">Esc</span></div>
+        <div style="display:flex;flex-direction:column;padding:6px">
+          <div style="padding:8px 10px 4px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">ACTIONS</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:8px;background:var(--sel)"><span style="width:26px;height:26px;border-radius:7px;background:var(--hover);display:flex;align-items:center;justify-content:center">⤙</span><div style="display:flex;flex-direction:column;gap:1px"><span style="font-weight:600">Merge a branch into feature/graph-avatars…</span><span style="font-size:11.5px;color:var(--fg2)">Bring in work from another branch · <span style="font-family:'IBM Plex Mono',monospace">merge</span></span></div><span style="margin-left:auto;font-size:11px;color:var(--fg3)">↵</span></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:8px"><span style="width:26px;height:26px;border-radius:7px;background:var(--hover);display:flex;align-items:center;justify-content:center">⇅</span><div style="display:flex;flex-direction:column;gap:1px"><span style="font-weight:600">Squash merge…</span><span style="font-size:11.5px;color:var(--fg2)">Combines all commits into one · <span style="font-family:'IBM Plex Mono',monospace">merge --squash</span></span></div></div>
+          <div style="padding:10px 10px 4px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">BRANCHES</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:8px"><span style="width:9px;height:9px;border-radius:50%;background:var(--l2);margin:0 8px"></span><span>feature/merge-dnd</span><span style="margin-left:auto;font-size:11.5px;color:var(--fg3)">Merge into current branch</span></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:8px"><span style="width:9px;height:9px;border-radius:50%;background:var(--l0);margin:0 8px"></span><span>develop</span><span style="margin-left:auto;font-size:11.5px;color:var(--fg3)">Fusionner dans la branche actuelle</span></div>
+          <div style="padding:10px 10px 4px;font-size:11px;font-weight:600;letter-spacing:0.03em;color:var(--fg3)">COMMITS</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--fg3);width:42px">6a1d0e4</span><span style="color:var(--fg2)">Merge branch 'fix/palette-focus' into develop</span></div>
+        </div>
+        <div style="display:flex;gap:16px;padding:9px 16px;border-top:1px solid var(--line);font-size:11px;color:var(--fg3)"><span>↑↓ navigate</span><span>↵ run</span><span>⌘↵ show Git command</span><span style="margin-left:auto">&gt; commands only</span></div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;drag&quot;,&quot;palette&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const mode = this.props.mode ?? 'default';
+    const drag = mode === 'drag', palette = mode === 'palette';
+    const L = ['var(--l0)','var(--l1)','var(--l2)','var(--l3)','var(--l4)'];
+    const AV = { 'Léa Martin':'oklch(0.6 0.13 20)', 'Yanis Belkacem':'oklch(0.55 0.11 160)', 'Camille Roux':'oklch(0.55 0.12 255)', 'Hugo Lefèvre':'oklch(0.6 0.12 75)', 'leo':'oklch(0.5 0.03 260)' };
+    const C = [
+      [1,[1],'// 3 changed files, not committed yet','','now','',[],'wip'],
+      [1,[3],'feat: author avatars on graph nodes','Léa Martin','12 min','c4f21a9',[['b','feature/graph-avatars',1,1]]],
+      [2,[4],'feat: drag and drop to merge or rebase','Yanis Belkacem','40 min','9b37e02',[['b','feature/merge-dnd',2],['r','origin/feature/merge-dnd',2]]],
+      [1,[5],'refactor: compute graph lanes only once','Léa Martin','1 h','8e0b3d2',[['r','origin/feature/graph-avatars',1]]],
+      [2,[6],'feat: context menu on branch hover','Yanis Belkacem','2 h','2f6c9a1',[]],
+      [1,[6],'feat: stable color per branch','Léa Martin','3 h','d05e7b8',[]],
+      [0,[8,7],'Merge branch \'fix/palette-focus\' into develop','Camille Roux','4 h','6a1d0e4',[['b','develop',0],['r','origin/develop',0]]],
+      [3,[9],'fix: palette keeps focus after Esc','Hugo Lefèvre','5 h','e3a9f10',[['b','fix/palette-focus',3]]],
+      [0,[9],'feat: command palette ⌘P','Camille Roux','yesterday','41bc8d7',[]],
+      [0,[10],'style: new dark theme','Camille Roux','yesterday','a78e2c5',[]],
+      [0,[12,11],'Merge branch \'master\' into develop','Camille Roux','2 d','5d0f3b9',[]],
+      [4,[13],'chore: release 1.0.0-beta.2','Camille Roux','2 d','0e6b4a2',[['b','master',4],['t','v1.0.0-beta.2',4]]],
+      [0,[14],'feat: repository tabs','Léa Martin','3 d','b2d91f6',[]],
+      [4,[15],'fix: commit signing on macOS','Hugo Lefèvre','3 d','7fa05c3',[]],
+      [0,[15],'feat: pull requests in sidebar','Yanis Belkacem','4 d','c91e7d4',[]],
+      [0,[16],'chore: fork SourceGit, rename to Perfect Git','Camille Roux','1 wk','3a4c8e1',[]],
+      [0,[17],'Merge pull request #2668 from sourcegit-scm/develop','leo','2 wk','85b5756',[]],
+      [0,[18],'enhance: extract reusable CopyButton control','leo','2 wk','b5bb347',[]],
+      [0,[19],'refactor: context menu for selected changes','leo','2 wk','29b9db9',[]],
+      [0,['down'],'fix: hide suggestion box when parent is invisible','leo','2 wk','b9ce510',[]],
+    ];
+    const RH = 38, LW = 30, X0 = 24, X = l => X0 + l * LW, Y = i => i * RH + RH / 2, H = RH * C.length;
+    const E = React.createElement, els = [];
+    C.forEach(([l, ps, , , , , , k0], i) => ps.forEach((p, k) => {
+      const x1 = X(l), y1 = Y(i), r = RH * 0.85, dash = k0 === 'wip' ? '4 4' : undefined;
+      if (p === 'down') { els.push(E('path', { key: `e${i}`, d: `M${x1} ${y1}V${H}`, stroke: L[l], strokeWidth: 2.5, fill: 'none' })); return; }
+      const pl = C[p][0], x2 = X(pl), y2 = Y(p); let d, col;
+      if (pl === l) { d = `M${x1} ${y1}V${y2}`; col = L[l]; }
+      else if (k === 0) { d = `M${x1} ${y1}V${y2 - r}C${x1} ${y2 - r * 0.4} ${x2} ${y2 - r * 0.6} ${x2} ${y2}`; col = L[l]; }
+      else { d = `M${x1} ${y1}C${x1} ${y1 + r * 0.6} ${x2} ${y1 + r * 0.4} ${x2} ${y1 + r}V${y2}`; col = L[pl]; }
+      els.push(E('path', { key: `e${i}-${k}`, d, stroke: col, strokeWidth: 2.5, fill: 'none', strokeLinecap: 'round', strokeDasharray: dash }));
+    }));
+    C.forEach(([l, ps, , a, , , , k0], i) => {
+      const cx = X(l), cy = Y(i);
+      if (k0 === 'wip') { els.push(E('circle', { key: `n${i}`, cx, cy, r: 10, fill: 'var(--bg)', stroke: L[l], strokeWidth: 2, strokeDasharray: '3 3' })); return; }
+      if (ps.length > 1) { els.push(E('circle', { key: `n${i}`, cx, cy, r: 5.5, fill: 'var(--bg)', stroke: L[l], strokeWidth: 2.5 })); return; }
+      if (i === 1) els.push(E('circle', { key: 'head', cx, cy, r: 17, fill: 'none', stroke: L[l], strokeWidth: 1.5, opacity: 0.45 }));
+      els.push(E('circle', { key: `n${i}`, cx, cy, r: 12.5, fill: AV[a], stroke: L[l], strokeWidth: 2.5 }));
+      els.push(E('text', { key: `t${i}`, x: cx, y: cy + 4, textAnchor: 'middle', fontSize: 11, fontWeight: 700, fill: '#fff', fontFamily: '-apple-system,Helvetica,sans-serif' }, a.split(' ').map(w => w[0]).join('').slice(0, 2)));
+    });
+    const graph = E('svg', { width: 180, height: H, style: { display: 'block', overflow: 'visible' } }, els);
+    const TY = { feat: 285, fix: 25, refactor: 200, style: 350, chore: 0, enhance: 150 };
+    const rows = C.map(([l, ps, m, a, d, s, rs, k0], i) => {
+      const mt = m.match(/^(\w+):\s(.*)$/), h = mt ? TY[mt[1]] : null;
+      const refs = rs.map(([t, n, rl, head]) => {
+        const src = drag && n === 'feature/merge-dnd', tgt = drag && n === 'develop';
+        return {
+          label: (head ? '✓ ' : '') + n,
+          bg: t === 'b' ? `color-mix(in oklch, ${L[rl]} ${tgt ? 34 : 22}%, transparent)` : t === 't' ? 'oklch(0.82 0.12 85 / 0.14)' : 'transparent',
+          border: tgt ? '1.5px dashed var(--acc)' : t === 'r' ? `1px solid color-mix(in oklch, ${L[rl]} 50%, transparent)` : '1px solid transparent',
+          fg: t === 't' ? 'var(--warnfg)' : t === 'r' ? 'var(--fg2)' : 'var(--fg)',
+          op: src ? 0.35 : 1, sh: tgt ? '0 0 0 4px oklch(0.76 0.13 285 / 0.18)' : 'none',
+        };
+      });
+      return {
+        refs, d: k0 === 'wip' ? d : (d === 'yesterday' ? d : `${d} ago`), s,
+        type: mt ? mt[1] + ' ' : '', m: mt ? mt[2] : m, tfg: h === 0 ? 'var(--fg3)' : `oklch(0.76 0.12 ${h})`,
+        color: k0 === 'wip' ? 'var(--fg3)' : ps.length > 1 ? 'var(--fg2)' : 'var(--fg)', fs: k0 === 'wip' ? 'italic' : 'normal',
+        bg: i === 1 ? 'var(--sel)' : (drag && i === 6) ? 'oklch(0.76 0.13 285 / 0.07)' : 'transparent',
+        sh: i === 1 ? 'inset 3px 0 0 var(--acc)' : 'none',
+      };
+    });
+    const local = [['feature/graph-avatars',1,'↑2',1],['feature/merge-dnd',2,'↑1'],['fix/palette-focus',3,''],['develop',0,''],['master',4,'']]
+      .map(([n, l, ab, cur]) => ({ n, ab, c: L[l], w: cur ? 700 : 500, bg: cur ? 'var(--sel)' : (drag && n === 'feature/merge-dnd') ? 'var(--hover)' : 'transparent', op: 1 }));
+    const remote = [['develop',0],['master',4],['feature/merge-dnd',2],['feature/graph-avatars',1]].map(([n, l]) => ({ n, c: L[l] }));
+    const files = [
+      ['', 'src/Views/', '', '', 10],
+      ['M', 'CommitGraph.cs', '+52', '−18', 26, 1],
+      ['A', 'AvatarNode.cs', '+29', '', 26],
+      ['M', 'Histories.axaml', '+4', '−3', 26],
+      ['', 'src/ViewModels/', '', '', 10],
+      ['M', 'Histories.cs', '+1', '', 26],
+    ].map(([k, n, a, dl, pl, sel]) => ({ k: k || '▾', n, a, dl, pl: pl + 'px', kc: k === 'A' ? 'var(--addfg)' : k === 'M' ? 'var(--warnfg)' : 'var(--fg3)', nc: k ? 'var(--fg)' : 'var(--fg3)', bg: sel ? 'var(--hover)' : 'transparent' }));
+    return { graph, rows, local, remote, files, drag, palette, showTip: mode === 'default', pushBg: mode === 'default' ? 'var(--hover)' : 'transparent' };
+  }
+}
+</script>
+</body>
+</html>

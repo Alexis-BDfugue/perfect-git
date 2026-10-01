@@ -48,6 +48,27 @@ namespace SourceGit.Views
             e.Handled = true;
         }
 
+        private void OnGotoPrevConflict(object _, RoutedEventArgs e)
+        {
+            Resolver.GotoPrevConflict();
+            e.Handled = true;
+        }
+
+        private void OnGotoNextConflict(object _, RoutedEventArgs e)
+        {
+            Resolver.GotoNextConflict();
+            e.Handled = true;
+        }
+
+        private async void OnSaveAndStage(object _, RoutedEventArgs e)
+        {
+            // Once staged, the file leaves the conflict list and the working copy selects the next conflict.
+            if (DataContext is ViewModels.Conflict vm && IsEffectivelyVisible)
+                await vm.SaveAndStageAsync();
+
+            e.Handled = true;
+        }
+
         private async void OnMergeExternal(object _, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.Conflict vm)

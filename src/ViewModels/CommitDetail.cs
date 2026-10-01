@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -18,6 +18,12 @@ namespace SourceGit.ViewModels
             get;
             set;
         }
+
+        public bool IsInspectorTreeMode
+        {
+            get;
+            set;
+        } = true;
 
         public CommitDetailSharedData()
         {
@@ -89,6 +95,47 @@ namespace SourceGit.ViewModels
         {
             get => _visibleChanges;
             set => SetProperty(ref _visibleChanges, value);
+        }
+
+        public List<CommitInspectorRow> InspectorRows
+        {
+            get => _inspectorRows;
+            private set => SetProperty(ref _inspectorRows, value);
+        }
+
+        public bool IsInspectorTreeMode
+        {
+            get => _sharedData.IsInspectorTreeMode;
+            set
+            {
+                if (value != _sharedData.IsInspectorTreeMode)
+                {
+                    _sharedData.IsInspectorTreeMode = value;
+                    OnPropertyChanged();
+                    BuildInspectorRows();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Diff of one file of this commit, displayed in the center of the history page instead of the graph.
+        /// </summary>
+        public DiffContext CenterDiff
+        {
+            get => _centerDiff;
+            private set => SetProperty(ref _centerDiff, value);
+        }
+
+        public string TotalAdded
+        {
+            get => _totalAdded;
+            private set => SetProperty(ref _totalAdded, value);
+        }
+
+        public string TotalDeleted
+        {
+            get => _totalDeleted;
+            private set => SetProperty(ref _totalDeleted, value);
         }
 
         public ChangeSelection ChangeSelection
@@ -175,6 +222,39 @@ namespace SourceGit.ViewModels
         public void NavigateTo(string commitSHA)
         {
             _repo?.NavigateToCommit(commitSHA);
+        }
+
+        public void OpenDiffInCenter(Models.Change change)
+        {
+            if (_commit == null || change == null || change == _centerDiffChange)
+                return;
+
+            _centerDiffChange = change;
+            CenterDiff = new DiffContext(_repo.FullPath, new Models.DiffOption(_commit, change), _centerDiff);
+        }
+
+        public void CloseCenterDiff()
+        {
+            _centerDiffChange = null;
+            CenterDiff = null;
+        }
+
+        public void CheckoutCommit()
+        {
+            if (_commit != null)
+                _repo?.Histories?.CheckoutCommitDetached(_commit);
+        }
+
+        public async Task CherryPickAsync()
+        {
+            if (_commit != null && _repo?.Histories != null)
+                await _repo.Histories.CherryPickAsync(_commit);
+        }
+
+        public void Revert()
+        {
+            if (_commit != null && _repo != null && _repo.CanCreatePopup())
+                _repo.ShowPopup(new Revert(_repo, _commit));
         }
 
         public async Task<List<Models.Decorator>> GetRefsContainsThisCommitAsync()
@@ -464,6 +544,12 @@ namespace SourceGit.ViewModels
             RevisionFileSearchSuggestion = null;
             ScrollOffset = Vector.Zero;
 
+            _numStats = [];
+            InspectorRows = [];
+            CloseCenterDiff();
+            TotalAdded = string.Empty;
+            TotalDeleted = string.Empty;
+
             if (_commit == null)
             {
                 Changes = [];
@@ -529,6 +615,7 @@ namespace SourceGit.ViewModels
                     {
                         Changes = changes;
                         VisibleChanges = visible;
+                        BuildInspectorRows();
 
                         if (visible.Count == 0)
                             ChangeSelection = new(null);
@@ -537,6 +624,39 @@ namespace SourceGit.ViewModels
                     });
                 }
             }, token);
+
+            Task.Run(async () =>
+            {
+                var stats = await new Commands.QueryCommitNumstat(_repo.FullPath, _commit.FirstParentToCompare, _commit.SHA)
+                    .GetResultAsync()
+                    .ConfigureAwait(false);
+
+                if (!token.IsCancellationRequested)
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        _numStats = stats;
+                        BuildInspectorRows();
+                    });
+                }
+            }, token);
+        }
+
+        /// <summary>
+        ///     Collapses or expands a folder of the files tree.
+        /// </summary>
+        public void ToggleFolder(string path)
+        {
+            if (!_collapsedFolders.Remove(path))
+                _collapsedFolders.Add(path);
+
+            BuildInspectorRows();
+        }
+
+        private void BuildInspectorRows()
+        {
+            (TotalAdded, TotalDeleted) = CommitInspectorRow.FormatTotals(_numStats);
+            InspectorRows = CommitInspectorRow.Build(_changes, _numStats, _sharedData.IsInspectorTreeMode, _collapsedFolders);
         }
 
         private void UpdateDetails()
@@ -747,5 +867,12 @@ namespace SourceGit.ViewModels
         private List<string> _revisionFileSearchSuggestion = null;
         private bool _canOpenRevisionFileWithDefaultEditor = false;
         private Vector _scrollOffset = Vector.Zero;
+        private Dictionary<string, Models.NumStat> _numStats = [];
+        private readonly HashSet<string> _collapsedFolders = [];
+        private DiffContext _centerDiff = null;
+        private Models.Change _centerDiffChange = null;
+        private List<CommitInspectorRow> _inspectorRows = [];
+        private string _totalAdded = string.Empty;
+        private string _totalDeleted = string.Empty;
     }
 }

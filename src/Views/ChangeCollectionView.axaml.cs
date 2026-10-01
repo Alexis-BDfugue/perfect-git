@@ -92,6 +92,16 @@ namespace SourceGit.Views
         }
     }
 
+    public class ChangeRowActionEventArgs : RoutedEventArgs
+    {
+        public List<Models.Change> Changes { get; }
+
+        public ChangeRowActionEventArgs(RoutedEvent routedEvent, List<Models.Change> changes) : base(routedEvent)
+        {
+            Changes = changes;
+        }
+    }
+
     public partial class ChangeCollectionView : UserControl
     {
         public static readonly DirectProperty<ChangeCollectionView, bool> IsUnstagedChangeProperty =
@@ -152,6 +162,34 @@ namespace SourceGit.Views
         {
             get => _selection;
             set => SetAndRaise(SelectionProperty, ref _selection, value);
+        }
+
+        public static readonly DirectProperty<ChangeCollectionView, string> RowActionLabelProperty =
+            AvaloniaProperty.RegisterDirect<ChangeCollectionView, string>(
+                nameof(RowActionLabel),
+                static o => o.RowActionLabel,
+                static (o, v) => o.RowActionLabel = v);
+
+        /// <summary>
+        ///     When set, each row shows a button with this label on hover (e.g. "Stage"), raising <see cref="RowActionRequested"/>.
+        /// </summary>
+        public string RowActionLabel
+        {
+            get => _rowActionLabel;
+            set
+            {
+                if (SetAndRaise(RowActionLabelProperty, ref _rowActionLabel, value))
+                    PseudoClasses.Set(":has_row_action", !string.IsNullOrEmpty(value));
+            }
+        }
+
+        public static readonly RoutedEvent<ChangeRowActionEventArgs> RowActionRequestedEvent =
+            RoutedEvent.Register<ChangeCollectionView, ChangeRowActionEventArgs>(nameof(RowActionRequested), RoutingStrategies.Bubble);
+
+        public event EventHandler<ChangeRowActionEventArgs> RowActionRequested
+        {
+            add { AddHandler(RowActionRequestedEvent, value); }
+            remove { RemoveHandler(RowActionRequestedEvent, value); }
         }
 
         public static readonly RoutedEvent<RoutedEventArgs> ChangeDoubleTappedEvent =
@@ -334,6 +372,35 @@ namespace SourceGit.Views
             }
         }
 
+        private void OnRowActionClicked(object sender, RoutedEventArgs e)
+        {
+            var changes = new List<Models.Change>();
+            if (sender is Control { DataContext: ViewModels.ChangeTreeNode node })
+                CollectChanges(node, changes);
+            else if (sender is Control { DataContext: Models.Change change })
+                changes.Add(change);
+
+            if (changes.Count > 0)
+                RaiseEvent(new ChangeRowActionEventArgs(RowActionRequestedEvent, changes));
+
+            e.Handled = true;
+        }
+
+        private void OnRowActionDoubleTapped(object sender, TappedEventArgs e)
+        {
+            // Two quick clicks on the button must not also count as a double-click on the row.
+            e.Handled = true;
+        }
+
+        private static void CollectChanges(ViewModels.ChangeTreeNode node, List<Models.Change> changes)
+        {
+            if (node.Change != null)
+                changes.Add(node.Change);
+
+            foreach (var child in node.Children)
+                CollectChanges(child, changes);
+        }
+
         private void OnRowSelectionChanged(object sender, SelectionChangedEventArgs _)
         {
             if (_disableSelectionChangingEvent || sender is not ListBox listBox)
@@ -486,6 +553,7 @@ namespace SourceGit.Views
             ToolTip.SetTip(control, tip);
         }
 
+        private string _rowActionLabel = null;
         private bool _isUnstagedChange = false;
         private Models.ChangeViewMode _viewMode = Models.ChangeViewMode.Tree;
         private bool _enableCompactFolders = false;
