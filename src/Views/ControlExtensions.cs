@@ -47,6 +47,26 @@ namespace SourceGit.Views
             return null;
         }
 
+        /// <summary>
+        ///     "Create PR..." item of a branch context menu (or "Push and create PR..." for a branch that was
+        ///     never pushed), or null when the branch's remote doesn't support pull requests.
+        /// </summary>
+        public static MenuItem CreatePullRequestMenuItem(this Control control, ViewModels.Repository repo, Models.Branch branch)
+        {
+            if (!repo.CanCreatePullRequest(branch, out var needPush))
+                return null;
+
+            var item = new MenuItem();
+            item.Header = App.Text(needPush ? "BranchCM.PushAndCreatePR" : "BranchCM.CreatePR");
+            item.Icon = control.CreateMenuIcon("Icons.CreatePR");
+            item.Click += (_, e) =>
+            {
+                repo.CreatePullRequest(branch);
+                e.Handled = true;
+            };
+            return item;
+        }
+
         public static void ShowWindow(this Control control, object data)
         {
             if (data == null)

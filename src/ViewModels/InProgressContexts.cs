@@ -11,10 +11,9 @@ namespace SourceGit.ViewModels
             protected set;
         }
 
-        public async Task ContinueAsync(CommandLog log)
+        public async Task<bool> ContinueAsync(CommandLog log)
         {
-            if (_continueCmd != null)
-                await _continueCmd.Use(log).ExecAsync();
+            return _continueCmd != null && await _continueCmd.Use(log).ExecAsync();
         }
 
         public async Task SkipAsync(CommandLog log)

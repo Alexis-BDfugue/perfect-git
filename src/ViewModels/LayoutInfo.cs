@@ -39,7 +39,7 @@ namespace SourceGit.ViewModels
         {
             get;
             set;
-        } = 260;
+        } = 220;
 
         public double RepositorySearchCommitWidth
         {

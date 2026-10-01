@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SourceGit.ViewModels"
+             xmlns:v="using:SourceGit.Views"
+             xmlns:c="using:SourceGit.Converters"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="SourceGit.Views.PullRequestOverview"
+             x:DataType="vm:PullRequestDetail">
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="40,28,40,40" MaxWidth="880" HorizontalAlignment="Stretch" Orientation="Vertical" Spacing="10">
+      <!-- Header -->
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <TextBlock FontFamily="{DynamicResource Fonts.Monospace}"
+                   FontSize="12"
+                   Foreground="{DynamicResource Brush.FG3}"
+                   Text="{Binding PullRequest.NumberLabel}"/>
+        <Border Padding="7,1" CornerRadius="8" VerticalAlignment="Center" Background="{Binding PullRequest.State, Converter={x:Static c:PullRequestConverters.ToStateBackground}}">
+          <TextBlock FontSize="11.5"
+                     FontWeight="SemiBold"
+                     Foreground="{Binding PullRequest.State, Converter={x:Static c:PullRequestConverters.ToStateBrush}}"
+                     Text="{Binding PullRequest.StateLabel}"/>
+        </Border>
+        <v:LoadingIcon Width="14" Height="14" IsVisible="{Binding IsLoadingInfo}"/>
+      </StackPanel>
+
+      <SelectableTextBlock FontSize="22" FontWeight="Bold" TextWrapping="Wrap" Text="{Binding PullRequest.Title}"/>
+
+      <TextBlock FontSize="12.5" Foreground="{DynamicResource Brush.FG3}" TextWrapping="Wrap">
+        <Run Text="{Binding PullRequest.Author, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource Brush.FG1}"/>
+        <Run Text="{Binding Dates, Mode=OneWay}"/>
+      </TextBlock>
+
+      <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="6" IsVisible="{Binding Info, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <Border Padding="8,3" CornerRadius="6" Background="{DynamicResource Brush.Hover}">
+          <SelectableTextBlock FontFamily="{DynamicResource Fonts.Monospace}"
+                               FontSize="12"
+                               Foreground="{DynamicResource Brush.FG2}"
+                               Text="{Binding Branches}"/>
+        </Border>
+        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+          <TextBlock FontSize="12.5" Foreground="{DynamicResource Brush.FG3}" Text="{Binding Stats}"/>
+          <TextBlock FontSize="12.5" Foreground="{DynamicResource Brush.Added}" Text="{Binding Additions}"/>
+          <TextBlock FontSize="12.5" Foreground="{DynamicResource Brush.Deleted}" Text="{Binding Deletions}"/>
+        </StackPanel>
+      </WrapPanel>
+
+      <Border Height="1" Margin="0,8,0,6" Background="{DynamicResource Brush.Border0}"/>
+
+      <!-- Description -->
+      <v:MarkdownView Markdown="{Binding Body}" IsVisible="{Binding HasBody}"/>
+      <TextBlock FontSize="13"
+                 FontStyle="Italic"
+                 Foreground="{DynamicResource Brush.FG3}"
+                 Text="{DynamicResource Text.PullRequest.NoDescription}">
+        <TextBlock.IsVisible>
+          <MultiBinding Converter="{x:Static BoolConverters.And}">
+            <Binding Path="Info" Converter="{x:Static ObjectConverters.IsNotNull}"/>
+            <Binding Path="!HasBody"/>
+          </MultiBinding>
+        </TextBlock.IsVisible>
+      </TextBlock>
+      <TextBlock FontSize="13"
+                 Foreground="{DynamicResource Brush.FG3}"
+                 TextWrapping="Wrap"
+                 Text="{DynamicResource Text.PullRequest.LoadFailed}">
+        <TextBlock.IsVisible>
+          <MultiBinding Converter="{x:Static BoolConverters.And}">
+            <Binding Path="Info" Converter="{x:Static ObjectConverters.IsNull}"/>
+            <Binding Path="!IsLoadingInfo"/>
+          </MultiBinding>
+        </TextBlock.IsVisible>
+      </TextBlock>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

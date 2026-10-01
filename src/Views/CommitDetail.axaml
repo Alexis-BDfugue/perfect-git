@@ -81,7 +81,8 @@
                     <Path Grid.Column="0"
                           Width="8" Height="8"
                           Margin="11,0,11,0"
-                          Data="{StaticResource Icons.Down}"
+                          Classes="inspector_chevron"
+                          Classes.collapsed="{Binding !IsExpanded}"
                           Fill="{DynamicResource Brush.FG3}"
                           IsVisible="{Binding IsFolder}"/>
                     <v:ChangeStatusIcon Grid.Column="0"
@@ -140,7 +141,7 @@
                        IsVisible="{Binding #ThisControl.IsDetailsPanelExpanded, Mode=OneWay}"/>
     </TabItem>
 
-    <TabItem>
+    <TabItem IsVisible="{Binding #ThisControl.ShowChangesTab}">
       <TabItem.Header>
         <Border Background="Transparent" PointerPressed="OnTabHeaderPointerPressed">
           <TextBlock Classes="tab_header" Text="{DynamicResource Text.CommitDetail.Files}"/>

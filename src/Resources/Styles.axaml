@@ -838,12 +838,8 @@
     </Style>
   </Style>
 
+  <!-- No background transition: Transparent is #00FFFFFF, so animating it flashes both segments light grey. -->
   <Style Selector="Button.segment">
-    <Setter Property="Transitions">
-      <Transitions>
-        <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
-      </Transitions>
-    </Setter>
     <Setter Property="Padding" Value="8,2"/>
     <Setter Property="CornerRadius" Value="4"/>
     <Setter Property="FontSize" Value="11"/>
@@ -852,7 +848,7 @@
     <Setter Property="Template">
       <ControlTemplate>
         <Border Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}">
-          <ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+          <ContentPresenter Content="{TemplateBinding Content}"/>
         </Border>
       </ControlTemplate>
     </Setter>
@@ -861,8 +857,15 @@
       <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
     </Style>
     <Style Selector="^.active">
-      <Setter Property="Background" Value="{DynamicResource Brush.Popup}"/>
+      <Setter Property="Background" Value="{DynamicResource Brush.Selection}"/>
       <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- The label is an AccessText, which the global TextBlock style targets: forward the button's own values to it. -->
+    <Style Selector="^ /template/ ContentPresenter > TextBlock">
+      <Setter Property="Foreground" Value="{Binding $parent[Button].Foreground}"/>
+      <Setter Property="FontSize" Value="{Binding $parent[Button].FontSize}"/>
     </Style>
   </Style>
 
@@ -898,6 +901,14 @@
     </Style>
   </Style>
 
+  <!-- Folder rows of the inspector files tree: ▾ expanded, ▸ collapsed -->
+  <Style Selector="Path.inspector_chevron">
+    <Setter Property="Data" Value="{StaticResource Icons.Down}"/>
+  </Style>
+  <Style Selector="Path.inspector_chevron.collapsed">
+    <Setter Property="Data" Value="{StaticResource Icons.Right}"/>
+  </Style>
+
   <Style Selector="TextBlock.inspector_file">
     <Setter Property="FontSize" Value="12.5"/>
     <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
@@ -906,12 +917,16 @@
     <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
   </Style>
 
+  <!-- BranchDropPopover draws its own card and shadow: no frame around it. -->
   <Style Selector="FlyoutPresenter.branch_drop">
-    <Setter Property="Background" Value="Transparent"/>
-    <Setter Property="BorderThickness" Value="0"/>
-    <Setter Property="Padding" Value="0"/>
-    <Setter Property="CornerRadius" Value="0"/>
     <Setter Property="MaxWidth" Value="400"/>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <ContentPresenter x:Name="PART_ContentPresenter"
+                          Content="{TemplateBinding Content}"
+                          ContentTemplate="{TemplateBinding ContentTemplate}"/>
+      </ControlTemplate>
+    </Setter>
   </Style>
 
   <Style Selector="ListBox.repo_left_content_list">
@@ -959,6 +974,11 @@
       <Setter Property="Background" Value="{DynamicResource Brush.Selection}" />
       <Setter Property="Opacity" Value="1"/>
     </Style>
+  </Style>
+
+  <!-- Two-line rows (pull requests): UpdateLeftSidebarLayout reserves 44px each -->
+  <Style Selector="ListBox.repo_left_content_list.two_lines ListBoxItem">
+    <Setter Property="Height" Value="44"/>
   </Style>
 
   <Style Selector="StackPanel.action_tip">
@@ -1402,6 +1422,12 @@
     <Setter Property="Template">
       <ControlTemplate>
         <Grid ColumnDefinitions="*,Auto" Background="Transparent">
+          <!-- Line between two sidebar sections (hidden above the first one) -->
+          <Border Grid.Column="0" Grid.ColumnSpan="2"
+                  x:Name="PART_Separator"
+                  Height="1"
+                  VerticalAlignment="Top"
+                  Background="{DynamicResource Brush.Border2}"/>
           <ContentPresenter Grid.Column="0"
                             x:Name="PART_ContentPresenter"
                             Background="{TemplateBinding Background}"
@@ -1426,6 +1452,9 @@
         </Grid>
       </ControlTemplate>
     </Setter>
+  </Style>
+  <Style Selector="ToggleButton.group_expander:nth-child(1) /template/ Border#PART_Separator">
+    <Setter Property="IsVisible" Value="False"/>
   </Style>
   <Style Selector="ToggleButton.group_expander:pressed">
     <Setter Property="RenderTransform" Value="scale(1)"/>

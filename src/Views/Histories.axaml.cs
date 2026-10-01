@@ -918,7 +918,6 @@ namespace SourceGit.Views
             {
                 presenter.DropTargetDecorator = decorator;
                 BranchDragDrop.SetTarget(presenter, () => presenter.DropTargetDecorator = null);
-                BranchDragDrop.MoveGhost(e);
                 e.DragEffects = DragDropEffects.Move;
                 e.Handled = true;
                 return;
@@ -992,9 +991,9 @@ namespace SourceGit.Views
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.Key == Key.Escape && e.KeyModifiers == KeyModifiers.None &&
-                DataContext is ViewModels.Histories { DetailContext: ViewModels.CommitDetail { CenterDiff: not null } detail })
+                DataContext is ViewModels.Histories { CenterContent: not null } vm)
             {
-                detail.CloseCenterDiff();
+                vm.CloseCenterContent(false);
                 e.Handled = true;
                 return;
             }
@@ -1004,13 +1003,22 @@ namespace SourceGit.Views
 
         private void OnCloseCenterDiff(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ViewModels.Histories { DetailContext: ViewModels.CommitDetail detail })
-                detail.CloseCenterDiff();
+            if (DataContext is ViewModels.Histories vm)
+                vm.CloseCenterContent(true);
 
             e.Handled = true;
         }
 
         private void OnWipRowTapped(object sender, TappedEventArgs e)
+        {
+            if (DataContext is ViewModels.Histories vm)
+            {
+                vm.SelectLocalChanges();
+                e.Handled = true;
+            }
+        }
+
+        private void OnWipRowDoubleTapped(object sender, TappedEventArgs e)
         {
             if (DataContext is ViewModels.Histories vm)
             {
@@ -1816,6 +1824,10 @@ namespace SourceGit.Views
             };
             submenu.Items.Add(push);
 
+            var createPR = this.CreatePullRequestMenuItem(repo, current);
+            if (createPR != null)
+                submenu.Items.Add(createPR);
+
             var rename = new MenuItem();
             rename.Header = App.Text("BranchCM.Rename", current.Name);
             rename.Icon = this.CreateMenuIcon("Icons.Rename");
@@ -1908,6 +1920,10 @@ namespace SourceGit.Views
                 e.Handled = true;
             };
             submenu.Items.Add(push);
+
+            var createPR = this.CreatePullRequestMenuItem(repo, branch);
+            if (createPR != null)
+                submenu.Items.Add(createPR);
 
             var rename = new MenuItem();
             rename.Header = App.Text("BranchCM.Rename", branch.Name);
@@ -2014,6 +2030,10 @@ namespace SourceGit.Views
                 e.Handled = true;
             };
             submenu.Items.Add(merge);
+
+            var createPR = this.CreatePullRequestMenuItem(repo, branch);
+            if (createPR != null)
+                submenu.Items.Add(createPR);
 
             var delete = new MenuItem();
             delete.Header = App.Text("BranchCM.Delete", name);

@@ -642,67 +642,21 @@ namespace SourceGit.ViewModels
             }, token);
         }
 
-        private void BuildInspectorRows()
+        /// <summary>
+        ///     Collapses or expands a folder of the files tree.
+        /// </summary>
+        public void ToggleFolder(string path)
         {
-            var added = 0;
-            var deleted = 0;
-            foreach (var stat in _numStats.Values)
-            {
-                added += stat.Added;
-                deleted += stat.Deleted;
-            }
+            if (!_collapsedFolders.Remove(path))
+                _collapsedFolders.Add(path);
 
-            TotalAdded = _numStats.Count > 0 ? $"+{added}" : string.Empty;
-            TotalDeleted = _numStats.Count > 0 ? $"−{deleted}" : string.Empty;
-
-            var changes = _changes.Count > 100 ? _changes.GetRange(0, 100) : new List<Models.Change>(_changes);
-            var rows = new List<CommitInspectorRow>();
-
-            if (_sharedData.IsInspectorTreeMode)
-            {
-                changes.Sort((l, r) =>
-                {
-                    var ld = l.Path.LastIndexOf('/');
-                    var rd = r.Path.LastIndexOf('/');
-                    var cmp = string.Compare(ld > 0 ? l.Path.Substring(0, ld) : string.Empty, rd > 0 ? r.Path.Substring(0, rd) : string.Empty, StringComparison.Ordinal);
-                    return cmp != 0 ? cmp : string.Compare(l.Path, r.Path, StringComparison.Ordinal);
-                });
-
-                string lastDir = null;
-                foreach (var c in changes)
-                {
-                    var idx = c.Path.LastIndexOf('/');
-                    var dir = idx > 0 ? c.Path.Substring(0, idx + 1) : string.Empty;
-                    if (dir != lastDir)
-                    {
-                        if (dir.Length > 0)
-                            rows.Add(new CommitInspectorRow() { IsFolder = true, Label = dir });
-                        lastDir = dir;
-                    }
-
-                    rows.Add(CreateInspectorRow(c, idx > 0 ? c.Path.Substring(idx + 1) : c.Path, dir.Length > 0 ? 18 : 0));
-                }
-            }
-            else
-            {
-                foreach (var c in changes)
-                    rows.Add(CreateInspectorRow(c, c.Path, 0));
-            }
-
-            InspectorRows = rows;
+            BuildInspectorRows();
         }
 
-        private CommitInspectorRow CreateInspectorRow(Models.Change change, string label, double indent)
+        private void BuildInspectorRows()
         {
-            _numStats.TryGetValue(change.Path, out var stat);
-            return new CommitInspectorRow()
-            {
-                Label = label,
-                Change = change,
-                Indent = new Thickness(indent, 0, 0, 0),
-                Added = stat is { Added: > 0 } ? $"+{stat.Added}" : string.Empty,
-                Deleted = stat is { Deleted: > 0 } ? $"−{stat.Deleted}" : string.Empty,
-            };
+            (TotalAdded, TotalDeleted) = CommitInspectorRow.FormatTotals(_numStats);
+            InspectorRows = CommitInspectorRow.Build(_changes, _numStats, _sharedData.IsInspectorTreeMode, _collapsedFolders);
         }
 
         private void UpdateDetails()
@@ -914,6 +868,7 @@ namespace SourceGit.ViewModels
         private bool _canOpenRevisionFileWithDefaultEditor = false;
         private Vector _scrollOffset = Vector.Zero;
         private Dictionary<string, Models.NumStat> _numStats = [];
+        private readonly HashSet<string> _collapsedFolders = [];
         private DiffContext _centerDiff = null;
         private Models.Change _centerDiffChange = null;
         private List<CommitInspectorRow> _inspectorRows = [];

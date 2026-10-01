@@ -41,12 +41,12 @@ Vertical stack: Title bar 40 → Toolbar 50 → Body (flex) → no global footer
 - Right: remote status "● origin · 2 min ago" 12px `--fg3`, dot `--addfg` (or `--delfg` on error).
 - **Hover tooltip** (example on Push): 270px wide, bg `--raise`, 1px `#ffffff1f`, radius 9, shadow `0 12px 30px #0009`, padding 10 12. Title 12.5/600 "Push · send your commits"; body 12/1.45 `--fg2` "2 commits on **feature/graph-avatars** only exist on your Mac. Push copies them to `origin`."; shortcut 11 `--fg3`. Every toolbar action gets a tooltip of that form: name · plain-English verb, one sentence about what it will do *with the current state*, shortcut.
 
-### Sidebar — 260px, bg `--side`, right border, padding 10 8, section gap 14, base 12.5px
+### Sidebar — 220px (resizable, min 160), bg `--side`, right border, padding 10 8, section gap 14, base 12.5px. A 1px `--line` rule separates consecutive sections (none above the first).
 - Filter field: 28px, radius 7, bg `--raise`, "⌕ Filter".
 - Section header: 11px/600, letter-spacing .03em, uppercase, `--fg3`, count after name (500), actions at right ("＋").
 - **LOCAL**: rows 5×8 padding, radius 6. 9px dot in branch lane color, name (current branch 700 + bg `--sel`), ahead/behind at right in mono 11 `--fg2` ("↑2", "↓3").
 - **REMOTE**: remote row ("▾ origin" + host "github" `--fg3`), children indented 26px with **hollow** 8px dot (1.5px border in lane color), text `--fg2`. Collapsed "▸ upstream  sourcegit-scm".
-- **PULL REQUESTS**: two-line rows: "#14" mono 11 `--fg3` + title (ellipsis); second line 11px: status chip (radius 8, padding 0 6, 600; "in review" = `--warnfg` on 14% of it; "merged" = `--addfg` on 14%) + author · comment count.
+- **PULL REQUESTS**: two-line rows: "#14" mono 11 `--fg3` + title (ellipsis); second line 11px: status chip (radius 8, padding 0 6, 600; "in review" = `--warnfg` on 14% of it; "merged" = `--addfg` on 14%) + author · comment count. Clicking a PR selects it: the center (instead of the graph) shows the PR page — "#N" + status chip, title 22/700, author + opened/merged dates, "head → base" branch pill (mono), "N commits · N files +A −D", then the description rendered as GitHub markdown (headings, lists, task lists, code, quotes, tables, links). The right inspector (tab PULL REQUEST) repeats the header, has a "Description" row (selected while the page is shown; click to come back to it), then the FILES list like a commit (Tree/List, +/−; click → diff in the center, header "← History · #N · title"; Esc goes back to the PR page, "← History" to the graph), actions "Checkout" and "Open on GitHub". The files come from fetching `refs/pull/N/head` (FETCH_HEAD only) and diffing from the merge base, like GitHub's "Files changed".
 - **TAGS / STASHES / SUBMODULES**: collapsed headers with counts.
 
 ### Center — commit graph & list, bg `--bg`
@@ -58,7 +58,7 @@ Vertical stack: Title bar 40 → Toolbar 50 → Body (flex) → no global footer
   - **Commit node = author avatar**: circle r=12.5, fill = avatar (photo, or initials 11/700 white on a per-author color), 2.5px stroke in lane color.
   - **Merge commit**: small hollow dot r=5.5, fill `--bg`, 2.5px lane stroke; message text `--fg2`.
   - **HEAD**: extra ring r=17, 1.5px lane color, 45% opacity.
-  - **Uncommitted changes (WIP)** row on top: dashed circle r=10 (3 3), dashed edge to HEAD, italic `--fg3` text "// 3 changed files, not committed yet", date "now". Clicking it opens the staging view.
+  - **Uncommitted changes (WIP)** row on top: dashed circle r=10 (3 3), dashed edge to HEAD, italic `--fg3` text "// 3 changed files, not committed yet", date "now". Clicking it selects it (selection bg) and the right inspector shows the local changes: UNSTAGED / STAGED file lists with "Stage all" / "Unstage all" (hovering a file or folder row shows a "Stage" / "Unstage" button on its right), commit message, Amend, "Commit & Push" and "Commit"; a Tree / List switch in its header (shared with the staging view). Clicking a file shows its diff in the center (same "← History · Esc" header as commit files). Double-clicking the row opens the full staging view.
 - **Ref pills** before the message (gap 8): 11/600, padding 2 8, radius 5.
   - Local branch: bg = lane color at 22%, text `--fg`, current branch prefixed "✓ ".
   - Remote branch: transparent, 1px border lane color at 50%, text `--fg2`.
@@ -74,7 +74,7 @@ Vertical stack: Title bar 40 → Toolbar 50 → Body (flex) → no global footer
   - Subject 17/700, line-height 1.3, letter-spacing -0.01em. Body 12.5/1.5 `--fg2`.
   - Author: 32px avatar with 2px `--panel` gap + 2px lane-color ring; name 600; "Today, 2:02 PM · 12 min ago" 11.5 `--fg3`.
   - Grid 72px/1fr, 12px: Parent (mono, `--acc`, clickable → selects parent), Branches (pills).
-- Files: header "4 FILES" + "+86" `--addfg` + "−21" `--delfg`, right segmented Tree/List. Rows 5×8, radius 6: status letter 10/700 (M `--warnfg`, A `--addfg`, D `--delfg`, R `--acc`), name, +/− counts 11px. Folder rows "▾ src/Views/" `--fg3`, children indented 26px. Click a file → diff view.
+- Files: header "4 FILES" + "+86" `--addfg` + "−21" `--delfg`, right segmented Tree/List. Rows 5×8, radius 6: status letter 10/700 (M `--warnfg`, A `--addfg`, D `--delfg`, R `--acc`), name, +/− counts 11px. Tree mode is a real nested tree: folder rows `--fg3` with a ▾/▸ chevron (click to collapse), folders before files, each level indented 14px; a folder holding a single sub-folder and no file is shown on one row ("app/code/Vendor", like VS Code). Click a file → diff view.
 - Footer actions (padding 14 18, top border): buttons Checkout · Cherry-pick · Revert · "···" (12px, padding 6 11, radius 7, bg `--raise`, 1px `--line`).
 
 ## Interactions & Behavior

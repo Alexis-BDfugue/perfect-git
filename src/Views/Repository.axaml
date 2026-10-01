@@ -137,7 +137,7 @@
       <Border ClipToBounds="True">
         <Grid RowDefinitions="Auto,*">
           <!-- In-Progress Information Bar -->
-          <Grid Grid.Row="0" Height="28" ColumnDefinitions="*,Auto,Auto" Background="{DynamicResource Brush.Conflict}" IsVisible="{Binding InProgressContext, Converter={x:Static ObjectConverters.IsNotNull}}">
+          <Grid Grid.Row="0" Height="28" ColumnDefinitions="*,Auto,Auto,Auto" Background="{DynamicResource Brush.Conflict}" IsVisible="{Binding InProgressContext, Converter={x:Static ObjectConverters.IsNotNull}}">
             <ContentControl Grid.Column="0" Margin="8,0" Content="{Binding InProgressContext}">
               <ContentControl.DataTemplates>
                 <DataTemplate DataType="m:Commit">
@@ -230,9 +230,18 @@
                     Content="{DynamicResource Text.Repository.Resolve}"
                     Padding="8,2" Margin="0,0,8,0"
                     Click="OnResolveInProgress"
-                    IsVisible="{Binding SelectedViewIndex, Converter={x:Static c:IntConverters.IsNotOne}}"/>
+                    IsVisible="{Binding WorkingCopy.HasUnsolvedConflicts, FallbackValue=False}"/>
 
             <Button Grid.Column="2"
+                    Classes="flat"
+                    FontWeight="Regular"
+                    BorderThickness="0"
+                    Content="{DynamicResource Text.Repository.Continue}"
+                    Padding="8,2" Margin="0,0,8,0"
+                    Click="OnContinueInProgress"
+                    IsVisible="{Binding !WorkingCopy.HasUnsolvedConflicts, FallbackValue=False}"/>
+
+            <Button Grid.Column="3"
                     Classes="flat"
                     FontWeight="Regular"
                     BorderThickness="0"
@@ -357,8 +366,9 @@
                 <ListBox Grid.Row="5"
                          x:Name="PullRequestList"
                          Height="0"
-                         Classes="repo_left_content_list"
+                         Classes="repo_left_content_list two_lines"
                          ItemsSource="{Binding PullRequests, Mode=OneWay}"
+                         SelectedItem="{Binding Histories.SelectedPullRequest, Mode=TwoWay}"
                          SelectionMode="Single"
                          PropertyChanged="OnWorktreeListPropertyChanged">
                   <ListBox.IsVisible>
@@ -377,7 +387,6 @@
                       <Border Height="44"
                               Padding="8,0"
                               Background="Transparent"
-                              Tapped="OnPullRequestTapped"
                               ToolTip.Tip="{Binding Title}"
                               ToolTip.Placement="Right">
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" Spacing="3">

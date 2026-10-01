@@ -127,7 +127,7 @@ namespace SourceGit.ViewModels
                     : App.Text("BranchDrop.Rebase.Remote"),
             });
 
-            if (TryGetPullRequestURL(repo, source, target, out var url))
+            if (repo.TryGetCreatePullRequestURL(source, target, out var url))
             {
                 _pullRequestURL = url;
                 Options.Add(new BranchDropOption()
@@ -203,34 +203,6 @@ namespace SourceGit.ViewModels
             };
 
             return sourceIsCurrent ? desc : $"{desc} {App.Text("BranchDrop.SwitchFirst", Source.Name)}";
-        }
-
-        private static bool TryGetPullRequestURL(Repository repo, Models.Branch source, Models.Branch target, out string url)
-        {
-            url = null;
-
-            var remoteName = source.IsLocal ? null : source.Remote;
-            var branchName = source.Name;
-            if (source.IsLocal)
-            {
-                var upstream = repo.Branches.Find(x => !x.IsLocal && x.FullName.Equals(source.Upstream, StringComparison.Ordinal));
-                if (upstream == null)
-                    return false;
-
-                remoteName = upstream.Remote;
-                branchName = upstream.Name;
-            }
-
-            var remote = repo.Remotes.Find(x => x.Name.Equals(remoteName, StringComparison.Ordinal));
-            if (remote == null || !remote.TryGetCreatePullRequestURL(out url, branchName))
-                return false;
-
-            // GitHub can compare against any base branch.
-            var baseName = target.Name;
-            if (url.Contains("github.com", StringComparison.Ordinal) && remote.TryGetVisitURL(out var visit))
-                url = $"{visit}/compare/{Uri.EscapeDataString(baseName)}...{Uri.EscapeDataString(branchName)}?expand=1";
-
-            return true;
         }
 
         private const int TESTING = -2;

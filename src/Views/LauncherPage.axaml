@@ -68,6 +68,25 @@
       </ContentControl>
     </Border>
 
+    <!-- Conflict resolver: covers the toolbar and the repository while a merge, rebase... is stopped on conflicts -->
+    <ContentControl Grid.Row="0" Grid.RowSpan="2" Content="{Binding Data}">
+      <ContentControl.DataTemplates>
+        <DataTemplate DataType="vm:Welcome">
+          <Panel/>
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:Repository">
+          <ContentControl Content="{Binding ConflictResolver}" IsVisible="{Binding ConflictResolver, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <ContentControl.DataTemplates>
+              <DataTemplate DataType="vm:ConflictResolver">
+                <v:ConflictResolver/>
+              </DataTemplate>
+            </ContentControl.DataTemplates>
+          </ContentControl>
+        </DataTemplate>
+      </ContentControl.DataTemplates>
+    </ContentControl>
+
     <!-- Floating -->
     <Grid Grid.Row="1" ClipToBounds="True">
       <Grid.IsVisible>

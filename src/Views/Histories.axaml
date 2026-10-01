@@ -23,6 +23,9 @@
     <Style Selector="Border#WipRow:pointerover Border.wip_hover">
       <Setter Property="Background" Value="{DynamicResource Brush.Hover}"/>
     </Style>
+    <Style Selector="Border#WipRow.selected Border.wip_hover">
+      <Setter Property="Background" Value="{DynamicResource Brush.Selection}"/>
+    </Style>
   </UserControl.Styles>
 
   <v:HistoriesLayout UseHorizontal="{Binding Source={x:Static vm:Preferences.Instance}, Path=UseTwoColumnsLayoutInHistories}">
@@ -335,8 +338,10 @@
               VerticalAlignment="Top"
               Background="{DynamicResource Brush.Contents}"
               IsVisible="{Binding HasLocalChanges}"
+              Classes.selected="{Binding IsLocalChangesSelected}"
               Cursor="Hand"
               Tapped="OnWipRowTapped"
+              DoubleTapped="OnWipRowDoubleTapped"
               ToolTip.Tip="{DynamicResource Text.Histories.WIP.Tip}">
         <Panel>
           <Border Classes="wip_hover"/>
@@ -411,12 +416,12 @@
         </Grid>
       </Border>
 
-      <!-- Diff of a file of the selected commit, shown instead of the graph -->
+      <!-- Diff of a file selected in the inspector (commit, uncommitted changes, pull request), shown instead of the graph -->
       <Grid RowDefinitions="30,*"
             Background="{DynamicResource Brush.Contents}"
-            IsVisible="{Binding ((vm:CommitDetail)DetailContext).CenterDiff, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False}">
+            IsVisible="{Binding CenterContent, Converter={x:Static ObjectConverters.IsNotNull}}">
         <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border0}">
-          <Grid ColumnDefinitions="Auto,*" Margin="6,0,16,0">
+          <Grid ColumnDefinitions="Auto,Auto,*" Margin="6,0,16,0">
             <Button Grid.Column="0"
                     Classes="tb_action"
                     Padding="8,3"
@@ -433,20 +438,33 @@
             <TextBlock Grid.Column="1"
                        Margin="12,0,0,0"
                        FontSize="11.5"
+                       FontFamily="{DynamicResource Fonts.Monospace}"
                        Foreground="{DynamicResource Brush.FG3}"
                        VerticalAlignment="Center"
-                       TextTrimming="CharacterEllipsis">
-              <Run Text="{Binding ((vm:CommitDetail)DetailContext).Commit.SHA, Converter={x:Static c:StringConverters.ToGraphSHA}, FallbackValue='', Mode=OneWay}" FontFamily="{DynamicResource Fonts.Monospace}"/>
-              <Run Text="·"/>
-              <Run Text="{Binding ((vm:CommitDetail)DetailContext).Commit.Subject, FallbackValue='', Mode=OneWay}"/>
+                       IsVisible="{Binding CenterBadge, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+              <Run Text="{Binding CenterBadge, Mode=OneWay}"/>
+              <Run Text="·" FontFamily="{DynamicResource Fonts.Default}"/>
             </TextBlock>
+            <TextBlock Grid.Column="2"
+                       Margin="6,0,0,0"
+                       FontSize="11.5"
+                       Foreground="{DynamicResource Brush.FG3}"
+                       VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
+                       Text="{Binding CenterTitle}"/>
           </Grid>
         </Border>
 
-        <ContentControl Grid.Row="1" Content="{Binding ((vm:CommitDetail)DetailContext).CenterDiff, FallbackValue={x:Null}}">
+        <ContentControl Grid.Row="1" Content="{Binding CenterContent}">
           <ContentControl.DataTemplates>
             <DataTemplate DataType="vm:DiffContext">
               <v:DiffView/>
+            </DataTemplate>
+            <DataTemplate DataType="vm:PullRequestDetail">
+              <v:PullRequestOverview/>
+            </DataTemplate>
+            <DataTemplate DataType="vm:Conflict">
+              <v:Conflict/>
             </DataTemplate>
           </ContentControl.DataTemplates>
         </ContentControl>
@@ -491,17 +509,19 @@
                     </Panel>
                   </Grid>
                 </TabItem>
-
-                <TabItem IsEnabled="False">
-                  <TabItem.Header>
-                    <TextBlock Classes="tab_header" Text="{DynamicResource Text.CommitDetail.Files}"/>
-                  </TabItem.Header>
-                </TabItem>
               </TabControl>
           </DataTemplate>
 
           <DataTemplate DataType="vm:CommitDetail">
             <v:CommitDetail ShowChangesTab="False" IsDetailsPanelExpanded="{Binding #ThisControl.IsDetailsPanelExpanded, Mode=OneWay}"/>
+          </DataTemplate>
+
+          <DataTemplate DataType="vm:WorkingCopy">
+            <v:WorkingCopyInspector IsVisible="{Binding #ThisControl.IsDetailsPanelExpanded, Mode=OneWay}"/>
+          </DataTemplate>
+
+          <DataTemplate DataType="vm:PullRequestDetail">
+            <v:PullRequestDetail IsVisible="{Binding #ThisControl.IsDetailsPanelExpanded, Mode=OneWay}"/>
           </DataTemplate>
 
           <DataTemplate DataType="vm:RevisionCompare">

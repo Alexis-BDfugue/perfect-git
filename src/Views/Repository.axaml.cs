@@ -110,7 +110,15 @@ namespace SourceGit.Views
         private void OnResolveInProgress(object sender, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.Repository repo)
-                repo.SelectedViewIndex = 1;
+                repo.ResolveConflicts();
+
+            e.Handled = true;
+        }
+
+        private async void OnContinueInProgress(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.Repository repo)
+                await repo.ContinueMergeAsync();
 
             e.Handled = true;
         }
@@ -237,18 +245,8 @@ namespace SourceGit.Views
             if (BranchDragDrop.Dragging == null)
                 return;
 
-            BranchDragDrop.MoveGhost(e);
             BranchDragDrop.ClearTarget();
             e.DragEffects = DragDropEffects.None;
-        }
-
-        private void OnPullRequestTapped(object sender, TappedEventArgs e)
-        {
-            if (sender is Control { DataContext: Models.PullRequest pr } && !string.IsNullOrEmpty(pr.Url))
-            {
-                Native.OS.OpenBrowser(pr.Url);
-                e.Handled = true;
-            }
         }
 
         private void OnStashTapped(object sender, TappedEventArgs e)
@@ -535,7 +533,7 @@ namespace SourceGit.Views
             }
             else if (_isNormalSidebarVisible)
             {
-                SidebarMinWidth = 200;
+                SidebarMinWidth = 160;
                 SidebarWidth = new GridLength(layout.RepositorySidebarWidth, GridUnitType.Pixel);
             }
             else

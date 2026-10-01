@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -151,9 +152,80 @@ namespace SourceGit.ViewModels
             get => _detailContext;
             set
             {
+                var old = _detailContext;
                 if (SetProperty(ref _detailContext, value))
+                {
+                    if (old is INotifyPropertyChanged oldNotifier)
+                        oldNotifier.PropertyChanged -= OnDetailContextPropertyChanged;
+                    if (value is INotifyPropertyChanged newNotifier)
+                        newNotifier.PropertyChanged += OnDetailContextPropertyChanged;
+
                     OnPropertyChanged(nameof(IsOpenAsStandaloneVisible));
+                    OnPropertyChanged(nameof(IsLocalChangesSelected));
+                    OnPropertyChanged(nameof(SelectedPullRequest));
+                    NotifyCenterContentChanged();
+                }
             }
+        }
+
+        /// <summary>
+        ///     What is shown in the center instead of the graph: the diff of a file selected in the inspector
+        ///     (commit file, uncommitted file or conflict, pull request file), or null to show the graph.
+        /// </summary>
+        public object CenterContent
+        {
+            get => _detailContext switch
+            {
+                CommitDetail detail => detail.CenterDiff,
+                WorkingCopy workingCopy => workingCopy.DetailContext,
+                PullRequestDetail pr => (object)pr.CenterDiff ?? (pr.IsOverviewVisible ? pr : null),
+                _ => null,
+            };
+        }
+
+        /// <summary>
+        ///     Short monospace label of the center diff header (commit SHA, PR number).
+        /// </summary>
+        public string CenterBadge
+        {
+            get => _detailContext switch
+            {
+                CommitDetail { Commit: { } commit } => commit.SHA.Length > 7 ? commit.SHA.Substring(0, 7) : commit.SHA,
+                PullRequestDetail pr => pr.PullRequest.NumberLabel,
+                _ => string.Empty,
+            };
+        }
+
+        public string CenterTitle
+        {
+            get => _detailContext switch
+            {
+                CommitDetail { Commit: { } commit } => commit.Subject,
+                WorkingCopy => App.Text("Histories.WIP.Title"),
+                PullRequestDetail pr => pr.PullRequest.Title,
+                _ => string.Empty,
+            };
+        }
+
+        /// <summary>
+        ///     The pull request shown in the inspector (selected in the sidebar); setting it opens that PR.
+        /// </summary>
+        public Models.PullRequest SelectedPullRequest
+        {
+            get => (_detailContext as PullRequestDetail)?.PullRequest;
+            set
+            {
+                if (value != null && value != SelectedPullRequest)
+                    SelectPullRequest(value);
+            }
+        }
+
+        /// <summary>
+        ///     The "uncommitted changes" row is selected: the inspector shows the working copy (stage, unstage, commit).
+        /// </summary>
+        public bool IsLocalChangesSelected
+        {
+            get => _detailContext is WorkingCopy;
         }
 
         public Models.Bisect Bisect
@@ -248,6 +320,10 @@ namespace SourceGit.ViewModels
             OnPropertyChanged(nameof(HasLocalChanges));
             OnPropertyChanged(nameof(LocalChangesDescription));
             NotifyStatusChanged();
+
+            // Everything was committed or discarded: the "uncommitted changes" row is gone.
+            if (!HasLocalChanges && _detailContext is WorkingCopy)
+                DetailContext = Models.Null.Instance;
         }
 
         /// <summary>
@@ -290,6 +366,66 @@ namespace SourceGit.ViewModels
         public void OpenLocalChanges()
         {
             _repo.SelectedViewIndex = 1;
+        }
+
+        public void SelectPullRequest(Models.PullRequest pr)
+        {
+            _repo.SelectedViewIndex = 0;
+            SelectedCommits = [];
+            DetailContext = new PullRequestDetail(_repo, _commitDetailSharedData, pr);
+        }
+
+        /// <summary>
+        ///     Closes what the center shows. For a pull request, Esc (backToGraph = false) goes from a file diff
+        ///     back to the PR description, while "← History" always returns to the graph.
+        /// </summary>
+        public void CloseCenterContent(bool backToGraph)
+        {
+            switch (_detailContext)
+            {
+                case CommitDetail detail:
+                    detail.CloseCenterDiff();
+                    break;
+                case PullRequestDetail pr:
+                    if (!backToGraph && pr is { CenterDiff: not null, IsOverviewVisible: true })
+                        pr.CloseCenterDiff();
+                    else
+                        pr.HideOverview();
+                    break;
+                case WorkingCopy workingCopy:
+                    // The diff follows the file selected in the inspector: deselecting it brings the graph back.
+                    workingCopy.SelectedUnstaged = new(null);
+                    workingCopy.SelectedStaged = new(null);
+                    break;
+            }
+        }
+
+        public void SelectLocalChanges()
+        {
+            if (!HasLocalChanges)
+                return;
+
+            // Start from the file list: a file selected earlier would cover the graph with its diff right away.
+            var workingCopy = _repo.WorkingCopy;
+            workingCopy.SelectedUnstaged = new(null);
+            workingCopy.SelectedStaged = new(null);
+
+            SelectedCommits = [];
+            DetailContext = workingCopy;
+        }
+
+        /// <summary>
+        ///     Selects the "uncommitted changes" row with its first conflicted file, whose resolver then fills the center.
+        /// </summary>
+        public void ShowConflicts()
+        {
+            var workingCopy = _repo.WorkingCopy;
+            if (!workingCopy.HasUnsolvedConflicts)
+                return;
+
+            SelectedCommits = [];
+            DetailContext = workingCopy;
+            workingCopy.SelectFirstConflict();
         }
 
         public Histories(Repository repo)
@@ -583,6 +719,19 @@ namespace SourceGit.ViewModels
             SelectedCommits = selected;
         }
 
+        private void OnDetailContextPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName is nameof(CommitDetail.CenterDiff) or nameof(WorkingCopy.DetailContext) or nameof(CommitDetail.Commit) or nameof(PullRequestDetail.IsOverviewVisible))
+                NotifyCenterContentChanged();
+        }
+
+        private void NotifyCenterContentChanged()
+        {
+            OnPropertyChanged(nameof(CenterContent));
+            OnPropertyChanged(nameof(CenterBadge));
+            OnPropertyChanged(nameof(CenterTitle));
+        }
+
         private void PostSelectedCommitsChanged()
         {
             if (_ignoreSelectionChange)
@@ -606,15 +755,6 @@ namespace SourceGit.ViewModels
                     detail.Commit = c;
                 else
                     DetailContext = new CommitDetail(_repo, _commitDetailSharedData) { Commit = c };
-            }
-            else if (_selectedCommits.Count == 2)
-            {
-                _searchCommitContext.Selected = null;
-
-                if (_detailContext is RevisionCompare compare)
-                    compare.SetTargets(_selectedCommits[1], _selectedCommits[0]);
-                else
-                    DetailContext = new RevisionCompare(_repo, _selectedCommits[1], _selectedCommits[0]);
             }
             else
             {

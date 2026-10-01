@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -35,11 +36,26 @@ namespace SourceGit.ViewModels
             private set => SetProperty(ref _mine, value);
         }
 
+        public string FilePath
+        {
+            get => _change.Path;
+        }
+
+        /// <summary>
+        ///     Three-way resolver of a text conflict, shown in place of the summary card (null for other conflicts).
+        /// </summary>
+        public MergeConflictEditor Editor
+        {
+            get => _editor;
+            private set => SetProperty(ref _editor, value);
+        }
+
         public Conflict(Repository repo, WorkingCopy wc, Models.Change change)
         {
             _repo = repo;
             _wc = wc;
             _change = change;
+            _lastWriteTime = File.GetLastWriteTimeUtc(Path.Combine(repo.FullPath, change.Path));
 
             Task.Run(async () =>
             {
@@ -60,13 +76,27 @@ namespace SourceGit.ViewModels
                         .GetResultAsync()
                         .ConfigureAwait(false);
 
+                var editor = state == Models.ConflictFileState.UnmergedText ? new MergeConflictEditor(repo, _head, change.Path) : null;
+
                 Dispatcher.UIThread.Post(() =>
                 {
                     State = state;
                     Mine = mine;
                     Theirs = theirs;
+                    Editor = editor;
                 });
             });
+        }
+
+        /// <summary>
+        ///     Still the same conflict (same file, same reason, not modified on disk since): refreshing the working copy
+        ///     then keeps this view model, so the resolver keeps its scroll position and the chunks already picked.
+        /// </summary>
+        public bool IsSameAs(Models.Change change)
+        {
+            return change.Path.Equals(_change.Path, StringComparison.Ordinal) &&
+                change.ConflictReason == _change.ConflictReason &&
+                File.GetLastWriteTimeUtc(Path.Combine(_repo.FullPath, change.Path)) == _lastWriteTime;
         }
 
         public async Task UseTheirsAsync()
@@ -84,6 +114,11 @@ namespace SourceGit.ViewModels
             return _state == Models.ConflictFileState.UnmergedText ? new MergeConflictEditor(_repo, _head, _change.Path) : null;
         }
 
+        public async Task<bool> SaveAndStageAsync()
+        {
+            return _editor != null && await _editor.SaveAndStageAsync();
+        }
+
         public async Task MergeExternalAsync()
         {
             if (_state == Models.ConflictFileState.UnmergedText)
@@ -97,5 +132,7 @@ namespace SourceGit.ViewModels
         private Models.ConflictFileState _state = Models.ConflictFileState.Unknown;
         private object _mine = null;
         private object _theirs = null;
+        private MergeConflictEditor _editor = null;
+        private DateTime _lastWriteTime;
     }
 }

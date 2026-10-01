@@ -79,6 +79,45 @@ namespace SourceGit.ViewModels
             get => _conflictRegions;
         }
 
+        /// <summary>
+        ///     Rows of the Current / Incoming / Result panes of the conflict resolver screen.
+        /// </summary>
+        public List<Models.ConflictPaneRow> CurrentRows
+        {
+            get => _currentRows;
+            private set => SetProperty(ref _currentRows, value);
+        }
+
+        public List<Models.ConflictPaneRow> IncomingRows
+        {
+            get => _incomingRows;
+            private set => SetProperty(ref _incomingRows, value);
+        }
+
+        public List<Models.ConflictPaneRow> ResultRows
+        {
+            get => _resultRows;
+            private set => SetProperty(ref _resultRows, value);
+        }
+
+        /// <summary>
+        ///     The block the keyboard shortcuts apply to (keep current/incoming/both, next/previous conflict).
+        /// </summary>
+        public int CurrentRegion
+        {
+            get => _currentRegion;
+            set
+            {
+                if (SetProperty(ref _currentRegion, value))
+                    OnPropertyChanged(nameof(CurrentRegionLabel));
+            }
+        }
+
+        public string CurrentRegionLabel
+        {
+            get => App.Text("ConflictResolver.Counter", Math.Max(1, _currentRegion + 1), _conflictRegions.Count);
+        }
+
         public MergeConflictEditor(Repository repo, Models.Commit head, string filePath)
         {
             _repo = repo;
@@ -135,6 +174,84 @@ namespace SourceGit.ViewModels
             region.IsResolved = resolution != Models.ConflictResolution.None;
             region.ResolutionType = resolution;
             RefreshDisplayData();
+        }
+
+        public void ResolveRegion(int index, Models.ConflictResolution resolution)
+        {
+            if (index < 0 || index >= _conflictRegions.Count)
+                return;
+
+            var region = _conflictRegions[index];
+            region.IsResolved = resolution != Models.ConflictResolution.None;
+            region.ResolutionType = resolution;
+            RefreshDisplayData();
+
+            if (!region.IsResolved)
+            {
+                CurrentRegion = index;
+                return;
+            }
+
+            // Move on to the next unresolved block, so that the shortcuts can be chained.
+            for (var i = 1; i <= _conflictRegions.Count; i++)
+            {
+                var next = (index + i) % _conflictRegions.Count;
+                if (!_conflictRegions[next].IsResolved)
+                {
+                    CurrentRegion = next;
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Keep / un-keep one side of a block. Keeping the other side of a block that already keeps one makes it keep
+        ///     both (in the order they were picked); un-keeping one side of "both" keeps the other one.
+        /// </summary>
+        public void ToggleSide(int index, bool current)
+        {
+            if (index < 0 || index >= _conflictRegions.Count)
+                return;
+
+            var region = _conflictRegions[index];
+            var resolution = region.IsResolved ? region.ResolutionType : Models.ConflictResolution.None;
+            var both = resolution is Models.ConflictResolution.UseBothMineFirst or Models.ConflictResolution.UseBothTheirsFirst;
+            var keepsCurrent = both || resolution == Models.ConflictResolution.UseOurs;
+            var keepsIncoming = both || resolution == Models.ConflictResolution.UseTheirs;
+
+            Models.ConflictResolution next;
+            if (current)
+            {
+                if (keepsCurrent)
+                    next = both ? Models.ConflictResolution.UseTheirs : Models.ConflictResolution.None;
+                else
+                    next = keepsIncoming ? Models.ConflictResolution.UseBothTheirsFirst : Models.ConflictResolution.UseOurs;
+            }
+            else
+            {
+                if (keepsIncoming)
+                    next = both ? Models.ConflictResolution.UseOurs : Models.ConflictResolution.None;
+                else
+                    next = keepsCurrent ? Models.ConflictResolution.UseBothMineFirst : Models.ConflictResolution.UseTheirs;
+            }
+
+            ResolveRegion(index, next);
+        }
+
+        public void ToggleCurrentRegionSide(bool current)
+        {
+            ToggleSide(_currentRegion, current);
+        }
+
+        public void ResolveCurrentRegion(Models.ConflictResolution resolution)
+        {
+            ResolveRegion(_currentRegion, resolution);
+        }
+
+        public void GotoRegion(int delta)
+        {
+            if (_conflictRegions.Count > 0)
+                CurrentRegion = Math.Clamp(_currentRegion + delta, 0, _conflictRegions.Count - 1);
         }
 
         public async Task<bool> SaveAndStageAsync()
@@ -229,6 +346,7 @@ namespace SourceGit.ViewModels
                 return;
 
             var lines = content.Split('\n', StringSplitOptions.None);
+            _originalLines = lines;
             var oursLines = new List<Models.ConflictLine>();
             var theirsLines = new List<Models.ConflictLine>();
             int oursLineNumber = 1;
@@ -465,6 +583,133 @@ namespace SourceGit.ViewModels
             }
 
             UnsolvedCount = unsolved.Count;
+            BuildPaneRows();
+        }
+
+        private void BuildPaneRows()
+        {
+            var current = new List<Models.ConflictPaneRow>();
+            var incoming = new List<Models.ConflictPaneRow>();
+            var result = new List<Models.ConflictPaneRow>();
+            var lines = _originalLines;
+            var curNo = 1;
+            var incNo = 1;
+            var resNo = 1;
+            var regionIdx = 0;
+            var idx = 0;
+
+            while (idx < lines.Length)
+            {
+                var region = regionIdx < _conflictRegions.Count && _conflictRegions[regionIdx].StartLineInOriginal == idx ? _conflictRegions[regionIdx] : null;
+                if (region == null)
+                {
+                    // The empty string after the final '\n' is not a line.
+                    if (idx == lines.Length - 1 && lines[idx].Length == 0)
+                        break;
+
+                    var text = lines[idx].TrimEnd('\r');
+                    current.Add(new() { LineNumber = (curNo++).ToString(), Content = text });
+                    incoming.Add(new() { LineNumber = (incNo++).ToString(), Content = text });
+                    result.Add(new() { LineNumber = (resNo++).ToString(), Content = text });
+                    idx++;
+                    continue;
+                }
+
+                var resolution = region.ResolutionType;
+                var keepCurrent = region.IsResolved && resolution != Models.ConflictResolution.UseTheirs;
+                var keepIncoming = region.IsResolved && resolution != Models.ConflictResolution.UseOurs;
+                var label = GetRegionLabel(regionIdx);
+
+                current.Add(new() { Kind = Models.ConflictPaneRowKind.Header, Side = Models.ConflictPaneSide.Current, Region = regionIdx, Label = label, IsKept = keepCurrent, IsDropped = region.IsResolved && !keepCurrent, Resolution = resolution });
+                incoming.Add(new() { Kind = Models.ConflictPaneRowKind.Header, Side = Models.ConflictPaneSide.Incoming, Region = regionIdx, Label = label, IsKept = keepIncoming, IsDropped = region.IsResolved && !keepIncoming, Resolution = resolution });
+
+                var height = Math.Max(region.OursContent.Count, region.TheirsContent.Count);
+                for (var i = 0; i < height; i++)
+                {
+                    current.Add(i < region.OursContent.Count
+                        ? new() { Side = Models.ConflictPaneSide.Current, Region = regionIdx, LineNumber = (curNo++).ToString(), Content = region.OursContent[i].TrimEnd('\r'), IsDropped = region.IsResolved && !keepCurrent }
+                        : new() { Kind = Models.ConflictPaneRowKind.Padding, Region = regionIdx });
+                    incoming.Add(i < region.TheirsContent.Count
+                        ? new() { Side = Models.ConflictPaneSide.Incoming, Region = regionIdx, LineNumber = (incNo++).ToString(), Content = region.TheirsContent[i].TrimEnd('\r'), IsDropped = region.IsResolved && !keepIncoming }
+                        : new() { Kind = Models.ConflictPaneRowKind.Padding, Region = regionIdx });
+                }
+
+                if (!region.IsResolved)
+                {
+                    result.Add(new() { Kind = Models.ConflictPaneRowKind.Placeholder, Region = regionIdx, Label = label });
+                }
+                else
+                {
+                    var kept = new List<(Models.ConflictPaneSide, string)>();
+                    void AddSide(Models.ConflictPaneSide side, List<string> content)
+                    {
+                        foreach (var l in content)
+                            kept.Add((side, l.TrimEnd('\r')));
+                    }
+
+                    switch (resolution)
+                    {
+                        case Models.ConflictResolution.UseOurs:
+                            AddSide(Models.ConflictPaneSide.Current, region.OursContent);
+                            break;
+                        case Models.ConflictResolution.UseTheirs:
+                            AddSide(Models.ConflictPaneSide.Incoming, region.TheirsContent);
+                            break;
+                        case Models.ConflictResolution.UseBothMineFirst:
+                            AddSide(Models.ConflictPaneSide.Current, region.OursContent);
+                            AddSide(Models.ConflictPaneSide.Incoming, region.TheirsContent);
+                            break;
+                        case Models.ConflictResolution.UseBothTheirsFirst:
+                            AddSide(Models.ConflictPaneSide.Incoming, region.TheirsContent);
+                            AddSide(Models.ConflictPaneSide.Current, region.OursContent);
+                            break;
+                    }
+
+                    // An empty side still gets a row, which carries the origin tag and its Undo.
+                    if (kept.Count == 0)
+                        kept.Add((resolution == Models.ConflictResolution.UseTheirs ? Models.ConflictPaneSide.Incoming : Models.ConflictPaneSide.Current, null));
+
+                    for (var i = 0; i < kept.Count; i++)
+                    {
+                        var (side, text) = kept[i];
+                        result.Add(new()
+                        {
+                            Side = side,
+                            Region = regionIdx,
+                            LineNumber = text == null ? string.Empty : (resNo++).ToString(),
+                            Content = text ?? string.Empty,
+                            IsKept = i == 0,
+                            Resolution = resolution,
+                        });
+                    }
+                }
+
+                idx = region.EndLineInOriginal + 1;
+                regionIdx++;
+            }
+
+            CurrentRows = current;
+            IncomingRows = incoming;
+            ResultRows = result;
+        }
+
+        /// <summary>
+        ///     Names a block after the closest meaningful line above it (like the function context of a diff hunk).
+        /// </summary>
+        private string GetRegionLabel(int regionIdx)
+        {
+            var start = _conflictRegions[regionIdx].StartLineInOriginal;
+            var stop = regionIdx > 0 ? _conflictRegions[regionIdx - 1].EndLineInOriginal : -1;
+            for (var i = start - 1; i > stop; i--)
+            {
+                var text = _originalLines[i].Trim();
+                if (text.Length < 3 || text.Trim('{', '}', '(', ')', '[', ']', ';', ',', ' ').Length == 0)
+                    continue;
+
+                return text.Length > 48 ? string.Concat(text.AsSpan(0, 47), "…") : text;
+            }
+
+            return string.Empty;
         }
 
         private readonly Repository _repo;
@@ -477,6 +722,11 @@ namespace SourceGit.ViewModels
         private List<Models.ConflictLine> _resultLines = [];
         private List<Models.ConflictRegion> _conflictRegions = [];
         private List<Models.ConflictLineState> _lineStates = [];
+        private string[] _originalLines = [];
+        private List<Models.ConflictPaneRow> _currentRows = [];
+        private List<Models.ConflictPaneRow> _incomingRows = [];
+        private List<Models.ConflictPaneRow> _resultRows = [];
+        private int _currentRegion = 0;
         private Vector _scrollOffset = Vector.Zero;
         private Models.ConflictSelectedChunk _selectedChunk;
         private string _error = string.Empty;

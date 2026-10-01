@@ -82,6 +82,7 @@
   <x:String x:Key="Text.BranchCM.Pull" xml:space="preserve">Tirer ${0}$</x:String>
   <x:String x:Key="Text.BranchCM.PullInto" xml:space="preserve">Tirer ${0}$ dans ${1}$...</x:String>
   <x:String x:Key="Text.BranchCM.Push" xml:space="preserve">Pousser ${0}$</x:String>
+  <x:String x:Key="Text.BranchCM.PushAndCreatePR" xml:space="preserve">Pousser et créer une PR...</x:String>
   <x:String x:Key="Text.BranchCM.Rebase" xml:space="preserve">Rebaser ${0}$ sur ${1}$...</x:String>
   <x:String x:Key="Text.BranchCM.Rename" xml:space="preserve">Renommer ${0}$...</x:String>
   <x:String x:Key="Text.BranchCM.ResetToSelectedCommit" xml:space="preserve">Réinitialiser ${0}$ sur ${1}$...</x:String>
@@ -325,6 +326,74 @@
   <x:String x:Key="Text.ConfirmEmptyCommit.WithLocalChanges" xml:space="preserve">Commit vide détecté ! Voulez-vous continuer (--allow-empty) ou tout indexer puis commit ?</x:String>
   <x:String x:Key="Text.ConfirmRestart.Title" xml:space="preserve">Redémarrage Requis</x:String>
   <x:String x:Key="Text.ConfirmRestart.Message" xml:space="preserve">Vous devez redémarrer cette application pour appliquer les changements.</x:String>
+  <x:String x:Key="Text.Conflict.SaveAndStage.Tip" xml:space="preserve">Écrire le fichier résolu et l’indexer, puis passer au conflit suivant</x:String>
+  <x:String x:Key="Text.Conflict.UseMine.Tip" xml:space="preserve">Garder ma version de tout le fichier</x:String>
+  <x:String x:Key="Text.Conflict.UseTheirs.Tip" xml:space="preserve">Garder leur version de tout le fichier</x:String>
+  <x:String x:Key="Text.ConflictResolver.Abort" xml:space="preserve">Annuler le {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.AbortConfirm.Desc" xml:space="preserve">{0} revient exactement à son état d’avant. {1} n’est pas modifiée.</x:String>
+  <x:String x:Key="Text.ConflictResolver.AbortConfirm.Keep" xml:space="preserve">Continuer à résoudre</x:String>
+  <x:String x:Key="Text.ConflictResolver.AbortConfirm.Lost" xml:space="preserve">Ce que vous avez résolu dans {0} fichier(s) sera perdu.</x:String>
+  <x:String x:Key="Text.ConflictResolver.AbortConfirm.Title" xml:space="preserve">Annuler ce {0} ?</x:String>
+  <x:String x:Key="Text.ConflictResolver.AllResolved" xml:space="preserve">Tous les conflits sont résolus. Validez pour terminer le {0}.</x:String>
+  <x:String x:Key="Text.ConflictResolver.AutoMerged" xml:space="preserve">FUSIONNÉS AUTOMATIQUEMENT</x:String>
+  <x:String x:Key="Text.ConflictResolver.Back" xml:space="preserve">Historique</x:String>
+  <x:String x:Key="Text.ConflictResolver.Back.Tip" xml:space="preserve">Revenir à l’historique ; la barre « en cours » permet de revenir ici</x:String>
+  <x:String x:Key="Text.ConflictResolver.BothKept" xml:space="preserve">Les deux gardés</x:String>
+  <x:String x:Key="Text.ConflictResolver.CherryPick.Connector" xml:space="preserve">sur</x:String>
+  <x:String x:Key="Text.ConflictResolver.CherryPick.Finish" xml:space="preserve">Continuer le cherry-pick</x:String>
+  <x:String x:Key="Text.ConflictResolver.CherryPick.Verb" xml:space="preserve">Cherry-pick de</x:String>
+  <x:String x:Key="Text.ConflictResolver.Conflict" xml:space="preserve">Conflit {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.ConflictedFiles" xml:space="preserve">FICHIERS EN CONFLIT</x:String>
+  <x:String x:Key="Text.ConflictResolver.Counter" xml:space="preserve">Conflit {0} sur {1}</x:String>
+  <x:String x:Key="Text.ConflictResolver.Current" xml:space="preserve">Actuel</x:String>
+  <x:String x:Key="Text.ConflictResolver.FileResolved" xml:space="preserve">{0} est résolu et indexé.</x:String>
+  <x:String x:Key="Text.ConflictResolver.From" xml:space="preserve">Depuis {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.Incoming" xml:space="preserve">Entrant</x:String>
+  <x:String x:Key="Text.ConflictResolver.KeepBoth" xml:space="preserve">Garder les deux</x:String>
+  <x:String x:Key="Text.ConflictResolver.KeepCurrent" xml:space="preserve">Garder l’actuel</x:String>
+  <x:String x:Key="Text.ConflictResolver.KeepIncoming" xml:space="preserve">Garder l’entrant</x:String>
+  <x:String x:Key="Text.ConflictResolver.Kept" xml:space="preserve">Gardé</x:String>
+  <x:String x:Key="Text.ConflictResolver.KeptSub" xml:space="preserve">gardé</x:String>
+  <x:String x:Key="Text.ConflictResolver.Left" xml:space="preserve">{0} restant(s)</x:String>
+  <x:String x:Key="Text.ConflictResolver.Mark" xml:space="preserve">Marquer {0} résolu</x:String>
+  <x:String x:Key="Text.ConflictResolver.Mark.Done" xml:space="preserve">✓ {0} marqué résolu</x:String>
+  <x:String x:Key="Text.ConflictResolver.Mark.Next" xml:space="preserve">Marquer {0} résolu · fichier suivant →</x:String>
+  <x:String x:Key="Text.ConflictResolver.Mark.Pending" xml:space="preserve">Encore {0} conflit(s) à résoudre</x:String>
+  <x:String x:Key="Text.ConflictResolver.MarkRuns" xml:space="preserve">Ce que lance « Marquer résolu ».</x:String>
+  <x:String x:Key="Text.ConflictResolver.Merge.Connector" xml:space="preserve">dans</x:String>
+  <x:String x:Key="Text.ConflictResolver.Merge.Finish" xml:space="preserve">Valider le merge</x:String>
+  <x:String x:Key="Text.ConflictResolver.Merge.Verb" xml:space="preserve">Merge de</x:String>
+  <x:String x:Key="Text.ConflictResolver.NotKept" xml:space="preserve">non gardé</x:String>
+  <x:String x:Key="Text.ConflictResolver.Op.CherryPick" xml:space="preserve">cherry-pick</x:String>
+  <x:String x:Key="Text.ConflictResolver.Op.Merge" xml:space="preserve">merge</x:String>
+  <x:String x:Key="Text.ConflictResolver.Op.Rebase" xml:space="preserve">rebase</x:String>
+  <x:String x:Key="Text.ConflictResolver.Op.Revert" xml:space="preserve">revert</x:String>
+  <x:String x:Key="Text.ConflictResolver.Placeholder.Hint" xml:space="preserve">Choisissez un côté au-dessus, ou gardez les deux.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Progress" xml:space="preserve">{0} sur {1} fichiers</x:String>
+  <x:String x:Key="Text.ConflictResolver.Rebase.Connector" xml:space="preserve">sur</x:String>
+  <x:String x:Key="Text.ConflictResolver.Rebase.Finish" xml:space="preserve">Continuer le rebase</x:String>
+  <x:String x:Key="Text.ConflictResolver.Rebase.Verb" xml:space="preserve">Rebase de</x:String>
+  <x:String x:Key="Text.ConflictResolver.Resolved" xml:space="preserve">Résolu</x:String>
+  <x:String x:Key="Text.ConflictResolver.Result" xml:space="preserve">Résultat</x:String>
+  <x:String x:Key="Text.ConflictResolver.Result.Desc" xml:space="preserve">Ce que contiendra {0} après le {1}.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Revert.Connector" xml:space="preserve">sur</x:String>
+  <x:String x:Key="Text.ConflictResolver.Revert.Finish" xml:space="preserve">Continuer le revert</x:String>
+  <x:String x:Key="Text.ConflictResolver.Revert.Verb" xml:space="preserve">Revert de</x:String>
+  <x:String x:Key="Text.ConflictResolver.Shortcuts" xml:space="preserve">RACCOURCIS</x:String>
+  <x:String x:Key="Text.ConflictResolver.StartedBy" xml:space="preserve">Ce qui a tout déclenché.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Status.Left" xml:space="preserve">{0} fichier(s) en conflit restant(s)</x:String>
+  <x:String x:Key="Text.ConflictResolver.Status.Ready" xml:space="preserve">Prêt à terminer le {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.Subtitle" xml:space="preserve">{0} fichier(s) fusionné(s) automatiquement · {1} à traiter</x:String>
+  <x:String x:Key="Text.ConflictResolver.UnderTheHood" xml:space="preserve">SOUS LE CAPOT</x:String>
+  <x:String x:Key="Text.ConflictResolver.Undo" xml:space="preserve">Annuler</x:String>
+  <x:String x:Key="Text.ConflictResolver.Undo.Desc" xml:space="preserve">Rien n’est définitif avant de valider. Annuler remet {0} exactement comme avant.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Undo.Title" xml:space="preserve">Un doute ? Tout est réversible.</x:String>
+  <x:String x:Key="Text.ConflictResolver.Who" xml:space="preserve">QUI A CHANGÉ QUOI</x:String>
+  <x:String x:Key="Text.ConflictResolver.WholeFile" xml:space="preserve">Fichier entier</x:String>
+  <x:String x:Key="Text.ConflictResolver.WholeFile.Current" xml:space="preserve">Garder tout le fichier de {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.WholeFile.Incoming" xml:space="preserve">Garder tout le fichier de {0}</x:String>
+  <x:String x:Key="Text.ConflictResolver.Why" xml:space="preserve">POURQUOI CE CONFLIT</x:String>
+  <x:String x:Key="Text.ConflictResolver.Why.Desc" xml:space="preserve">Les deux côtés ont modifié les mêmes lignes de {0} depuis leur séparation. Git a fusionné tout le reste seul, mais ici il ne peut pas deviner quelle version vous voulez.</x:String>
   <x:String x:Key="Text.ConventionalCommit" xml:space="preserve">Assistant Commits Conventionnels</x:String>
   <x:String x:Key="Text.ConventionalCommit.BreakingChanges" xml:space="preserve">Changement Radical :</x:String>
   <x:String x:Key="Text.ConventionalCommit.ClosedIssue" xml:space="preserve">Incident Clos :</x:String>
@@ -542,8 +611,16 @@
   <x:String x:Key="Text.Histories.Tips.MacOS" xml:space="preserve">Maintenir ⌘ ou ⇧ enfoncée pour sélectionner plusieurs commits.</x:String>
   <x:String x:Key="Text.Histories.Tips.Prefix" xml:space="preserve">CONSEILS:</x:String>
   <x:String x:Key="Text.Histories.WIP" xml:space="preserve">// {0} fichiers modifiés, pas encore commités</x:String>
+  <x:String x:Key="Text.Histories.WIP.Inspector" xml:space="preserve">CHANGEMENTS LOCAUX</x:String>
+  <x:String x:Key="Text.Histories.WIP.OnBranch" xml:space="preserve">sur {0}</x:String>
   <x:String x:Key="Text.Histories.WIP.One" xml:space="preserve">// 1 fichier modifié, pas encore commité</x:String>
-  <x:String x:Key="Text.Histories.WIP.Tip" xml:space="preserve">Ouvrir les changements locaux pour les indexer et les commiter</x:String>
+  <x:String x:Key="Text.Histories.WIP.OpenStaging" xml:space="preserve">Ouvrir la vue d'indexation complète (ou double-cliquez sur la ligne)</x:String>
+  <x:String x:Key="Text.Histories.WIP.Stage" xml:space="preserve">Indexer</x:String>
+  <x:String x:Key="Text.Histories.WIP.StageAll" xml:space="preserve">Tout indexer</x:String>
+  <x:String x:Key="Text.Histories.WIP.Tip" xml:space="preserve">Cliquez pour relire, indexer et commiter vos changements locaux dans l'inspecteur. Double-cliquez pour ouvrir la vue d'indexation complète.</x:String>
+  <x:String x:Key="Text.Histories.WIP.Title" xml:space="preserve">Changements non commités</x:String>
+  <x:String x:Key="Text.Histories.WIP.Unstage" xml:space="preserve">Désindexer</x:String>
+  <x:String x:Key="Text.Histories.WIP.UnstageAll" xml:space="preserve">Tout désindexer</x:String>
   <x:String x:Key="Text.HistoriesDetailsStandalone" xml:space="preserve">Ouvrir dans une fenêtre séparée</x:String>
   <x:String x:Key="Text.HistoriesDetailsStandalone.CommitDetail" xml:space="preserve">Détails du commit</x:String>
   <x:String x:Key="Text.HistoriesDetailsStandalone.RevisionCompare" xml:space="preserve">Comparaison de révision</x:String>
@@ -582,7 +659,7 @@
   <x:String x:Key="Text.Init.Path" xml:space="preserve">Chemin :</x:String>
   <x:String x:Key="Text.InProgress.CherryPick" xml:space="preserve">Cherry-Pick en cours.</x:String>
   <x:String x:Key="Text.InProgress.CherryPick.Head" xml:space="preserve">Traitement du commit</x:String>
-  <x:String x:Key="Text.InProgress.Merge" xml:space="preserve">Merge request en cours.</x:String>
+  <x:String x:Key="Text.InProgress.Merge" xml:space="preserve">Merge en cours.</x:String>
   <x:String x:Key="Text.InProgress.Merge.Operating" xml:space="preserve">Fusionnement</x:String>
   <x:String x:Key="Text.InProgress.Rebase" xml:space="preserve">Rebase en cours.</x:String>
   <x:String x:Key="Text.InProgress.Rebase.StoppedAt" xml:space="preserve">Arrêté à</x:String>
@@ -817,8 +894,23 @@
   <x:String x:Key="Text.Pull.Remote" xml:space="preserve">Dépôt distant :</x:String>
   <x:String x:Key="Text.Pull.Title" xml:space="preserve">Pull (Fetch &amp; Merge)</x:String>
   <x:String x:Key="Text.Pull.UseRebase" xml:space="preserve">Utiliser rebase au lieu de merge</x:String>
+  <x:String x:Key="Text.PullRequest.Checkout" xml:space="preserve">Checkout</x:String>
+  <x:String x:Key="Text.PullRequest.ClosedAt" xml:space="preserve">fermée {0}</x:String>
   <x:String x:Key="Text.PullRequest.Comment" xml:space="preserve">1 commentaire</x:String>
   <x:String x:Key="Text.PullRequest.Comments" xml:space="preserve">{0} commentaires</x:String>
+  <x:String x:Key="Text.PullRequest.Commit" xml:space="preserve">1 commit</x:String>
+  <x:String x:Key="Text.PullRequest.Commits" xml:space="preserve">{0} commits</x:String>
+  <x:String x:Key="Text.PullRequest.Description.Row" xml:space="preserve">Description</x:String>
+  <x:String x:Key="Text.PullRequest.FetchFailed" xml:space="preserve">Impossible de récupérer les commits de cette pull request. Vérifiez le réseau et votre accès au remote.</x:String>
+  <x:String x:Key="Text.PullRequest.Fetching" xml:space="preserve">Récupération de la pull request…</x:String>
+  <x:String x:Key="Text.PullRequest.File" xml:space="preserve">1 fichier</x:String>
+  <x:String x:Key="Text.PullRequest.Files" xml:space="preserve">{0} fichiers</x:String>
+  <x:String x:Key="Text.PullRequest.Inspector" xml:space="preserve">PULL REQUEST</x:String>
+  <x:String x:Key="Text.PullRequest.LoadFailed" xml:space="preserve">Impossible de charger cette pull request depuis GitHub.</x:String>
+  <x:String x:Key="Text.PullRequest.MergedAt" xml:space="preserve">mergée {0}</x:String>
+  <x:String x:Key="Text.PullRequest.NoDescription" xml:space="preserve">Aucune description.</x:String>
+  <x:String x:Key="Text.PullRequest.OpenOnGitHub" xml:space="preserve">Ouvrir sur GitHub</x:String>
+  <x:String x:Key="Text.PullRequest.Opened" xml:space="preserve">ouverte {0}</x:String>
   <x:String x:Key="Text.PullRequest.State.Closed" xml:space="preserve">fermée</x:String>
   <x:String x:Key="Text.PullRequest.State.Draft" xml:space="preserve">brouillon</x:String>
   <x:String x:Key="Text.PullRequest.State.InReview" xml:space="preserve">en revue</x:String>

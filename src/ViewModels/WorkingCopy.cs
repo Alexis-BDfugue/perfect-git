@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -235,6 +236,14 @@ namespace SourceGit.ViewModels
             private set => SetProperty(ref _detailContext, value);
         }
 
+        /// <summary>
+        ///     Every file that has been in conflict during the merge/rebase/... in progress, resolved or not yet.
+        /// </summary>
+        public IReadOnlyCollection<string> ConflictedPaths
+        {
+            get => _conflictedPaths;
+        }
+
         public string CommitMessage
         {
             get => _commitMessage;
@@ -346,6 +355,9 @@ namespace SourceGit.ViewModels
                 selectedUnstaged.Add(firstConflict);
             }
 
+            foreach (var c in conflicts)
+                _conflictedPaths.Add(c.Path);
+
             _isLoadingData = true;
             _cached = changes;
             HasUnsolvedConflicts = conflicts.Count > 0;
@@ -360,6 +372,19 @@ namespace SourceGit.ViewModels
 
             UpdateInProgressState();
             UpdateDetail();
+        }
+
+        /// <summary>
+        ///     Selects the first conflicted file, unless a conflicted file is already selected, so that its resolver is shown.
+        /// </summary>
+        public void SelectFirstConflict()
+        {
+            if (_selectedUnstaged is { Count: > 0 } && _selectedUnstaged.Changes.Exists(x => x.IsConflicted))
+                return;
+
+            var conflicts = _visibleUnstaged.FindAll(x => x.IsConflicted);
+            if (conflicts.Count > 0)
+                SelectedUnstaged = new(new List<Models.Change>() { FindFirstConflict(conflicts) });
         }
 
         public async Task StageChangesAsync(List<Models.Change> changes, Models.Change next)
@@ -567,11 +592,18 @@ namespace SourceGit.ViewModels
                     await File.WriteAllTextAsync(mergeMsgFile, _commitMessage);
 
                 var log = _repo.CreateLog($"Continue {_inProgressContext.Name}");
-                await _inProgressContext.ContinueAsync(log);
+                var succ = await _inProgressContext.ContinueAsync(log);
                 log.Complete();
 
                 CommitMessage = string.Empty;
                 IsCommitting = false;
+
+                // Show the commit that has just been created (the merge commit, the last rebased commit...).
+                if (succ && _repo.SelectedViewIndex == 0)
+                {
+                    var head = await new Commands.QueryRevisionByRefName(_repo.FullPath, "HEAD").GetResultAsync();
+                    _repo.NavigateToCommit(head, true);
+                }
             }
             else
             {
@@ -804,6 +836,17 @@ namespace SourceGit.ViewModels
             else
                 InProgressContext = null;
 
+            if (_inProgressContext == null)
+            {
+                if (!_hasUnsolvedConflicts)
+                    _conflictedPaths.Clear();
+            }
+            else if (oldType == null)
+            {
+                // Opened in the middle of an operation: git lists its conflicted files in MERGE_MSG.
+                LoadConflictedPathsFromMergeMsg();
+            }
+
             if (_inProgressContext != null && _inProgressContext.GetType() == oldType && !string.IsNullOrEmpty(_commitMessage))
                 return;
 
@@ -819,12 +862,34 @@ namespace SourceGit.ViewModels
             CommitMessage = new Commands.QueryCommitFullMessage(_repo.FullPath, rebasing.StoppedAt.SHA).GetResult();
         }
 
+        private void LoadConflictedPathsFromMergeMsg()
+        {
+            var file = Path.Combine(_repo.GitDir, "MERGE_MSG");
+            if (!File.Exists(file))
+                return;
+
+            var inBlock = false;
+            foreach (var line in File.ReadAllLines(file))
+            {
+                if (line.Equals("# Conflicts:", StringComparison.Ordinal))
+                    inBlock = true;
+                else if (inBlock && line.StartsWith("#\t", StringComparison.Ordinal))
+                    _conflictedPaths.Add(line.Substring(2).Trim());
+                else
+                    inBlock = false;
+            }
+        }
+
         private bool LoadCommitMessageFromFile(string file)
         {
             if (!File.Exists(file))
                 return false;
 
-            var msg = File.ReadAllText(file).Trim();
+            var msg = File.ReadAllText(file);
+
+            // Git lists the conflicted files as "# Conflicts:" comment lines. `--continue` runs with another comment
+            // char (so that lines such as "#123" survive) and would keep them in the commit: drop that block.
+            msg = Regex.Replace(msg, @"^# Conflicts:\r?\n(#\t.*(\r?\n|$))*", string.Empty, RegexOptions.Multiline).Trim();
             if (string.IsNullOrEmpty(msg))
                 return false;
 
@@ -840,7 +905,10 @@ namespace SourceGit.ViewModels
             if (change == null)
                 DetailContext = null;
             else if (change.IsConflicted)
-                DetailContext = new Conflict(_repo, this, change);
+            {
+                if (_detailContext is not Conflict current || !current.IsSameAs(change))
+                    DetailContext = new Conflict(_repo, this, change);
+            }
             else
                 DetailContext = new DiffContext(_repo.FullPath, new Models.DiffOption(change, isUnstaged), _detailContext as DiffContext);
         }
@@ -941,6 +1009,7 @@ namespace SourceGit.ViewModels
         private string _commitMessage = string.Empty;
 
         private bool _hasUnsolvedConflicts = false;
+        private readonly HashSet<string> _conflictedPaths = [];
         private InProgressContext _inProgressContext = null;
     }
 }

@@ -9,7 +9,8 @@ namespace SourceGit.Views
 {
     public class ChangeStatusIcon : Control
     {
-        private static readonly string[] INDICATOR = ["?", "M", "T", "A", "D", "R", "C", "?", "!"];
+        // Untracked files read as "A" (new file), like the design's status letters; the row tooltip still says untracked.
+        private static readonly string[] INDICATOR = ["?", "M", "T", "A", "D", "R", "C", "A", "!"];
         private static readonly string[] BRUSH =
         [
             "Brush.FG3",

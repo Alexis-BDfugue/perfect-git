@@ -28,7 +28,8 @@ namespace SourceGit.Views
             AvaloniaProperty.Register<CommitDetail, bool>(nameof(ShowChangesTab), true);
 
         /// <summary>
-        ///     The history page shows diffs in its center column, so it hides the CHANGES tab.
+        ///     The history page shows diffs in its center column, so its inspector hides the CHANGES and FILES tabs
+        ///     (kept in the standalone commit window).
         /// </summary>
         public bool ShowChangesTab
         {
@@ -46,12 +47,12 @@ namespace SourceGit.Views
             base.OnPropertyChanged(change);
 
             if (change.Property == ShowChangesTabProperty || change.Property == DataContextProperty)
-                LeaveHiddenChangesTab();
+                LeaveHiddenTabs();
         }
 
-        private void LeaveHiddenChangesTab()
+        private void LeaveHiddenTabs()
         {
-            if (!ShowChangesTab && DataContext is ViewModels.CommitDetail { ActiveTabIndex: 1 } vm)
+            if (!ShowChangesTab && DataContext is ViewModels.CommitDetail { ActiveTabIndex: > 0 } vm)
                 vm.ActiveTabIndex = 0;
         }
 
@@ -381,6 +382,13 @@ namespace SourceGit.Views
 
         private void OnInspectorRowTapped(object sender, TappedEventArgs e)
         {
+            if (DataContext is ViewModels.CommitDetail vm && sender is Control { DataContext: ViewModels.CommitInspectorRow { IsFolder: true } folder })
+            {
+                vm.ToggleFolder(folder.FolderPath);
+                e.Handled = true;
+                return;
+            }
+
             if (DataContext is ViewModels.CommitDetail detail && sender is Control { DataContext: ViewModels.CommitInspectorRow { Change: { } change } })
             {
                 if (this.FindAncestorOfType<Histories>() != null)

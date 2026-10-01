@@ -91,4 +91,44 @@ namespace SourceGit.Models
         public bool IsResolved { get; set; } = false;
         public ConflictResolution ResolutionType { get; set; } = ConflictResolution.None;
     }
+
+    public enum ConflictPaneRowKind
+    {
+        /// <summary>A line of the file (context, or one side of a conflict).</summary>
+        Line,
+        /// <summary>"Conflict n" header of a block, with its Keep button (Current/Incoming panes).</summary>
+        Header,
+        /// <summary>Empty row keeping both sides of a block aligned (Current/Incoming panes).</summary>
+        Padding,
+        /// <summary>Unresolved block in the Result pane.</summary>
+        Placeholder,
+    }
+
+    public enum ConflictPaneSide
+    {
+        None,
+        Current,
+        Incoming,
+    }
+
+    /// <summary>
+    ///     One row of the conflict resolver panes (Current, Incoming or Result).
+    /// </summary>
+    public class ConflictPaneRow
+    {
+        public ConflictPaneRowKind Kind { get; init; } = ConflictPaneRowKind.Line;
+        public ConflictPaneSide Side { get; init; } = ConflictPaneSide.None;
+        public int Region { get; init; } = -1;
+        public string LineNumber { get; init; } = string.Empty;
+        public string Content { get; init; } = string.Empty;
+        public string Label { get; init; } = string.Empty;
+
+        /// <summary>Line of a side that the resolution of its block doesn't keep.</summary>
+        public bool IsDropped { get; init; } = false;
+
+        /// <summary>Header: this side is kept. Result: first line of a resolved block (shows its origin and Undo).</summary>
+        public bool IsKept { get; init; } = false;
+
+        public ConflictResolution Resolution { get; init; } = ConflictResolution.None;
+    }
 }

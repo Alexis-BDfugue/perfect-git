@@ -97,7 +97,10 @@ namespace SourceGit.Commands
 
             if (!CancellationToken.IsCancellationRequested && proc.ExitCode != 0)
             {
-                if (RaiseError)
+                // A merge, rebase, cherry-pick... that stops on conflicts is not an error: the in-progress bar shows up
+                // and the conflict resolver opens in the center.
+                var stoppedOnConflicts = errs.Exists(x => x.StartsWith("CONFLICT (", StringComparison.Ordinal));
+                if (RaiseError && !stoppedOnConflicts)
                 {
                     var errMsg = string.Join("\n", errs).Trim();
                     if (!string.IsNullOrEmpty(errMsg))

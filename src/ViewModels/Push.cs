@@ -109,6 +109,12 @@ namespace SourceGit.ViewModels
             set;
         }
 
+        public bool CreatePullRequestAfterPush
+        {
+            get;
+            init;
+        }
+
         public Push(Repository repo, Models.Branch localBranch)
         {
             _repo = repo;
@@ -190,6 +196,9 @@ namespace SourceGit.ViewModels
                 NoVerify).WithCancellation(token).Use(log).ExecAsync();
 
             log.Complete();
+
+            if (succ && CreatePullRequestAfterPush && _selectedRemote.TryGetCreatePullRequestURL(out var prURL, _selectedRemoteBranch.Name))
+                Native.OS.OpenBrowser(prURL);
 
             _cancellation = null;
             return succ;

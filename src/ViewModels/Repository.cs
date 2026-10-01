@@ -93,6 +93,15 @@ namespace SourceGit.ViewModels
             get => _workingCopy;
         }
 
+        /// <summary>
+        ///     The "Resolve conflicts" screen shown over the repository, or null.
+        /// </summary>
+        public ConflictResolver ConflictResolver
+        {
+            get => _conflictResolver;
+            private set => SetProperty(ref _conflictResolver, value);
+        }
+
         public StashesPage StashesPage
         {
             get => _stashesPage;
@@ -572,6 +581,66 @@ namespace SourceGit.ViewModels
 
             if (popup.CanStartDirectly())
                 await page.ProcessPopupAsync();
+        }
+
+        /// <summary>
+        ///     URL of the hosting service page that creates a pull request for `branch` (a local branch uses
+        ///     its upstream). `target` is the base branch, or null to let the service pick its default one.
+        /// </summary>
+        public bool TryGetCreatePullRequestURL(Models.Branch branch, Models.Branch target, out string url)
+        {
+            url = null;
+
+            var remoteName = branch.Remote;
+            var branchName = branch.Name;
+            if (branch.IsLocal)
+            {
+                var upstream = string.IsNullOrEmpty(branch.Upstream) ? null : _branches.Find(x => !x.IsLocal && x.FullName.Equals(branch.Upstream, StringComparison.Ordinal));
+                if (upstream == null)
+                    return false;
+
+                remoteName = upstream.Remote;
+                branchName = upstream.Name;
+            }
+
+            var remote = _remotes.Find(x => x.Name.Equals(remoteName, StringComparison.Ordinal));
+            if (remote == null || !remote.TryGetCreatePullRequestURL(out url, branchName))
+                return false;
+
+            // GitHub can compare against any base branch.
+            if (target != null && url.Contains("github.com", StringComparison.Ordinal) && remote.TryGetVisitURL(out var visit))
+                url = $"{visit}/compare/{Uri.EscapeDataString(target.Name)}...{Uri.EscapeDataString(branchName)}?expand=1";
+
+            return true;
+        }
+
+        /// <summary>
+        ///     A pull request can be created for a branch already on a supported remote, or for a local branch
+        ///     that has never been pushed (it is pushed first, see `CreatePullRequest`).
+        /// </summary>
+        public bool CanCreatePullRequest(Models.Branch branch, out bool needPush)
+        {
+            needPush = false;
+            if (TryGetCreatePullRequestURL(branch, null, out _))
+                return true;
+
+            if (!branch.IsLocal || IsBare || !string.IsNullOrEmpty(branch.Upstream))
+                return false;
+
+            needPush = _remotes.Find(x => x.TryGetCreatePullRequestURL(out _, branch.Name)) != null;
+            return needPush;
+        }
+
+        public void CreatePullRequest(Models.Branch branch)
+        {
+            if (TryGetCreatePullRequestURL(branch, null, out var url))
+            {
+                Native.OS.OpenBrowser(url);
+                return;
+            }
+
+            if (branch.IsLocal && CanCreatePopup())
+                ShowPopup(new Push(this, branch) { Tracking = true, CreatePullRequestAfterPush = true });
         }
 
         public bool IsGitFlowEnabled()
@@ -1119,6 +1188,37 @@ namespace SourceGit.ViewModels
                 await _workingCopy.SkipMergeAsync();
         }
 
+        /// <summary>
+        ///     "Resolve" in the in-progress bar: shows the conflicted files in the history view, with the resolver in the center.
+        /// </summary>
+        public void ResolveConflicts(string path = null)
+        {
+            SelectedViewIndex = 0;
+
+            // Conflicts without an operation in progress (stash pop...) are resolved from the working copy.
+            if (_workingCopy?.InProgressContext == null)
+            {
+                _histories?.ShowConflicts();
+                return;
+            }
+
+            if (_conflictResolver == null)
+                ConflictResolver = new ConflictResolver(this, path);
+            else if (path != null)
+                _conflictResolver.Refresh(path);
+        }
+
+        public void CloseConflictResolver()
+        {
+            ConflictResolver = null;
+        }
+
+        public async Task ContinueMergeAsync()
+        {
+            if (_workingCopy != null)
+                await _workingCopy.ContinueMergeAsync();
+        }
+
         public async Task AbortMergeAsync()
         {
             if (_workingCopy != null)
@@ -1562,9 +1662,18 @@ namespace SourceGit.ViewModels
                     if (token.IsCancellationRequested)
                         return;
 
+                    var hadConflicts = _workingCopy.HasUnsolvedConflicts;
                     _workingCopy.SetData(changes);
                     LocalChangesCount = changes.Count;
                     OnPropertyChanged(nameof(InProgressContext));
+
+                    // A merge, rebase, cherry-pick... just stopped on conflicts: open the resolver right away.
+                    if (!hadConflicts && _workingCopy.HasUnsolvedConflicts && _selectedViewIndex == 0)
+                        ResolveConflicts();
+                    else if (_conflictResolver != null && _workingCopy.InProgressContext == null)
+                        CloseConflictResolver();
+                    else
+                        _conflictResolver?.Refresh();
                     GetOwnerPage()?.ChangeDirtyState(Models.DirtyState.HasLocalChanges, changes.Count == 0);
                 });
             }, token);
@@ -2167,6 +2276,7 @@ namespace SourceGit.ViewModels
         private Models.Watcher _watcher = null;
         private Histories _histories = null;
         private WorkingCopy _workingCopy = null;
+        private ConflictResolver _conflictResolver = null;
         private StashesPage _stashesPage = null;
         private int _selectedViewIndex = 0;
 
